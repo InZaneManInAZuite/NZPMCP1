@@ -1,12 +1,20 @@
 import { createTheme } from '@mantine/core';
 
 export const Theme = createTheme({
+
   components: {
     Button: {
-      defaultProps: {
-        color: 'blue',
+        defaultProps: {
+            color: 'blue',
       }
+    },
+    Title: {
+        defaultProps: {
+            order: 1,
+            align: 'center',
+        }
     }
+    
   },
 
   shadows: {
@@ -14,3 +22,5 @@ export const Theme = createTheme({
     xl: '5px 5px 3px rgba(0, 0, 0, .25)',
   }
 });
+
+

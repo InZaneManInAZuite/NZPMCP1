@@ -1,8 +1,9 @@
+import Welcome from '../components/Welcome/Welcome';
+import { Parallax, ParallaxLayer } from '@react-spring/parallax';
+
 const LandingPage = () => {
     return (
-        <div>
-        <h1>Temporary Landing Page</h1>
-        </div>
+        <Welcome />
     );
 }
 
