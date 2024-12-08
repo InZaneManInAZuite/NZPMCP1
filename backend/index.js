@@ -1,38 +1,11 @@
 const express = require('express')
 const cors = require('cors')
-const mongoose = require('mongoose')
-require('dotenv').config()
-
+const User = require('./models/user')
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-
-// Mongoose schema and model
-const uri = process.env.MONGODB_URI
-
-mongoose.set('strictQuery', false)
-
-mongoose.connect(uri)
-
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
-})
-
-userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
-
-const User = mongoose.model('User', userSchema)
-
-// Services
 
 app.get('/api/users', (req, res) => {
   User.find({}).then(users => {
