@@ -1,4 +1,4 @@
-const User = require('../models/user')
+const { User } = require('../models/models')
 
 const userServices = (app) => {
     app.get('/api/users', (req, res) => {
