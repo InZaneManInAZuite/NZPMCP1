@@ -32,21 +32,14 @@ const eventSchema = new mongoose.Schema({
 
 
 // Define toJSON method for userSchemas
-userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
+const transformer = (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+}
 
-eventSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
+userSchema.set('toJSON', {transform: transformer})
+eventSchema.set('toJSON', {transform: transformer})
 
 
 

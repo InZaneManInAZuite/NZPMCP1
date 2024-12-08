@@ -39,3 +39,6 @@ Content-Type: application/json
   "email": "j@jfadsfsd.com",
   "password": "password1235"
 }
+
+###
+GET http://localhost:3001/api/users
