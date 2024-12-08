@@ -1,21 +1,17 @@
 import { useState } from "react";
 import UserContext from "./UserContext";
+import PropTypes from 'prop-types';
 
 const UserContextProvider = ({ children }) => {
 
-    const [user, setUser] = useState(false);
-
-    const username = document.cookie.split(';').find(cookie => cookie.includes('username'));
-    const password = document.cookie.split(';').find(cookie => cookie.includes('password'));
-
-    const checkLogin = (username, password) => {
-        // TODO: implement login check once backend is ready
-        setUser(true);
-    }
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
 
     const store = {
-        user: user,
-        setUser: setUser,
+        email: email,
+        password: password,
+        setEmail: setEmail,
+        setPassword: setPassword,
     }
 
     return (
@@ -23,6 +19,10 @@ const UserContextProvider = ({ children }) => {
         {children}
         </UserContext.Provider>
     );
+}
+
+UserContextProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 }
 
 export default UserContextProvider;
