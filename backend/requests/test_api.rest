@@ -1,0 +1,41 @@
+DELETE http://localhost:3001/api/users/6755e9da2e9a2e3a3904fb06
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "j@j.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "j@j.com",
+  "password": "password1235"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "j@j.com",
+  "password": "password1235"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "fasdfa",
+  "email": "j@jfadsfsd.com",
+  "password": "password1235"
+}

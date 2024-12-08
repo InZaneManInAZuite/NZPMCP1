@@ -7,50 +7,116 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+
 app.get('/api/users', (req, res) => {
   User.find({}).then(users => {
     res.json(users)
   })
 })
 
-app.get('/api/users/:id', (request, response) => {
-    const id = request.params.id
-    const entry = User.findById(id).then(user => {
-        response.json(user)
-    })
-    if (entry) {
-        response.json(entry)
-    } else {
-        response.status(404).end()
+app.get('/api/users/:id', (req, res, next) => {
+    const id = req.params.id
+    User.findById(id)
+        .then(user => {
+            if (user) {
+                res.json(user)
+            } else {
+                express.response.status(404).end()
+            }
+        })
+        .catch(err => next(err))
+        
+})
+
+app.delete('/api/users/:id', (req, res, next) => {
+    const id = req.params.id
+    User.findByIdAndDelete(id)
+        .then(() => {
+            res.status(204).end()
+        })
+        .catch(err => next(err))
+})
+
+app.put('/api/users/:id', (req, res, next) => {
+    const id = req.params.id
+    const body = req.body
+
+    const user = {
+        name: body.name,
+        email: body.email,
+        password: body.password,
     }
+
+    User.findByIdAndUpdate(id, user, { new: true})
+        .then(updatedUser => {
+            res.json(updatedUser)
+        })
+        .catch(err => next(err))
 })
 
-app.delete('/api/users/:id', (request, response) => {
-    const id = request.params.id
-    User.findByIdAndRemove(id)
-    response.status(204).end()
-})
 
-app.post('/api/users', (request, response) => {
+app.post('/api/users', (req, res, next) => {
 
-    const body = request.body
-    
+    // Obtain body from request
+    const body = req.body
+
+    // Check if body is missing any required fields
     if (!body.name || !body.email || !body.password) {
-        return response.status(400).json({
-            error: 'email, password and name must be provided'
+        return res.status(400).json({
+            error: 'email, password, and name must be provided'
         })
     }
 
-    if (entries.find(entry => entry.email === body.email)) {
-        return response.status(400).json({
-            error: 'email must be unique'
-        })}
+    // Check if email is already in use
+    User.findOne({email : body.email})
+        .then(user => {
+            if (user) {
+                return res.status(400).json({
+                    error: 'email already in use'
+                })
+            } else {
 
-    const entry = User.create(body)
+                // Create new user
+                const newUser = new User({
+                    name: body.name,
+                    email: body.email,
+                    password: body.password,
+                })
 
-    entries = entries.concat(entry)
-    response.json(entry)
+                // Save new user to database
+                newUser.save()
+                    .then(savedUser => {
+                        res.json(savedUser)
+                    })
+                    .catch(err => next(err))
+            }
+        })
+        .catch(err => next(err))
 })
+
+
+
+
+
+
+// Error handling middleware and unknown endpoint middleware
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message })
+    }
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => {console.log(`Server running on port ${PORT}`)})
