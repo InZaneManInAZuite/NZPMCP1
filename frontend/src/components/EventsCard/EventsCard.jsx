@@ -1,14 +1,18 @@
 import { Card, Button } from '@mantine/core';
 import classes from './EventsCard.module.css';
 import PropTypes from 'prop-types';
+import UserContext from '../../context/UserContext';
+import { useContext } from 'react';
 
 const EventsCard = ({ event }) => {
 
+    const { isLogged } = useContext(UserContext);
+
     return (
-        <Card className={classes.card}>
+        <Card className={classes.card} withBorder>
             <h2>{event.name}</h2>
             <p>{event.description}</p>
-            <Button>Register</Button>
+            {isLogged && <Button>Join</Button>}
         </Card>
     )
 

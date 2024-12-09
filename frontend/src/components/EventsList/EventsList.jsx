@@ -9,7 +9,7 @@ const EventsList = () => {
     const { events } = useContext(UserContext);
 
     return (
-        <ScrollArea className={classes.scroll}>
+        <ScrollArea className={classes.scroll} scrollbars='y' type='scroll'>
             <Card className={classes.eventsList}>
             {events.map(event => ( <EventsCard key={event.id} event={event} />))}
             </Card>

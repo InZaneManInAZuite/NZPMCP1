@@ -1,5 +1,5 @@
 .bg {
-    height: 200vh;
+    height: 140vh;
     width: 100%;
     margin: 0 auto;
 
@@ -13,11 +13,11 @@
     font-weight: 900;
     padding: 60px;
 
-    @media (max-width: 600px) {
+    @media (max-width: 1050px) and (min-width: 875px) {
         font-size: 40px;
     }
 
-    @media (min-width: 900px) {
-        font-size: 50px;
+    @media (max-width: 875px) {
+        font-size: 30px;
     }
 }

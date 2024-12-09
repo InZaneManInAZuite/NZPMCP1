@@ -6,7 +6,7 @@ import examImage from '../assets/Exam.jpg';
 
 const LandingPage = () => {
     return (
-        <Parallax pages={1.5}>
+        <Parallax pages={1.40}>
             <ParallaxLayer speed={0.1} factor={2}>
                 <AspectRatio>
                     <Image src={examImage}/>
