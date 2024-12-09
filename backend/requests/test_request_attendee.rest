@@ -1,0 +1,10 @@
+PUT http://localhost:3001/api/events/67569681bd7f2d80f019e130/add/6755dd25fd3416ccc5d46762
+
+###
+PUT http://localhost:3001/api/events/67569681bd7f2d80f019e130/remove/6755dd25fd3416ccc5d46762
+
+###
+GET http://localhost:3001/api/events/67569681bd7f2d80f019e130/attendees
+
+###
+GET http://localhost:3001/api/users/6755dd25fd3416ccc5d46762/events

@@ -10,6 +10,7 @@ app.use(cors())
 // Enable services
 require('./services/user.services')(app)
 require('./services/event.services')(app)
+require('./services/attendee.services')(app)
 
 // Error handling middleware and unknown endpoint middleware
 const unknownEndpoint = (req, res) => {

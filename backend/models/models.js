@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    events: {
+        type: [String],
+        default: [],
+    },
 })
 
 const eventSchema = new mongoose.Schema({
