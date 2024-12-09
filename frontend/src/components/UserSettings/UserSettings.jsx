@@ -4,16 +4,19 @@ import UserContext from '../../context/UserContext'
 import { useContext, useState } from 'react'
 import classes from './UserSettings.module.css'
 import { updateUser } from '../../services/user.services'
+import { useNavigate } from 'react-router-dom'
 
 const UserSettings = () => {
 
-    const { user, setUser, emailIsValid } = useContext(UserContext);
+    const { user, setUser, emailIsValid, handleUser } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
+
+    const navigate = useNavigate();
 
     const form = useForm({
         initialValues: {
-            name: user.name,
-            email: user.email,
+            name: user?.name || '',
+            email: user?.email || '',
         },
 
         validate: {
@@ -51,6 +54,13 @@ const UserSettings = () => {
 
 
             })
+    }
+
+    const handleLogout = () => {
+        document.cookie = 'email=; path=/; secure'
+        document.cookie = 'password=; path=/; secure'
+        handleUser(null)
+        navigate('/')
     }
 
     const handleNameChange = (event) => {form.setFieldValue('name', event.currentTarget.value)};
@@ -97,6 +107,7 @@ const UserSettings = () => {
                         <Text>Name: {user.name}</Text>
                         <Text>Email: {user.email}</Text>
                         <Button className={classes.edit} onClick={() => setIsEditing(true)}>Edit</Button>
+                        <Button className={classes.logout} onClick={() => handleLogout()}>Logout</Button>
                     </div>
                 )}
             </Card>

@@ -10,7 +10,7 @@ const LoggedInLanding = () => {
                 <UserSettings />
             </Paper>
 
-            <Paper className={classes.lists}>
+            <Paper mt='xl' className={classes.lists}>
                 <EventsList />
             </Paper>
         </Paper>

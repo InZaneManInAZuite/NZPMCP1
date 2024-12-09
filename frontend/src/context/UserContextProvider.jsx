@@ -15,7 +15,7 @@ const UserContextProvider = ({ children }) => {
     } 
 
     const handleUser = (user) => {
-        if (!user || !user.name || !user.email || !user.password) {
+        if (!user) {
             setIsLogged(false)
             setUser(null)
         } else {
@@ -35,10 +35,12 @@ const UserContextProvider = ({ children }) => {
             const email = emailCookie.split('=')[1]
             const password = passwordCookie.split('=')[1]
 
+            if (!email) return
             authUser(email, password)
             .then(user => {
                 handleUser(user)
             })
+            .catch(err => console.log(err))
         }
     }, [])
 

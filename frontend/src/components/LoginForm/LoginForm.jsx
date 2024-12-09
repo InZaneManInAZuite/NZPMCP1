@@ -7,7 +7,6 @@ import classes from './LoginForm.module.css'
 import { useState, useContext } from 'react'
 import { authUser } from '../../services/user.services'
 
-
 /**
  * This component is a login form that allows users to login to the application
  * 
