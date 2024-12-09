@@ -9,7 +9,7 @@ const SignInAndLogin = () => {
   return (
     <Paper className={classes.sectionCard}>
       <Group className={classes.buttons}>
-        <Button className={classes.button} onClick={() => navigate('/signup')}>Sign Up</Button>
+        <Button className={classes.button} onClick={() => navigate('/signup')}>Create Account</Button>
         <Button className={classes.button} onClick={() => navigate('/login')}>Log In</Button>
       </Group>
     </Paper>

@@ -1,18 +1,56 @@
-import { Card, Button } from '@mantine/core';
+import { Card, Button, Paper, Title, Text } from '@mantine/core';
 import classes from './EventsCard.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../context/UserContext';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { addAttendeeToEvent } from '../../services/attendee.services';
 
 const EventsCard = ({ event }) => {
 
-    const { isLogged } = useContext(UserContext);
+    const { isLogged, user, setUser } = useContext(UserContext);
+    const [isJoined, setIsJoined] = useState(false);
+
+    const handleClick = () => {
+        if (isJoined) {
+            // Leave event
+            return
+        }
+        // Join event
+        const events = user.events;
+        const updatedUser = { ...user, events: events.push(event.id) };
+        setUser(updatedUser);
+
+        setIsJoined(true);
+        addAttendeeToEvent(event.id, user.id);
+    }
+
+    useEffect(() => {
+        if (user && user.events) {
+            setIsJoined(user.events.includes(event.id));
+        }
+    }, [])
+
+    const formattedDate = new Date(event.date).toDateString();
 
     return (
         <Card className={classes.card} withBorder>
-            <h2>{event.name}</h2>
-            <p>{event.description}</p>
-            {isLogged && <Button>Join</Button>}
+            <Paper className={classes.eventSection}>
+                <Paper className={classes.titleSection}>
+                    <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
+                </Paper>
+                <Text lineClamp={3}>{formattedDate} - {event.description}</Text>
+            </Paper>
+            <Paper className={classes.buttonSection}>
+                {isLogged && 
+                    <Button 
+                        disabled={isJoined} 
+                        className={classes.button} 
+                        onClick={handleClick}
+                    >
+                        {isJoined ? 'Joined' : 'Join'}
+                    </Button>
+                }
+            </Paper>
         </Card>
     )
 
