@@ -20,6 +20,24 @@ const userServices = (app) => {
       .catch((err) => next(err))
   })
 
+  app.post('/api/users/auth', (req, res, next) => {
+    const body = req.body
+
+    if (!body.email || !body.password) {
+      return res.status(400).json({ error: 'email or password missing' })
+    }
+
+    User.findOne({ email: body.email, password: body.password })
+      .then((user) => {
+        if (user) {
+          res.json(user)
+        } else {
+          res.status(404).end()
+        }
+      })
+      .catch((err) => next(err))
+  })
+
   app.delete('/api/users/:id', (req, res, next) => {
     const id = req.params.id
     User.findByIdAndDelete(id)

@@ -62,3 +62,12 @@ Content-Type: application/json
   "email": "j@j.com",
   "password": "password123"
 }
+
+###
+POST http://localhost:3001/api/users/auth
+Content-Type: application/json
+
+{
+  "email": "toshiro.mendoza@gmail.com",
+  "password": "password"
+}
