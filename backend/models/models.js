@@ -16,10 +16,28 @@ mongoose.connect(uri)
 
 
 // Define important schemas
+
+// user cannot have same email as another user
 const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        validate: {
+            validator: (email) => {
+                return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+            },
+            message: props => `${props.value} is not valid`
+        }
+    },
+    password: {
+        type: String,
+        required: true,
+    },
 })
 
 const eventSchema = new mongoose.Schema({
