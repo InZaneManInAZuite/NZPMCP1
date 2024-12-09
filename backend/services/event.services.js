@@ -1,59 +1,59 @@
-const { User, Event } = require("../models/models");
+const { Event } = require('../models/models')
 
 const eventServices = (app) => {
-  app.get("/api/events", (req, res) => {
+  app.get('/api/events', (req, res) => {
     Event.find({}).then((events) => {
-      res.json(events);
-    });
-  });
+      res.json(events)
+    })
+  })
 
-  app.get("/api/events/:id", (req, res, next) => {
-    const id = req.params.id;
+  app.get('/api/events/:id', (req, res, next) => {
+    const id = req.params.id
     Event.findById(id)
       .then((event) => {
         if (event) {
-          res.json(event);
+          res.json(event)
         } else {
-          res.status(404).end();
+          res.status(404).end()
         }
       })
-      .catch((err) => next(err));
-  });
+      .catch((err) => next(err))
+  })
 
-  app.delete("/api/events/:id", (req, res, next) => {
-    const id = req.params.id;
+  app.delete('/api/events/:id', (req, res, next) => {
+    const id = req.params.id
     Event.findByIdAndDelete(id)
       .then(() => {
-        res.status(204).end();
+        res.status(204).end()
       })
-      .catch((err) => next(err));
-  });
+      .catch((err) => next(err))
+  })
 
-  app.put("/api/events/:id", (req, res, next) => {
-    const id = req.params.id;
-    const body = req.body;
+  app.put('/api/events/:id', (req, res, next) => {
+    const id = req.params.id
+    const body = req.body
 
     const event = {
       name: body.name,
       date: body.date,
       description: body.description,
       attendees: body.attendees ? body.attendees : [],
-    };
+    }
 
     Event.findByIdAndUpdate(id, event, {
       new: true,
       runValidators: true,
-      context: "query",
+      context: 'query',
     })
       .then((updatedUser) => {
-        res.json(updatedUser);
+        res.json(updatedUser)
       })
-      .catch((err) => next(err));
-  });
+      .catch((err) => next(err))
+  })
 
-  app.post("/api/events", (req, res, next) => {
+  app.post('/api/events', (req, res, next) => {
     // Obtain body from request
-    const body = req.body;
+    const body = req.body
 
     // Create new event
     const newEvent = new Event({
@@ -61,16 +61,16 @@ const eventServices = (app) => {
       date: body.date,
       description: body.description,
       attendees: body.attendees ? body.attendees : [],
-    });
+    })
 
     // Save new event to database
     newEvent
       .save()
       .then((savedEvent) => {
-        res.json(savedEvent);
+        res.json(savedEvent)
       })
-      .catch((err) => next(err));
-  });
-};
+      .catch((err) => next(err))
+  })
+}
 
-module.exports = eventServices;
+module.exports = eventServices
