@@ -14,7 +14,7 @@ const userServices = (app) => {
         if (user) {
           res.json(user);
         } else {
-          express.response.status(404).end();
+          res.status(404).end();
         }
       })
       .catch((err) => next(err));

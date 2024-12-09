@@ -1,0 +1,38 @@
+GET http://localhost:3001/api/events 
+
+###
+GET http://localhost:3001/api/events/---------------------
+
+###
+POST http://localhost:3001/api/events
+Content-Type: application/json
+
+{
+  "name": "Event 1",
+  "description": "Event 1 description",
+  "date": "2021-12-12"
+}
+
+###
+POST http://localhost:3001/api/events
+Content-Type: application/json
+
+{
+  "name": "Event 2",
+  "description": "Event 2 description",
+  "date": "2021-12-12"
+}
+
+###
+PUT http://localhost:3001/api/events/---------------------
+Content-Type: application/json
+
+{
+  "name": "Event 1 modified",
+  "date": "2021-12-11",
+  "description": "Event 1 description modified more",
+  "attendees": []
+}
+
+###
+DELETE http://localhost:3001/api/events/---------------------

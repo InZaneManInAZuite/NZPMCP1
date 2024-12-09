@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
                 return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
             },
             message: props => `${props.value} is not valid`
-        }
+        },
     },
     password: {
         type: String,
@@ -41,10 +41,22 @@ const userSchema = new mongoose.Schema({
 })
 
 const eventSchema = new mongoose.Schema({
-    name: String,
-    date: Date,
-    description: String,
-    attendees: [String],
+    name: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    attendees: {
+        type: [String],
+        default: [],
+    },
 })
 
 
