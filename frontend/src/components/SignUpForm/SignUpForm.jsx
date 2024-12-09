@@ -17,7 +17,7 @@ const SignUpForm = () => {
 
     // Manage states and contexts
     const [signUpFail, setSignUpFail] = useState(false);
-    const { emailIsValid } = useContext(UserContext)
+    const { emailIsValid, isLogged } = useContext(UserContext)
 
     // Create a navigate function for redirecting the user
     const navigate = useNavigate();
@@ -136,7 +136,7 @@ const SignUpForm = () => {
                         Create Account
                     </Button>
                     <Anchor ta="center" component="button" type="button" c="dimmed" onClick={() => navigate('/login')}>
-                        Already have an account? Login here
+                        {!isLogged && 'Already have an account? Login here'}
                     </Anchor>
                 </Stack>
             </form>
