@@ -13,7 +13,13 @@ export const Theme = createTheme({
             order: 1,
             align: 'center',
         }
-    }
+    },
+    Anchor: {
+        defaultProps: {
+            ta: 'center',
+            size: 'xs',
+        }
+    },
     
   },
 

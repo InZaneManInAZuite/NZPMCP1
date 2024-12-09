@@ -9,6 +9,10 @@ const UserContextProvider = ({ children }) => {
     const [password, setPassword] = useState(null);
     const [isLogged, setIsLogged] = useState(false);
 
+    const emailIsValid = (text) => {
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(text)
+    } 
+
     useEffect(() => {
         const loggedCookie = document.cookie.split('; ')
         const emailCookie = loggedCookie.find(cookie => cookie.startsWith('email='))
@@ -34,6 +38,7 @@ const UserContextProvider = ({ children }) => {
         setEmail: setEmail,
         setPassword: setPassword,
         setIsLogged: setIsLogged,
+        emailIsValid: emailIsValid,
     }
 
     return (

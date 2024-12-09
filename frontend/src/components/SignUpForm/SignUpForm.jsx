@@ -1,23 +1,23 @@
-// Imports to create a login form
+// Imports to create a sign up form
 import { Anchor, Card, Button, TextInput, PasswordInput, Stack } from '@mantine/core'
 import UserContext from '../../context/UserContext'
 import { useForm } from '@mantine/form'
 import { useNavigate } from 'react-router-dom'
-import classes from './LoginForm.module.css'
+import classes from './SignUpForm.module.css'
 import { useState, useContext } from 'react'
-import { authUser } from '../../services/user.services'
+import { createUser } from '../../services/user.services'
 
 
 /**
- * This component is a login form that allows users to login to the application
+ * This component is a sign up form that allows users to create a new account
  * 
- * @returns LoginForm component
+ * @returns SignUpForm component
  */
-const LoginForm = () => {
+const SignUpForm = () => {
 
     // Manage states and contexts
-    const { setEmail, setPassword, setIsLogged, emailIsValid } = useContext(UserContext)
-    const [loginFail, toggleLoginFail] = useState(false);
+    const [signUpFail, setSignUpFail] = useState(false);
+    const { emailIsValid } = useContext(UserContext)
 
     // Create a navigate function for redirecting the user
     const navigate = useNavigate();
@@ -25,12 +25,19 @@ const LoginForm = () => {
     // Create a form using the useForm hook from Mantine
     const form = useForm({
         initialValues: {
+            name: '',
             email: '',
             password: '',
+            confirmPassword: '',
         },
 
         // Validate the email and password fields
         validate: {
+            name: (value) => {
+                if (value.length === 0) {
+                    return 'Name is required'
+                }
+            },
             email: (value) => {
                 if (value.length === 0) {
                     return 'Email is required'
@@ -41,6 +48,11 @@ const LoginForm = () => {
             password: (value) => {
                 if (value.length <= 5) {
                     return 'Password must be at least 5 characters long'
+                } 
+            },
+            confirmPassword: (value) => {
+                if (value !== form.values.password) {
+                    return 'Passwords do not match'
                 }
             }
         },
@@ -48,49 +60,50 @@ const LoginForm = () => {
 
     /**
      * This function is called when the user submits the form
-     * It authenticates the user and redirects them to the landing page if successful
+     * It creates a new user and redirects them to the login page if successful
+     * in order for them to fully login
      */
-    const handleLogin = () => {
+    const handleSignUp = () => {
 
         // Get the email and password from the form
+        const name = form.values.name
         const email = form.values.email
         const password = form.values.password
+
+        const newUser = {
+            name: name,
+            email: email,
+            password: password,
+        }
         
-        // Call the authUser function from user.services.js to authenticate the user
-        authUser(email, password)
-            .then((user) => {
-
-                // If the user is authenticated, set the loginFail to false and log the message
-                toggleLoginFail(false)
-                console.log('User Authenticated')
-
-                // Set the email and password in the UserContext
-                setEmail(user.email)
-                setPassword(user.password)
-                setIsLogged(true)
-
-                // Set the email and password in the cookies
-                document.cookie = `email=${user.email}; path=/; secure`
-                document.cookie = `password=${user.password}; path=/; secure`
-
-                // Redirect the user to the landing page
-                navigate('/')
+        createUser(newUser)
+            .then(() => {
+                navigate('/login')
             })
-            .catch((err) => { 
-                toggleLoginFail(true) 
+            .catch((err) => {
                 console.log(err)
+                setSignUpFail(true)
             })
     }
 
     // Create functions to handle the email and password changes
+    const onNameChange = (event) => {form.setFieldValue('name', event.currentTarget.value)}
     const onEmailChange = (event) => {form.setFieldValue('email', event.currentTarget.value)}
     const onPasswordChange = (event) => {form.setFieldValue('password', event.currentTarget.value)}
+    const onConfirmPasswordChange = (event) => {form.setFieldValue('confirmPassword', event.currentTarget.value)}
 
-    // Return the login form
+    // Return the sign up form
     return (
         <Card radius="lg" p="xl" className={classes.AuthCard} withBorder>
-            <form onSubmit={form.onSubmit(() => handleLogin())}>
+            <form onSubmit={form.onSubmit(() => handleSignUp())}>
                 <Stack>
+                    <TextInput
+                        label="Name"
+                        placeholder="Your Name"
+                        value={form.values.name}
+                        onChange={onNameChange}
+                        error={form.errors.name}
+                    />
                     <TextInput
                         label="Email"
                         placeholder="Your Email"
@@ -105,18 +118,25 @@ const LoginForm = () => {
                         onChange={onPasswordChange}
                         error={form.errors.password}
                     />
-                    { loginFail && (
+                    <PasswordInput
+                        label="Confirm Password"
+                        placeholder="Confirm Password"
+                        value={form.values.confirmPassword}
+                        onChange={onConfirmPasswordChange}
+                        error={form.errors.confirmPassword}
+                    />
+                    { signUpFail && (
                         <Anchor ta="center" c="red">
-                            Login Failed. Try Again
+                            Email already taken. Please try again
                         </Anchor>
                     )}
                 </Stack>
                 <Stack justify="space-between" mt="xl">
-                    <Button type="submit" radius="sm">
-                        Login
+                    <Button type="submit" radius="sm"  >
+                        Create Account
                     </Button>
-                    <Anchor ta="center" component="button" type="button" c="dimmed" onClick={() => navigate('/signup')}>
-                        Create an account
+                    <Anchor ta="center" component="button" type="button" c="dimmed" onClick={() => navigate('/login')}>
+                        Already have an account? Login here
                     </Anchor>
                 </Stack>
             </form>
@@ -124,4 +144,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default SignUpForm;
