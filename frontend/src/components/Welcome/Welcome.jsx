@@ -9,7 +9,7 @@ const Welcome = () => {
     }
 
   return (
-    <Title order={1} className={classes.welcome}>
+    <Title order={1} className={classes.welcome} mt='8rem'>
         Welcome to
         <Text variant="gradient" gradient={gradient} className={classes.subtitle}>
             NZPMC

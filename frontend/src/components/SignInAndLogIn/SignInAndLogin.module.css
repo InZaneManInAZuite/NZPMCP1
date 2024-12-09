@@ -1,0 +1,16 @@
+.colorToggleCard {
+    width: 450px;
+    margin: 0 auto;
+
+    @media (max-width: 675px) {
+        width: 100%;
+    }
+}
+
+.buttons {
+    justify-content: center;
+}
+
+.button {
+    width: 45%;
+}

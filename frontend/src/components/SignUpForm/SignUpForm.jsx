@@ -76,9 +76,14 @@ const SignUpForm = () => {
             password: password,
         }
         
+        // Create the user
         createUser(newUser)
             .then(() => {
-                navigate('/login')
+
+                // Redirect the user to the login page if not yet logged in
+                if (!isLogged){
+                    navigate('/login')
+                }
             })
             .catch((err) => {
                 console.log(err)

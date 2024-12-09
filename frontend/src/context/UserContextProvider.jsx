@@ -5,13 +5,22 @@ import { authUser } from "../services/user.services"
 
 const UserContextProvider = ({ children }) => {
 
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
     const [isLogged, setIsLogged] = useState(false);
+    const [user, setUser] = useState(null);
 
     const emailIsValid = (text) => {
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(text)
     } 
+
+    const handleUser = (user) => {
+        if (!user || !user.name || !user.email || !user.password) {
+            setIsLogged(false)
+            setUser(null)
+        } else {
+            setIsLogged(true)
+            setUser(user)
+        }
+    }
 
     useEffect(() => {
         const loggedCookie = document.cookie.split('; ')
@@ -24,21 +33,18 @@ const UserContextProvider = ({ children }) => {
 
             authUser(email, password)
             .then(user => {
-                setEmail(user.email)
-                setPassword(user.password)
-                setIsLogged(true)
+                handleUser(user)
             })
         }
     }, [])
 
     const store = {
-        email: email,
-        password: password,
         isLogged: isLogged,
-        setEmail: setEmail,
-        setPassword: setPassword,
+        user: user,
         setIsLogged: setIsLogged,
+        setUser: setUser,
         emailIsValid: emailIsValid,
+        handleUser: handleUser,
     }
 
     return (

@@ -16,7 +16,7 @@ import { authUser } from '../../services/user.services'
 const LoginForm = () => {
 
     // Manage states and contexts
-    const { setEmail, setPassword, setIsLogged, emailIsValid } = useContext(UserContext)
+    const { handleUser, emailIsValid } = useContext(UserContext)
     const [loginFail, toggleLoginFail] = useState(false);
 
     // Create a navigate function for redirecting the user
@@ -64,10 +64,8 @@ const LoginForm = () => {
                 toggleLoginFail(false)
                 console.log('User Authenticated')
 
-                // Set the email and password in the UserContext
-                setEmail(user.email)
-                setPassword(user.password)
-                setIsLogged(true)
+                // Store the user in the context
+                handleUser(user)
 
                 // Set the email and password in the cookies
                 document.cookie = `email=${user.email}; path=/; secure`
