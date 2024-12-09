@@ -14,6 +14,7 @@
     "@mantine/form": "^7.14.3",
     "@mantine/hooks": "^7.14.3",
     "@react-spring/parallax": "^9.7.5",
+    "@tabler/icons-react": "^3.24.0",
     "axios": "^1.7.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
