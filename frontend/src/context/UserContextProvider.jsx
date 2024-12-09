@@ -7,6 +7,7 @@ const UserContextProvider = ({ children }) => {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
+    const [isLogged, setIsLogged] = useState(false);
 
     useEffect(() => {
         const loggedCookie = document.cookie.split('; ')
@@ -21,6 +22,7 @@ const UserContextProvider = ({ children }) => {
             .then(user => {
                 setEmail(user.email)
                 setPassword(user.password)
+                setIsLogged(true)
             })
         }
     }, [])
@@ -28,8 +30,10 @@ const UserContextProvider = ({ children }) => {
     const store = {
         email: email,
         password: password,
+        isLogged: isLogged,
         setEmail: setEmail,
         setPassword: setPassword,
+        setIsLogged: setIsLogged,
     }
 
     return (
