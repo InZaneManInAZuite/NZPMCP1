@@ -1,0 +1,73 @@
+DELETE http://localhost:3001/api/users/6755f18b6b815fe661df0154
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "j@j.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "j@j.com",
+  "password": "password1235"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "",
+  "password": "password1235"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "fasdfa",
+  "email": "j@jfadsfsd.com",
+  "password": "password1235"
+}
+
+###
+GET http://localhost:3001/api/users
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "John fadf",
+  "email": "j@j.com",
+  "password": "password123"
+}
+
+###
+PUT http://localhost:3001/api/users/6755c8d06d9ba234825836ff
+Content-Type: application/json
+
+{
+  "name": "Toshiro Mendoza",
+  "email": "j@j.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:3001/api/users/auth
+Content-Type: application/json
+
+{
+  "email": "toshiro.mendoza@gmail.com",
+  "password": "password"
+}
