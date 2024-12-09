@@ -1,6 +1,7 @@
 import { Paper, Title } from '@mantine/core';
 import classes from './LandingFront.module.css';
 import SignInAndLogin from '../SignInAndLogIn/SignInAndLogin';
+import EventsList from '../EventsList/EventsList';
 
 const LandingFront = () => {
 
@@ -11,10 +12,10 @@ const LandingFront = () => {
             </Title>
             <SignInAndLogin />
 
-            <Title>
+            <Title className={classes.sectionTitle} order={1}>
                 Discover what events are coming up!
             </Title>
-            <SignInAndLogin />
+            <EventsList />
         </Paper>
     )
 }
