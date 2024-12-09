@@ -1,9 +1,21 @@
 .welcome {
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-    font-weight: 900;
+
+    @media (min-width: 900px) and (max-height: 750px) {
+        display : none;
+    }
 }
 
 .subtitle {
     font-size: 10rem;
     font-weight: 900;
+    text-align: center;
+
+    @media (max-width: 600px)  {
+        font-size: 5rem;
+    }
+
+    @media (min-width: 900px) {
+        font-size: 12rem;
+    }
 }

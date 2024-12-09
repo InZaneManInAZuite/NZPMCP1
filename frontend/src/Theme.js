@@ -12,6 +12,7 @@ export const Theme = createTheme({
         defaultProps: {
             order: 1,
             align: 'center',
+            fw: 900,
         }
     },
     Anchor: {

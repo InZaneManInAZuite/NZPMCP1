@@ -1,3 +1,23 @@
 .bg {
     height: 200vh;
+    width: 100%;
+    margin: 0 auto;
+
+    @media (max-width: 1500px) {
+        width: 100%;
+    }
+}
+
+.sectionTitle {
+    font-size: 50px;
+    font-weight: 900;
+    padding: 50px;
+
+    @media (max-width: 600px) {
+        font-size: 40px;
+    }
+
+    @media (min-width: 900px) {
+        font-size: 50px;
+    }
 }

@@ -6,21 +6,19 @@ import examImage from '../assets/Exam.jpg';
 
 const LandingPage = () => {
     return (
-        <Parallax pages={3}>
-            <ParallaxLayer speed={0.1}>
-                <AspectRatio ratio={8 / 9}>
+        <Parallax pages={1.5}>
+            <ParallaxLayer speed={0.1} factor={2}>
+                <AspectRatio>
                     <Image src={examImage}/>
-                    <Overlay opacity={0.75} color="black" />
+                    <Overlay opacity={0.9} color="black" />
                 </AspectRatio>
-                
             </ParallaxLayer>
 
             <ParallaxLayer speed={0.5}>
                 <Welcome />
             </ParallaxLayer>
 
-
-            <ParallaxLayer offset={0.70} speed={1.25}>
+            <ParallaxLayer offset={0.55} speed={1.25}>
                 <LandingFront/>
                 
             </ParallaxLayer>

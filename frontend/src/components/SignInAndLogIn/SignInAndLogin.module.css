@@ -1,8 +1,9 @@
-.colorToggleCard {
-    width: 450px;
+.sectionCard {
+    width: 950px;
+    height: 10%;
     margin: 0 auto;
 
-    @media (max-width: 675px) {
+    @media (max-width: 950px) {
         width: 100%;
     }
 }
@@ -12,5 +13,7 @@
 }
 
 .button {
+    height: 50px;
     width: 45%;
+    font-size: 20px;
 }
