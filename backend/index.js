@@ -8,6 +8,9 @@ require('dotenv').config()
 const cors = require('cors')
 app.use(cors())
 
+// Enable logging
+app.use(express.static('dist'))
+
 // Enable services
 require('./services/user.services')(app)
 require('./services/event.services')(app)
