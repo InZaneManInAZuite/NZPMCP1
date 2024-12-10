@@ -1,0 +1,14 @@
+.side {
+    background: var(--mantine-color-dark-8);
+    align-items: center;
+}
+
+.cancel, .logout {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.edit, .save {
+    margin-top: 20px;
+    width: 100%;
+}

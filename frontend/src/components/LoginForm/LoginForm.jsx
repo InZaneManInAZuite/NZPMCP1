@@ -1,30 +1,45 @@
-// Create a login and sign up form
+// Imports to create a login form
 import { Anchor, Card, Button, TextInput, PasswordInput, Stack } from '@mantine/core'
+import UserContext from '../../context/UserContext'
 import { useForm } from '@mantine/form'
 import { useNavigate } from 'react-router-dom'
 import classes from './LoginForm.module.css'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { authUser } from '../../services/user.services'
 
+/**
+ * This component is a login form that allows users to login to the application
+ * 
+ * @returns LoginForm component
+ */
 const LoginForm = () => {
 
+
+    // Manage states and contexts
+    const { handleUser, emailIsValid, handleAdmin, ADMIN_ID, ADMIN_PW } = useContext(UserContext)
     const [loginFail, toggleLoginFail] = useState(false);
+
+    // Create a navigate function for redirecting the user
     const navigate = useNavigate();
 
-
+    // Create a form using the useForm hook from Mantine
     const form = useForm({
         initialValues: {
             email: '',
             password: '',
         },
 
+        // Validate the email and password fields
         validate: {
             email: (value) => {
                 if (value.length === 0) {
                     return 'Email is required'
+                } else if (!emailIsValid(value) && value !== 'admin') {
+                    return 'Email must be valid'
                 }
             },
             password: (value) => {
-                if (value.length <= 5) {
+                if (value.length < 5) {
                     return 'Password must be at least 5 characters long'
                 }
             }
@@ -32,23 +47,53 @@ const LoginForm = () => {
     });
 
     /**
-     * @todo Implement login functionality
+     * This function is called when the user submits the form
+     * It authenticates the user and redirects them to the landing page if successful
      */
-    const handleLogin = async () => {
-        console.log(form.values.email)
-        console.log(form.values.password)
-        toggleLoginFail(true)
-        navigate('/landing')
+    const handleLogin = () => {
+
+        // Get the email and password from the form
+        const email = form.values.email
+        const password = form.values.password
+
+        // If the email is the admin email, set the isAdmin to true
+        if (email === ADMIN_ID && password === ADMIN_PW) {
+            handleAdmin(true)
+            return
+        }
+        
+        // Call the authUser function from user.services.js to authenticate the user
+        authUser(email, password)
+            .then((user) => {
+
+                // If the user is authenticated, set the loginFail to false and log the message
+                toggleLoginFail(false)
+                console.log('User Authenticated')
+
+                // Store the user in the context
+                handleUser(user)
+
+                // Set the email and password in the cookies
+                document.cookie = `email=${user.email}; path=/; secure`
+                document.cookie = `password=${user.password}; path=/; secure`
+
+                // Redirect the user to the landing page
+                navigate('/')
+            })
+            .catch((err) => { 
+                toggleLoginFail(true) 
+                console.log(err)
+            })
     }
 
+    // Create functions to handle the email and password changes
     const onEmailChange = (event) => {form.setFieldValue('email', event.currentTarget.value)}
     const onPasswordChange = (event) => {form.setFieldValue('password', event.currentTarget.value)}
 
-
+    // Return the login form
     return (
         <Card radius="lg" p="xl" className={classes.AuthCard} withBorder>
             <form onSubmit={form.onSubmit(() => handleLogin())}>
-
                 <Stack>
                     <TextInput
                         label="Email"
@@ -64,22 +109,17 @@ const LoginForm = () => {
                         onChange={onPasswordChange}
                         error={form.errors.password}
                     />
-
                     { loginFail && (
-                        <Anchor ta="center" c="red" size="xs">
+                        <Anchor ta="center" c="red">
                             Login Failed. Try Again
                         </Anchor>
                     )}
-                    
                 </Stack>
-
-
-
                 <Stack justify="space-between" mt="xl">
-                    <Button type="submit" radius="sm"  >
+                    <Button type="submit" radius="sm">
                         Login
                     </Button>
-                    <Anchor ta="center" component="button" type="button" c="dimmed" size="xs">
+                    <Anchor ta="center" component="button" type="button" c="dimmed" onClick={() => navigate('/signup')}>
                         Create an account
                     </Anchor>
                 </Stack>

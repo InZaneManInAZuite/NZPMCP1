@@ -1,0 +1,19 @@
+.sectionCard {
+    width: 950px;
+    height: 10%;
+    margin: 0 auto;
+
+    @media (max-width: 950px) {
+        width: 100%;
+    }
+}
+
+.buttons {
+    justify-content: center;
+}
+
+.button {
+    height: 50px;
+    width: 45%;
+    font-size: 20px;
+}

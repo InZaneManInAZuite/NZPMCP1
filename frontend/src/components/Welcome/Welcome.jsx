@@ -9,12 +9,15 @@ const Welcome = () => {
     }
 
   return (
-    <Title order={1} className={classes.welcome}>
-        Welcome to
-        <Text variant="gradient" gradient={gradient} className={classes.subtitle}>
-            NZPMC
-        </Text>
-    </Title>
+    <>
+      <Title order={1} className={classes.welcome} mt='8rem'>
+          Welcome to
+      </Title>
+      <Text variant="gradient" gradient={gradient} className={classes.subtitle}>
+              NZPMC
+      </Text>
+    </>
+    
   );
 }
 
