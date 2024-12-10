@@ -1,7 +1,7 @@
 
 
 let config = {
-    API: `https://nzpmcp1.onrender.com`
+    API: `https://nzpmcp1.onrender.com/api`
 }
 
 if (import.meta.env.MODE === 'development') {
