@@ -13,11 +13,7 @@ const AdminPage = () => {
     if (!isAdmin) {
       navigate('/');
     }
-  }, []);
-
-  if (!isAdmin) {
-    return null;
-  }
+  }, [navigate, isAdmin]);
 
 
   return (

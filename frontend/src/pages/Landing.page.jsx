@@ -12,15 +12,11 @@ const LandingPage = () => {
     const { isLogged, isAdmin } = useContext(UserContext);
 
     useEffect(() => {
-        if (isLogged && isAdmin) {
+        if (isAdmin) {
             console.log('navigating to admin');
             navigate('/admin');
         }
-    }, []);
-
-    if (isAdmin) {
-        return null
-    }
+    }, [navigate, isAdmin]);
 
     if (!isLogged) {
         return(<LoggedOutLanding />);

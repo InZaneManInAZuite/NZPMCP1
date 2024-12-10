@@ -1,4 +1,4 @@
-import { Paper, Card, Title, Text, Divider, TextInput, Button } from '@mantine/core'
+import { Paper, Card, Title, Text, Divider, TextInput, Button, Anchor } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import UserContext from '../../context/UserContext'
 import { useContext, useState } from 'react'
@@ -10,6 +10,7 @@ const UserSettings = () => {
 
     const { user, setUser, emailIsValid, handleUser, isAdmin, handleAdmin } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
+    const [isTaken, setIsTaken] = useState(false);
 
     const navigate = useNavigate();
 
@@ -52,6 +53,11 @@ const UserSettings = () => {
 
                 document.cookie = `email=${updatedUser.email}; path=/; secure`
 
+                setIsTaken(false)
+            })
+            .catch(err => {
+                console.log(err)
+                setIsTaken(true)
 
             })
     }
@@ -93,6 +99,7 @@ const UserSettings = () => {
                             onChange={handleEmailChange}
                             error={form.errors.email}
                         />
+                        {isTaken && <Anchor c='red'>Email is already taken</Anchor>}
                         <Button 
                             className={classes.save} 
                             type='submit' 
