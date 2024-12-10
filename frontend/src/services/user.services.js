@@ -1,5 +1,5 @@
 import axios from "axios";
-import { config } from "../Config.js";
+import { config } from "./Config.js";
 
 const API_URL = `${config.API}/users`;
 
