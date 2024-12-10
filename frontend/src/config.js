@@ -1,7 +1,7 @@
 
 
 let config = {
-    API: import.meta.env.PORT
+    API: `http://localhost:${import.meta.env.PORT}`
 }
 
 if (import.meta.env.MODE === 'development') {
