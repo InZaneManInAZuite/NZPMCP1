@@ -1,7 +1,7 @@
 import { Paper } from '@mantine/core'
 import EventsList from '../EventsList/EventsList';
 import UserSettings from '../UserSettings/UserSettings';
-import classes from './LoggedInLanding.module.css';
+import classes from './LoggedInLand.module.css';
 
 const LoggedInLanding = () => {
     return (
