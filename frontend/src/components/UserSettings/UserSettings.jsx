@@ -105,8 +105,8 @@ const UserSettings = () => {
                 )}
                 {!isEditing && !isAdmin && (
                     <div>
-                        <Text>Name: {user.name}</Text>
-                        <Text>Email: {user.email}</Text>
+                        <Text>Name: {user?.name}</Text>
+                        <Text>Email: {user?.email}</Text>
                         <Button className={classes.edit} onClick={() => setIsEditing(true)}>Edit</Button>
                         <Button className={classes.logout} onClick={() => handleLogout()}>Logout</Button>
                     </div>

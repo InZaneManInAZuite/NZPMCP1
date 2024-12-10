@@ -4,19 +4,41 @@ import PropTypes from 'prop-types'
 import { authUser } from "../services/user.services"
 import { getAllEvents } from "../services/event.services"
 
+/**
+ * UserContextProvider is a wrapper component that provides the UserContext to all child components
+ * 
+ * @param {ReactChild} children refers to the child elements that are wrapped by the UserContextProvider
+ * 
+ * @returns UserContext Provider
+ */
 const UserContextProvider = ({ children }) => {
 
+    // State variables to be stored
     const [isLogged, setIsLogged] = useState(false);
     const [user, setUser] = useState(null);
     const [events, setEvents] = useState([])
     const [isAdmin, setIsAdmin] = useState(false)
+
+    // Admin credentials
     const ADMIN_ID = import.meta.env.VITE_ADMIN_ID
     const ADMIN_PW = import.meta.env.VITE_ADMIN_PW
 
+    /** 
+     * Function to check if email is valid
+     * 
+     * @param {string} text refers to the email to be checked
+     * 
+     * @returns boolean value indicating if email is valid
+    */
     const emailIsValid = (text) => {
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(text)
     } 
 
+    /**
+     * Function to handle cases where user is logged in or out
+     * 
+     * @param {Object} user refers to the user object
+     */
     const handleUser = (user) => {
         if (!user) {
             setIsLogged(false)
@@ -29,6 +51,11 @@ const UserContextProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Function to handle cases where user is an admin
+     * 
+     * @param {bool} bool it is a boolean value that indicates if the user is an admin
+     */
     const handleAdmin = (bool) => {
         document.cookie = `email=${ADMIN_ID}; path=/; secure`
         document.cookie = `password=${ADMIN_PW}; path=/; secure`
@@ -36,6 +63,7 @@ const UserContextProvider = ({ children }) => {
         setIsLogged(bool)
     }
 
+    // useEffect to check if user's credentials are stored in cookies
     useEffect(() => {
         const loggedCookie = document.cookie.split('; ')
         const emailCookie = loggedCookie.find(cookie => cookie.startsWith('email='))
@@ -62,6 +90,8 @@ const UserContextProvider = ({ children }) => {
         }
     }, [])
 
+
+    // Store object to be passed to UserContext.Provider
     const store = {
         isLogged: isLogged,
         user: user,
@@ -78,6 +108,7 @@ const UserContextProvider = ({ children }) => {
         ADMIN_PW: ADMIN_PW,
     }
 
+    // Return UserContext.Provider with store as value
     return (
         <UserContext.Provider value={ store }>
         {children}
@@ -85,6 +116,7 @@ const UserContextProvider = ({ children }) => {
     );
 }
 
+// PropTypes for UserContextProvider
 UserContextProvider.propTypes = {
     children: PropTypes.node.isRequired,
 }
