@@ -46,7 +46,7 @@ const SignUpForm = () => {
                 }
             },
             password: (value) => {
-                if (value.length <= 5) {
+                if (value.length < 5) {
                     return 'Password must be at least 5 characters long'
                 } 
             },

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 
 const UserSettings = () => {
 
-    const { user, setUser, emailIsValid, handleUser } = useContext(UserContext);
+    const { user, setUser, emailIsValid, handleUser, isAdmin, handleAdmin } = useContext(UserContext);
     const [isEditing, setIsEditing] = useState(false);
 
     const navigate = useNavigate();
@@ -60,6 +60,7 @@ const UserSettings = () => {
         document.cookie = 'email=; path=/; secure'
         document.cookie = 'password=; path=/; secure'
         handleUser(null)
+        handleAdmin(false)
         navigate('/')
     }
 
@@ -69,7 +70,7 @@ const UserSettings = () => {
     return (
         <Paper p='xl' className={classes.side}>
             <Card p='xl'>
-                <Title order={1}>User Settings</Title>
+                <Title order={1}>{!isAdmin ? 'User Settings' : 'Admin'}</Title>
                 
                 
                 <Divider m='md'/>
@@ -102,13 +103,16 @@ const UserSettings = () => {
 
                     </form>
                 )}
-                {!isEditing && (
+                {!isEditing && !isAdmin && (
                     <div>
                         <Text>Name: {user.name}</Text>
                         <Text>Email: {user.email}</Text>
                         <Button className={classes.edit} onClick={() => setIsEditing(true)}>Edit</Button>
                         <Button className={classes.logout} onClick={() => handleLogout()}>Logout</Button>
                     </div>
+                )}
+                {isAdmin && (
+                    <Button className={classes.logout} onClick={() => handleLogout()}>Logout</Button>
                 )}
             </Card>
         </Paper>

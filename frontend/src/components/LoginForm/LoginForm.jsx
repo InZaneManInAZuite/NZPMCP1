@@ -14,8 +14,9 @@ import { authUser } from '../../services/user.services'
  */
 const LoginForm = () => {
 
+
     // Manage states and contexts
-    const { handleUser, emailIsValid } = useContext(UserContext)
+    const { handleUser, emailIsValid, handleAdmin, ADMIN_ID, ADMIN_PW } = useContext(UserContext)
     const [loginFail, toggleLoginFail] = useState(false);
 
     // Create a navigate function for redirecting the user
@@ -33,12 +34,12 @@ const LoginForm = () => {
             email: (value) => {
                 if (value.length === 0) {
                     return 'Email is required'
-                } else if (!emailIsValid(value)) {
+                } else if (!emailIsValid(value) && value !== 'admin') {
                     return 'Email must be valid'
                 }
             },
             password: (value) => {
-                if (value.length <= 5) {
+                if (value.length < 5) {
                     return 'Password must be at least 5 characters long'
                 }
             }
@@ -54,6 +55,12 @@ const LoginForm = () => {
         // Get the email and password from the form
         const email = form.values.email
         const password = form.values.password
+
+        // If the email is the admin email, set the isAdmin to true
+        if (email === ADMIN_ID && password === ADMIN_PW) {
+            handleAdmin(true)
+            return
+        }
         
         // Call the authUser function from user.services.js to authenticate the user
         authUser(email, password)

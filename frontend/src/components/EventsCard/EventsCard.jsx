@@ -7,7 +7,7 @@ import { addAttendeeToEvent } from '../../services/attendee.services';
 
 const EventsCard = ({ event }) => {
 
-    const { isLogged, user, setUser } = useContext(UserContext);
+    const { isLogged, user, setUser, isAdmin } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
 
     const handleClick = () => {
@@ -41,7 +41,7 @@ const EventsCard = ({ event }) => {
                 <Text lineClamp={3}>{formattedDate} - {event.description}</Text>
             </Paper>
             <Paper className={classes.buttonSection}>
-                {isLogged && 
+                {(isLogged && !isAdmin) && 
                     <Button 
                         disabled={isJoined} 
                         className={classes.button} 
