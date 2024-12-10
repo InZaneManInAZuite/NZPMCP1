@@ -57,10 +57,15 @@ const UserContextProvider = ({ children }) => {
      * @param {bool} bool it is a boolean value that indicates if the user is an admin
      */
     const handleAdmin = (bool) => {
+        if (!bool) {
+            setIsLogged(false)
+            setIsAdmin(false)
+            return
+        }
         document.cookie = `email=${ADMIN_ID}; path=/; secure`
         document.cookie = `password=${ADMIN_PW}; path=/; secure`
-        setIsAdmin(bool)
-        setIsLogged(bool)
+        setIsAdmin(true)
+        setIsLogged(true)
     }
 
     // useEffect to check if user's credentials are stored in cookies
