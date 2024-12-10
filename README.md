@@ -60,6 +60,7 @@ I used a simple implementation of cookies to store email and password to keep pe
 
 ---
 I like design mayhaps
+![alt text](NZPMCP1Wireframe.jpg)
 
 
 
