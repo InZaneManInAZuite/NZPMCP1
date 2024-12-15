@@ -1,0 +1,37 @@
+GET http://localhost:8080/api/users
+
+###
+GET http://localhost:8080/api/users/----------------------
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "j@fda.com",
+  "password": "password123"
+}
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "Another Person",
+  "email": "j@fda.com",
+  "password": "password1234567890"
+}
+
+###
+DELETE http://localhost:8080/api/users/----------------------
+
+###
+PUT http://localhost:8080/api/users/6756fec671d1dd6e033e55ac
+Content-Type: application/json
+
+{
+  "name": "Toshiro Mendoza",
+  "email": "tmen190@gmail.com",
+  "password": "12345"
+}

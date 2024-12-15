@@ -1,7 +1,6 @@
 package com.nzpmcp2.demo.controllers;
 
 // import java dependencies
-import java.util.ArrayList;
 import java.util.List;
 
 // import api dependencies
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // import local dependencies
-import com.nzpmcp2.demo.repositories.UserRepository;
 import com.nzpmcp2.demo.services.UserService;
 import com.nzpmcp2.demo.models.User;
 
@@ -38,7 +36,47 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable String id) {
+        try {
+            User user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        try {
+            User newUser = userService.createUser(user);
+            return ResponseEntity.ok(newUser);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+        try {
+            User updatedUser = userService.updateUser(id, user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalStateException e) {
+            if (e.getMessage() == "User not found") {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+    }
 }

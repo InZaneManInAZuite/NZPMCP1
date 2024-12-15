@@ -15,7 +15,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private List<String> events;
+    private List<String> events = List.of();
 
 
     // Constructor
@@ -94,10 +94,10 @@ public class User {
 
     // Update the entire user based on another user
     public void update(User updateUser) {
-        name = updateUser.getName().isBlank() ? name : updateUser.getName();
-        email = updateUser.getEmail().isBlank() ? email : updateUser.getEmail();
-        password = updateUser.getPassword().isBlank() ? password : updateUser.getPassword();
-        events = updateUser.getEvents().isEmpty() ? events : updateUser.getEvents();
+        name = updateUser.getName() == null ? name : updateUser.getName();
+        email = updateUser.getEmail() == null ? email : updateUser.getEmail();
+        password = updateUser.getPassword() == null ? password : updateUser.getPassword();
+        events = updateUser.getEvents() == null ? events : updateUser.getEvents();
     }
 
     // Override the toString method

@@ -21,7 +21,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
     // Get user by id
     public User getUserById(String id) {
         try {
@@ -31,11 +30,11 @@ public class UserService {
         }
     }
 
-
     // Create user
     public User createUser(User user) {
         try {
-            // Check if email is already in use
+            // Check user requirements
+            checkUserFields(user);
             checkEmailInUse(user.getEmail());
 
             // Create user
@@ -46,7 +45,6 @@ public class UserService {
             throw new IllegalStateException(e.getMessage());
         }
     }
-
 
     // Delete a user
     public void deleteUser(String id) {
@@ -61,22 +59,25 @@ public class UserService {
         }
     }
 
-
     // Update a user
-    public User updateUser(String id, User updatedUser) {
+    public User updateUser(String id, User updateUser) {
         try {
             // Check if user exists and email is not already in use
-            checkUserExists(id);
+            User existingUser = checkUserExists(id);
             checkEmailInUse(id);
 
+            // Update existing user
+            existingUser.update(updateUser);
+
             // Update user
-            userRepository.save(updatedUser);
-            return updatedUser;
+            userRepository.save(existingUser);
+            return existingUser;
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
 
 
 
@@ -103,6 +104,20 @@ public class UserService {
             return user.get();
         } else {
             throw new IllegalStateException("User not found");
+        }
+    }
+
+    // Check if user has missing fields
+    public void checkUserFields(User user) {
+
+        // Obtain user fields
+        String email = user.getEmail();
+        String password = user.getPassword();
+        String name = user.getName();
+
+        // Check if user has missing fields
+        if (email == null || password == null || name == null) {
+            throw new IllegalStateException("User has missing fields");
         }
     }
 }
