@@ -23,10 +23,6 @@ public class Event {
         this.attendees = attendees;
     }
 
-    public Event(String id) {
-        this.id = id;
-    }
-
 
 
     // Getters and Setters

@@ -1,31 +1,31 @@
 package com.nzpmcp2.demo.models;
 
+import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "users")
 public class User {
 
 
-    
     // Fields
-    private final String id;
+    @Id
+    private String id;
     private String name;
     private String email;
     private String password;
-    private String[] events;
+    private List<String> events;
 
 
-
-    // Constructors
-    public User(String id, String name, String email, String password, String[] events) {
+    // Constructor
+    public User(String id, String name, String email, String password, List<String> events) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.events = events;
     }
-
-    public User(String id) {
-        this.id = id;
-    }
-
 
 
     // Getters and Setters
@@ -45,7 +45,7 @@ public class User {
         return password;
     }
 
-    public String[] getEvents() {
+    public List<String> getEvents() {
         return events;
     }
 
@@ -61,10 +61,9 @@ public class User {
         this.password = password;
     }
 
-    public void setEvents(String[] events) {
+    public void setEvents(List<String> events) {
         this.events = events;
     }
-
 
 
     // Methods
@@ -72,51 +71,35 @@ public class User {
     // Copy the user object
     public User copy() {
 
-        // Copy the events array
-        String newEvents[] = new String[events.length];
-        for (int i = 0; i < events.length; i++) {
-            newEvents[i] = events[i];
-        }
+        // Copy the events list
+        List<String> newEvents = List.copyOf(events);
 
-        // Return a new User object with the copied events array
-        return new User(id, name, email, password, newEvents);
+        // Create a new user object with the copied fields
+        User newUser = new User(id, name, email, password, newEvents);
+
+        // Return the new user object
+        return newUser;
     }
 
     // Add an event to the user
     public void addEvent(String eventId) {
-
-        // Create a new array with the new event added
-        String[] newEvents = new String[events.length + 1];
-
-        // Copy the events array to the new array
-        for (int i = 0; i < events.length; i++) {
-            newEvents[i] = events[i];
-        }
-
-        // Add the new event to the new array
-        newEvents[events.length] = eventId;
-
-        // Set the events array to the new array
-        events = newEvents;
+        events.add(eventId);
     }
 
 
     // Remove an event from the user
     public void removeEvent(String eventId) {
+        events.remove(eventId);
+    }
 
-        // Create a new array with one less element than the current events array
-        String[] newEvents = new String[events.length - 1];
-
-        // Copy the current events array to the new array, skipping the removed event
-        int j = 0;
-        for (int i = 0; i < events.length; i++) {
-            if (events[i] != eventId) {
-                newEvents[j] = events[i];
-                j++;
-            }
-        }
-
-        // Set the events array to the new array
-        events = newEvents;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", events=" + events +
+                '}';
     }
 }
