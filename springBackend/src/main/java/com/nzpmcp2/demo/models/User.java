@@ -92,6 +92,15 @@ public class User {
         events.remove(eventId);
     }
 
+    // Update the entire user based on another user
+    public void update(User updateUser) {
+        name = updateUser.getName().isBlank() ? name : updateUser.getName();
+        email = updateUser.getEmail().isBlank() ? email : updateUser.getEmail();
+        password = updateUser.getPassword().isBlank() ? password : updateUser.getPassword();
+        events = updateUser.getEvents().isEmpty() ? events : updateUser.getEvents();
+    }
+
+    // Override the toString method
     @Override
     public String toString() {
         return "User{" +

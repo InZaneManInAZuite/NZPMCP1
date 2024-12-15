@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // import local dependencies
 import com.nzpmcp2.demo.repositories.UserRepository;
+import com.nzpmcp2.demo.services.UserService;
 import com.nzpmcp2.demo.models.User;
 
 
@@ -29,16 +30,15 @@ import com.nzpmcp2.demo.models.User;
 public class UserController {
 
     @Autowired
-    UserRepository userRepo;
-
+    UserService userService;
 
     @GetMapping
-    public ResponseEntity getAllUsers() {
-
-        List<User> allUsers = userRepo.findAll();
-
-        return ResponseEntity.ok(allUsers);
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
+
+
 
 
 }
