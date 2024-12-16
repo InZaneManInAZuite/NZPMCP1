@@ -1,11 +1,11 @@
 package com.nzpmcp2.demo.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.UserRepository;
 
@@ -13,18 +13,20 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 public class UserService {
     
     @Autowired
-    public UserRepository userRepository;
+    public UserRepository userRepo;
+    @Autowired
+    public UserMiddleware userMid;
 
 
     // Get all users
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepo.findAll();
     }
 
     // Get user by id
     public User getUserById(String id) {
         try {
-            return checkUserExists(id);
+            return userMid.checkUserExists(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -34,11 +36,11 @@ public class UserService {
     public User createUser(User user) {
         try {
             // Check user requirements
-            checkUserFields(user);
-            checkEmailInUse(user);
+            userMid.checkUserFields(user);
+            userMid.checkEmailInUse(user);
 
             // Create user
-            userRepository.save(user);
+            userRepo.save(user);
             return user;
 
         } catch (IllegalStateException e) {
@@ -50,10 +52,10 @@ public class UserService {
     public void deleteUser(String id) {
         try {
             // Check if user exists
-            checkUserExists(id);
+            userMid.checkUserExists(id);
 
             // Delete user
-            userRepository.deleteById(id);
+            userRepo.deleteById(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -63,60 +65,16 @@ public class UserService {
     public User updateUser(String id, User updateUser) {
         try {
             // Check if user exists and email is not already in use
-            User existingUser = checkUserExists(id);
+            User existingUser = userMid.checkUserExists(id);
             existingUser.update(updateUser);
-            checkEmailInUse(existingUser);
+            userMid.checkEmailInUse(existingUser);
 
             // Update user
-            userRepository.save(existingUser);
+            userRepo.save(existingUser);
             return existingUser;
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
-        }
-    }
-
-
-
-
-    // Helper methods
-
-    // Check if email is already in use
-    public void checkEmailInUse(User user) {
-
-        // Obtain all users
-        List<User> allUsers = userRepository.findAll();
-        String email = user.getEmail();
-
-        // Check if email is already in use
-        for (User existingUser : allUsers) {
-            if (existingUser.getEmail() == email) {
-                throw new IllegalStateException("Email already in use");
-            }
-        }
-    }
-
-    // Check if user exists
-    public User checkUserExists(String id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            throw new IllegalStateException("User not found");
-        }
-    }
-
-    // Check if user has missing fields
-    public void checkUserFields(User user) {
-
-        // Obtain user fields
-        String email = user.getEmail();
-        String password = user.getPassword();
-        String name = user.getName();
-
-        // Check if user has missing fields
-        if (email == null || password == null || name == null) {
-            throw new IllegalStateException("User has missing fields");
         }
     }
 }

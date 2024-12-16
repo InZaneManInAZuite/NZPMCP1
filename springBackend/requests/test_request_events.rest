@@ -18,7 +18,8 @@ PUT http://localhost:8080/api/events/---------------------
 Content-Type: application/json
 
 {
-  "description": "Event 1 description modified more"
+  "name": "An Event with a Semi-Long Name",
+  "description": "Event description modified more to be a little longer"
 }
 
 ###
