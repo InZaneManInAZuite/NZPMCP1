@@ -1,38 +1,25 @@
-GET http://localhost:3001/api/events 
+GET http://localhost:8080/api/events 
 
 ###
-GET http://localhost:3001/api/events/---------------------
+GET http://localhost:8080/api/events/---------------------
 
 ###
-POST http://localhost:3001/api/events
+POST http://localhost:8080/api/events
 Content-Type: application/json
 
 {
-  "name": "Event 1",
-  "description": "Event 1 description",
+  "name": "Test Event: Super Cool NZPMC Event",
+  "description": "Event 1 description imagine",
   "date": "2021-12-12"
 }
 
 ###
-POST http://localhost:3001/api/events
+PUT http://localhost:8080/api/events/---------------------
 Content-Type: application/json
 
 {
-  "name": "Event 2",
-  "description": "Event 2 description",
-  "date": "2021-12-12"
+  "description": "Event 1 description modified more"
 }
 
 ###
-PUT http://localhost:3001/api/events/---------------------
-Content-Type: application/json
-
-{
-  "name": "Event 1 modified",
-  "date": "2021-12-11",
-  "description": "Event 1 description modified more",
-  "attendees": []
-}
-
-###
-DELETE http://localhost:3001/api/events/---------------------
+DELETE http://localhost:8080/api/events/---------------------

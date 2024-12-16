@@ -2,21 +2,23 @@ package com.nzpmcp2.demo.models;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "events")
 public class Event {
     
 
-
     // Fields
-    private final String id;
+    @Id
+    private String id;
     private String name;
     private String date;
     private String description;
-    private List<String> attendees;
+    private List<String> attendees = List.of();
 
-    
 
     // Constructors
-
     public Event(String id, String name, String date, String description, List<String> attendees) {
         this.id = id;
         this.name = name;
@@ -26,9 +28,7 @@ public class Event {
     }
 
 
-
     // Getters and Setters
-
     public String getId() {
         return id;
     }
