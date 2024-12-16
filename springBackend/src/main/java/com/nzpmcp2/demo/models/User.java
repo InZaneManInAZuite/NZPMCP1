@@ -86,7 +86,6 @@ public class User {
         events.add(eventId);
     }
 
-
     // Remove an event from the user
     public void removeEvent(String eventId) {
         events.remove(eventId);

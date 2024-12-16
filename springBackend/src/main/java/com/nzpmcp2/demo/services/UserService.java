@@ -35,7 +35,7 @@ public class UserService {
         try {
             // Check user requirements
             checkUserFields(user);
-            checkEmailInUse(user.getEmail());
+            checkEmailInUse(user);
 
             // Create user
             userRepository.save(user);
@@ -64,10 +64,8 @@ public class UserService {
         try {
             // Check if user exists and email is not already in use
             User existingUser = checkUserExists(id);
-            checkEmailInUse(id);
-
-            // Update existing user
             existingUser.update(updateUser);
+            checkEmailInUse(existingUser);
 
             // Update user
             userRepository.save(existingUser);
@@ -84,10 +82,11 @@ public class UserService {
     // Helper methods
 
     // Check if email is already in use
-    public void checkEmailInUse(String email) {
+    public void checkEmailInUse(User user) {
 
         // Obtain all users
         List<User> allUsers = userRepository.findAll();
+        String email = user.getEmail();
 
         // Check if email is already in use
         for (User existingUser : allUsers) {
