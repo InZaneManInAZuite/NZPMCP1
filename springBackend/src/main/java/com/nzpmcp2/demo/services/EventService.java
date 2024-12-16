@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.models.Event;
 import com.nzpmcp2.demo.repositories.EventRepository;
@@ -16,6 +17,8 @@ public class EventService {
     public EventRepository eventRepo;
     @Autowired
     public EventMiddleware eventMid;
+    @Autowired
+    public AttendeeMiddleware attendeeMid;
 
 
     // Get all events
@@ -53,6 +56,9 @@ public class EventService {
         try {
             // Check if event exists
             eventMid.checkEventExists(id);
+
+            // Remove event from all joined users
+            attendeeMid.removeEventFromUsers(id);
 
             // Delete event
             eventRepo.deleteById(id);

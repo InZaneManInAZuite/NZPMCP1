@@ -77,7 +77,11 @@ public class Event {
 
     // Add an attendee to the event
     public void addAttendee(String attendee) {
-        attendees.add(attendee);
+        if (attendees == null) {
+            attendees = List.of(attendee);
+        } else {
+            attendees.add(attendee);
+        }
     }
 
     // Remove an attendee from the event

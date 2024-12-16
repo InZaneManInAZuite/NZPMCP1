@@ -83,7 +83,11 @@ public class User {
 
     // Add an event to the user
     public void addEvent(String eventId) {
-        events.add(eventId);
+        if (events == null) {
+            events = List.of(eventId);
+        } else {
+            events.add(eventId);
+        }
     }
 
     // Remove an event from the user

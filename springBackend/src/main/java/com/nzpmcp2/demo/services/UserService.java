@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.UserRepository;
@@ -16,6 +17,8 @@ public class UserService {
     public UserRepository userRepo;
     @Autowired
     public UserMiddleware userMid;
+    @Autowired
+    public AttendeeMiddleware attendeeMid;
 
 
     // Get all users
@@ -54,8 +57,12 @@ public class UserService {
             // Check if user exists
             userMid.checkUserExists(id);
 
+            // Remove user from all joined events
+            attendeeMid.removeUserFromEvents(id);
+
             // Delete user
             userRepo.deleteById(id);
+
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }

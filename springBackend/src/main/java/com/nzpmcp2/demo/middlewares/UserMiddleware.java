@@ -39,7 +39,7 @@ public class UserMiddleware {
         }
     }
 
-        // Check if email is already in use
+    // Check if email is already in use
     public void checkEmailInUse(User user) {
 
         // Obtain all users
