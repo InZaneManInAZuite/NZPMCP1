@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // import local dependencies
 import com.nzpmcp2.demo.services.UserService;
+import com.nzpmcp2.demo.middlewares.AuthMiddleware;
 import com.nzpmcp2.demo.models.User;
 
 
@@ -29,6 +30,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    AuthMiddleware authMid;
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -77,6 +80,17 @@ public class UserController {
             } else {
                 return ResponseEntity.badRequest().build();
             }
+        }
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<User> authUser(@RequestBody User user) {
+        try {
+            authMid.checkAuthFields(user);
+            User authUser = authMid.isUserDetailCorrect(user.getEmail(), user.getPassword());
+            return ResponseEntity.ok(authUser);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
