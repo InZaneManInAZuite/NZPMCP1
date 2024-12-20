@@ -4,6 +4,7 @@ package com.nzpmcp2.demo.controllers;
 import java.util.List;
 
 // import api dependencies
+import com.nzpmcp2.demo.models.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -50,9 +51,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody UserDto userDto) {
         try {
-            User newUser = userService.createUser(user);
+            User newUser = userService.createUser(userDto);
             return ResponseEntity.ok(newUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();

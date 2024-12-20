@@ -2,6 +2,8 @@ package com.nzpmcp2.demo.services;
 
 import java.util.List;
 
+import com.nzpmcp2.demo.config.UserRoles;
+import com.nzpmcp2.demo.models.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +38,17 @@ public class UserService {
     }
 
     // Create user
-    public User createUser(User user) {
+    public User createUser(UserDto userDto) {
         try {
+
+            // Build a new user with user builder
+            User user = new User.Builder()
+                    .addName(userDto.name())
+                    .addEmail(userDto.email())
+                    .addPassword(userDto.password())
+                    .addRole(UserRoles.USER)
+                    .build();
+
             // Check user requirements
             userMid.checkUserFields(user);
             userMid.checkEmailInUse(user);
