@@ -2,6 +2,7 @@ package com.nzpmcp2.demo.models;
 
 import java.util.List;
 
+import com.nzpmcp2.demo.config.UserRoles;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,15 +16,22 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private List<String> events = List.of();
+    private UserRoles role;
+    private List<String> events;
 
 
     // Constructor
-    public User(String id, String name, String email, String password, List<String> events) {
+    public User(String id,
+                String name,
+                String email,
+                String password,
+                UserRoles role,
+                List<String> events) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.events = events;
     }
 
@@ -45,6 +53,10 @@ public class User {
         return password;
     }
 
+    public UserRoles getRole() {
+        return role;
+    }
+
     public List<String> getEvents() {
         return events;
     }
@@ -61,6 +73,10 @@ public class User {
         this.password = password;
     }
 
+    public void setRole(UserRoles role) {
+        this.role = role;
+    }
+
     public void setEvents(List<String> events) {
         this.events = events;
     }
@@ -75,10 +91,7 @@ public class User {
         List<String> newEvents = List.copyOf(events);
 
         // Create a new user object with the copied fields
-        User newUser = new User(id, name, email, password, newEvents);
-
-        // Return the new user object
-        return newUser;
+        return new User(id, name, email, password, role, newEvents);
     }
 
     // Add an event to the user
@@ -100,6 +113,7 @@ public class User {
         name = updateUser.getName() == null ? name : updateUser.getName();
         email = updateUser.getEmail() == null ? email : updateUser.getEmail();
         password = updateUser.getPassword() == null ? password : updateUser.getPassword();
+        role = updateUser.getRole() == null ? role : updateUser.getRole();
         events = updateUser.getEvents() == null ? events : updateUser.getEvents();
     }
 
@@ -111,6 +125,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role + '\''+
                 ", events=" + events +
                 '}';
     }
