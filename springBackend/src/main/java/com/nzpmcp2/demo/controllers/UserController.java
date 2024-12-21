@@ -87,8 +87,7 @@ public class UserController {
     @PostMapping("/auth")
     public ResponseEntity<User> authUser(@RequestBody User user) {
         try {
-            authMid.checkAuthFields(user);
-            User authUser = authMid.isUserDetailCorrect(user.getEmail(), user.getPassword());
+            User authUser = userService.authenticateUser(user);
             return ResponseEntity.ok(authUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();

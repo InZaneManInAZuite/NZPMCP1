@@ -1,8 +1,10 @@
 package com.nzpmcp2.demo.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.nzpmcp2.demo.config.UserRoles;
+import com.nzpmcp2.demo.middlewares.AuthMiddleware;
 import com.nzpmcp2.demo.models.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,23 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 
 @Service
 public class UserService {
-    
+
+    private final UserRepository userRepo;
+    private final UserMiddleware userMid;
+    private final AttendeeMiddleware attendeeMid;
+    private final AuthMiddleware authMid;
+
     @Autowired
-    public UserRepository userRepo;
-    @Autowired
-    public UserMiddleware userMid;
-    @Autowired
-    public AttendeeMiddleware attendeeMid;
+    public UserService(UserRepository userRepo,
+                       UserMiddleware userMid,
+                       AttendeeMiddleware attendeeMid,
+                       AuthMiddleware authMid) {
+
+        this.userRepo = userRepo;
+        this.userMid = userMid;
+        this.attendeeMid = attendeeMid;
+        this.authMid = authMid;
+    }
 
 
     // Get all users
@@ -92,6 +104,19 @@ public class UserService {
             return existingUser;
 
         } catch (IllegalStateException e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    // Authenticate a user
+    public User authenticateUser(User user) {
+        try {
+            authMid.checkAuthFields(user);
+
+            String email = user.getEmail();
+
+            return userMid.checkUserExists(email);
+        } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());
         }
     }

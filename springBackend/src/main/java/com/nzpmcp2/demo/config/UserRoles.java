@@ -25,6 +25,11 @@ public enum UserRoles {
             Permissions.USER_DELETE,
             Permissions.EVENT_GET_ALL,
             Permissions.EVENT_GET_BY_ID
+    )),
+    VISITOR(Sets.newHashSet(
+            Permissions.USER_CREATE,
+            Permissions.EVENT_GET_ALL,
+            Permissions.EVENT_GET_BY_ID
     ));
 
     private final Set<Permissions> permissions;
