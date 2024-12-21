@@ -122,6 +122,11 @@ public class User implements UserDetails {
         events = updateUser.getEvents() == null ? events : updateUser.getEvents();
     }
 
+    public UserView toUserView() {
+        List<String> newEvents = List.copyOf(events);
+        return new UserView(id, null, name, email, newEvents);
+    }
+
     // Override the toString method
     @Override
     public String toString() {

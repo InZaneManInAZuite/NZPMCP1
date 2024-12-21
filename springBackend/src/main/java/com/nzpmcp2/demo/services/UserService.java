@@ -1,12 +1,16 @@
 package com.nzpmcp2.demo.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.nzpmcp2.demo.config.UserRoles;
 import com.nzpmcp2.demo.middlewares.AuthMiddleware;
 import com.nzpmcp2.demo.models.UserDto;
+import com.nzpmcp2.demo.models.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
@@ -21,17 +25,23 @@ public class UserService {
     private final UserMiddleware userMid;
     private final AttendeeMiddleware attendeeMid;
     private final AuthMiddleware authMid;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserService(UserRepository userRepo,
                        UserMiddleware userMid,
                        AttendeeMiddleware attendeeMid,
-                       AuthMiddleware authMid) {
+                       AuthMiddleware authMid,
+                       PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager) {
 
         this.userRepo = userRepo;
         this.userMid = userMid;
         this.attendeeMid = attendeeMid;
         this.authMid = authMid;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
 
@@ -57,7 +67,7 @@ public class UserService {
             User user = new User.Builder()
                     .addName(userDto.name())
                     .addEmail(userDto.email())
-                    .addPassword(userDto.password())
+                    .addPassword(passwordEncoder.encode(userDto.password()))
                     .addRole(UserRoles.USER)
                     .build();
 
@@ -109,13 +119,17 @@ public class UserService {
     }
 
     // Authenticate a user
-    public User authenticateUser(User user) {
+    public UserView authenticateUser(UserDto userDto) {
         try {
-            authMid.checkAuthFields(user);
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.email(), userDto.password())
+            );
+            UserView userView = ((User) auth.getPrincipal()).toUserView();
+            String token = "";
+            userView.setToken(token);
 
-            String email = user.getEmail();
+            return userView;
 
-            return userMid.checkUserExists(email);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());
         }

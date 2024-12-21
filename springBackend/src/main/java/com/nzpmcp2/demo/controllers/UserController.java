@@ -5,6 +5,7 @@ import java.util.List;
 
 // import api dependencies
 import com.nzpmcp2.demo.models.UserDto;
+import com.nzpmcp2.demo.models.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -85,9 +86,9 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<User> authUser(@RequestBody User user) {
+    public ResponseEntity<UserView> authUser(@RequestBody UserDto userDto) {
         try {
-            User authUser = userService.authenticateUser(user);
+            UserView authUser = userService.authenticateUser(userDto);
             return ResponseEntity.ok(authUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
