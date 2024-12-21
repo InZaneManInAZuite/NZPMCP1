@@ -86,9 +86,9 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<UserView> authUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserView> authUser(@RequestBody User user) {
         try {
-            UserView authUser = userService.authenticateUser(userDto);
+            UserView authUser = userService.authenticateUser(user);
             return ResponseEntity.ok(authUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();

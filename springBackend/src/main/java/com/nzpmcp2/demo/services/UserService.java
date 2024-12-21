@@ -112,6 +112,9 @@ public class UserService {
             existingUser.update(updateUser);
             userMid.checkEmailInUse(existingUser);
 
+            // Encode password
+            existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+
             // Update user
             userRepo.save(existingUser);
             return existingUser;
@@ -122,12 +125,18 @@ public class UserService {
     }
 
     // Authenticate a user
-    public UserView authenticateUser(UserDto userDto) {
+    public UserView authenticateUser(User user) {
         try {
+            authMid.checkAuthFields(user);
+            String email = user.getEmail();
+            String password = user.getPassword();
+
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userDto.email(), userDto.password())
+                    new UsernamePasswordAuthenticationToken(email, password)
             );
-            UserView userView = ((User) auth.getPrincipal()).toUserView();
+
+            User userFound = (User) auth.getPrincipal();
+            UserView userView = userFound.toUserView();
             String token = tokenService.generateToken(auth);
             userView.setToken(token);
 
