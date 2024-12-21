@@ -27,6 +27,7 @@ public class UserService {
     private final AuthMiddleware authMid;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     @Autowired
     public UserService(UserRepository userRepo,
@@ -34,7 +35,8 @@ public class UserService {
                        AttendeeMiddleware attendeeMid,
                        AuthMiddleware authMid,
                        PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager,
+                       TokenService tokenService) {
 
         this.userRepo = userRepo;
         this.userMid = userMid;
@@ -42,6 +44,7 @@ public class UserService {
         this.authMid = authMid;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
     }
 
 
@@ -125,7 +128,7 @@ public class UserService {
                     new UsernamePasswordAuthenticationToken(userDto.email(), userDto.password())
             );
             UserView userView = ((User) auth.getPrincipal()).toUserView();
-            String token = "";
+            String token = tokenService.generateToken(auth);
             userView.setToken(token);
 
             return userView;

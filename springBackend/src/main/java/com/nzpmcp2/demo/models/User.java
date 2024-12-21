@@ -124,7 +124,7 @@ public class User implements UserDetails {
 
     public UserView toUserView() {
         List<String> newEvents = List.copyOf(events);
-        return new UserView(id, null, name, email, newEvents);
+        return new UserView(id, null, name, email);
     }
 
     // Override the toString method
