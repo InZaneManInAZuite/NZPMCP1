@@ -4,7 +4,6 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -38,19 +37,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
+                .headers(header ->
+                        header.httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/users/auth").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-                                .requestMatchers("/api/events").authenticated()
-                                .anyRequest().authenticated())
                 .oauth2ResourceServer(oath2ResourceServer ->
-                        oath2ResourceServer.jwt(Customizer.withDefaults()))
-                .build();
+                        oath2ResourceServer.jwt(Customizer.withDefaults()));
+
+        http = RequestManger.manageRequests(http);
+
+        return http.build();
     }
 
     @Bean

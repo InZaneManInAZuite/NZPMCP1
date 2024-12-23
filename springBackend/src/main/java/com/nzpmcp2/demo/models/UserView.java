@@ -1,9 +1,7 @@
 package com.nzpmcp2.demo.models;
 
 import com.nzpmcp2.demo.config.UserRoles;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.List;
 
 public class UserView {

@@ -131,18 +131,7 @@ public class UserService {
             authMid.checkAuthFields(user);
             String email = user.getEmail();
             String password = user.getPassword();
-
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-
-            User userFound = (User) auth.getPrincipal();
-            UserView userView = userFound.toUserView();
-            String token = tokenService.generateToken(auth);
-            userView.setToken(token);
-
-            return userView;
-
+            return authMid.isUserDetailCorrect(email, password);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());
         }

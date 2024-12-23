@@ -11,9 +11,13 @@ import com.nzpmcp2.demo.repositories.EventRepository;
 
 @Service
 public class EventMiddleware {
-    
+
+    private final EventRepository eventRepo;
+
     @Autowired
-    public EventRepository eventRepo;
+    public EventMiddleware(EventRepository eventRepo) {
+        this.eventRepo = eventRepo;
+    }
 
     // Check if event exists
     public Event checkEventExists(String id) {
@@ -47,7 +51,7 @@ public class EventMiddleware {
 
         // Check if event is duplicated
         for (Event e : events) {
-            if (e.getName() == event.getName() && e.getDate() == event.getDate()) {
+            if (e.getName().equals(event.getName()) && e.getDate().equals(event.getDate())) {
                 throw new IllegalStateException("Event already exists");
             }
         }

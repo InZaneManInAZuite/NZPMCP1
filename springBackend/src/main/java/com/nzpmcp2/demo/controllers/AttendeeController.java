@@ -20,8 +20,12 @@ import com.nzpmcp2.demo.services.AttendeeService;
 @RequestMapping("/api")
 public class AttendeeController {
 
+    private final AttendeeService attendeeService;
+
     @Autowired
-    AttendeeService attendeeService;
+    public AttendeeController(AttendeeService attendeeService) {
+        this.attendeeService = attendeeService;
+    }
 
     @PutMapping("/events/{eventId}/add/{userId}")
     public ResponseEntity<Event> addAttendee(@PathVariable String eventId, @PathVariable String userId) {

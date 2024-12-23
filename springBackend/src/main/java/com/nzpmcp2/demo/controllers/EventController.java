@@ -22,8 +22,12 @@ import com.nzpmcp2.demo.services.EventService;
 @RequestMapping("/api/events")
 public class EventController {
 
+    private final EventService eventService;
+
     @Autowired
-    EventService eventService;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
@@ -67,7 +71,7 @@ public class EventController {
             Event updatedEvent = eventService.updateEvent(id, event);
             return ResponseEntity.ok(updatedEvent);
         } catch (IllegalStateException e) {
-            if (e.getMessage() == "Event not found") {
+            if (e.getMessage().equals("Event not found")) {
                 return ResponseEntity.notFound().build();
             } else {
                 return ResponseEntity.badRequest().build();

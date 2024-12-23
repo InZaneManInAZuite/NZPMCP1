@@ -1,33 +1,43 @@
 package com.nzpmcp2.demo.middlewares;
 
-import java.util.List;
-
+import com.nzpmcp2.demo.models.UserView;
+import com.nzpmcp2.demo.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.nzpmcp2.demo.models.User;
-import com.nzpmcp2.demo.repositories.UserRepository;
 
 @Service
 public class AuthMiddleware {
-    
+
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+
     @Autowired
-    UserRepository userRepo;
+    public AuthMiddleware(AuthenticationManager authenticationManager,
+                          TokenService tokenService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
+    }
 
     // Check if the user can log in
-    public User isUserDetailCorrect(String email, String password) {
+    public UserView isUserDetailCorrect(String email, String password) {
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
 
-        // Get all the users
-        List<User> users = userRepo.findAll();
-        
-        // Check if the user exists
-        for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return user;
-            }
+            UserView user = ((User) auth.getPrincipal()).toUserView();
+            String token = tokenService.generateToken(auth);
+            user.setToken(token);
+
+            return user;
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage());
         }
-
-        throw new IllegalStateException("Email or password is incorrect");
     }
 
     // Check if the user gives email and password

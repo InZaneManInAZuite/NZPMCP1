@@ -13,12 +13,18 @@ import com.nzpmcp2.demo.repositories.EventRepository;
 @Service
 public class EventService {
 
+    private final EventRepository eventRepo;
+    private final EventMiddleware eventMid;
+    private final AttendeeMiddleware attendeeMid;
+
     @Autowired
-    public EventRepository eventRepo;
-    @Autowired
-    public EventMiddleware eventMid;
-    @Autowired
-    public AttendeeMiddleware attendeeMid;
+    public EventService(EventRepository eventRepo,
+                        EventMiddleware eventMid,
+                        AttendeeMiddleware attendeeMid) {
+        this.eventRepo = eventRepo;
+        this.eventMid = eventMid;
+        this.attendeeMid = attendeeMid;
+    }
 
 
     // Get all events

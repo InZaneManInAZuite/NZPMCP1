@@ -14,8 +14,6 @@ public class JwtConfig {
     private String secretKey;
     @Value("${security.jwt.algorithm}")
     private String algorithm;
-    @Value("${security.jwt.expiration-time}")
-    private long expirationTime;
 
     public SecretKey getSecretKey() {
         OctetSequenceKey key = new OctetSequenceKey.Builder(secretKey.getBytes())
