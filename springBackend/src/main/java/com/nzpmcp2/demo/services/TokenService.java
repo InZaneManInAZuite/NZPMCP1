@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenService {
@@ -27,26 +28,30 @@ public class TokenService {
     }
 
     public String generateToken(Authentication auth) {
+
+        // Create the header for the jwt
         JWSHeader jwsHeader = new JWSHeader.Builder(jwtConfig.getAlgorithm())
                 .type(JOSEObjectType.JWT)
                 .build();
 
-        List<String> roles = auth.getAuthorities().stream()
+        // Create token body
+        User user = (User) auth.getPrincipal();
+        List<String> authority = user.getAuthorities()
+                .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-
-        SecretKey key = jwtConfig.getSecretKey();
-
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
-                .issuer("nzpmcp2")
+                .subject(user.getEmail())
+                .claim("id", user.getId())
+                .claim("authorities", authority)
+                .issuer("NZPMCP2")
                 .issueTime(Date.from(Instant.now()))
                 .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("roles", roles)
-                .claim("id", ((User) auth.getPrincipal()).getId())
                 .build();
 
+        // Sign the jwt with the secret key
+        SecretKey key = jwtConfig.getSecretKey();
         SignedJWT signedJWT = new SignedJWT(jwsHeader, claimSet);
-
         try {
             MACSigner signer = new MACSigner(key);
             signedJWT.sign(signer);
@@ -54,6 +59,7 @@ public class TokenService {
             throw new RuntimeException("Error generating JWT",e);
         }
 
+        // return the signed jwt
         return signedJWT.serialize();
     }
 }

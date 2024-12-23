@@ -4,10 +4,13 @@ package com.nzpmcp2.demo.controllers;
 import java.util.List;
 
 // import api dependencies
+import com.nzpmcp2.demo.config.UserRoles;
 import com.nzpmcp2.demo.models.UserDto;
 import com.nzpmcp2.demo.models.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 // import local dependencies
 import com.nzpmcp2.demo.services.UserService;
-import com.nzpmcp2.demo.middlewares.AuthMiddleware;
 import com.nzpmcp2.demo.models.User;
 
 
@@ -30,21 +32,23 @@ import com.nzpmcp2.demo.models.User;
 @RequestMapping("api/users")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    UserService userService;
-    @Autowired
-    AuthMiddleware authMid;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserView>> getAllUsers() {
+        List<UserView> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserView> getUserById(@PathVariable String id) {
         try {
-            User user = userService.getUserById(id);
+            UserView user = userService.getUserById(id);
             return ResponseEntity.ok(user);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
@@ -52,9 +56,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserView> createUser(@RequestBody UserDto userDto) {
         try {
-            User newUser = userService.createUser(userDto);
+            UserView newUser = userService.createUser(userDto);
             return ResponseEntity.ok(newUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();
@@ -72,12 +76,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+    public ResponseEntity<UserView> updateUser(@PathVariable String id, @RequestBody User user) {
         try {
-            User updatedUser = userService.updateUser(id, user);
+            UserView updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalStateException e) {
-            if (e.getMessage() == "User not found") {
+            if (e.getMessage().equals("User not found")) {
                 return ResponseEntity.notFound().build();
             } else {
                 return ResponseEntity.badRequest().build();

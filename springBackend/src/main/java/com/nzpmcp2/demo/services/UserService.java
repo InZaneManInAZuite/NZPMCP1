@@ -49,21 +49,22 @@ public class UserService {
 
 
     // Get all users
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserView> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        return users.stream().map(User::toUserView).toList();
     }
 
     // Get user by id
-    public User getUserById(String id) {
+    public UserView getUserById(String id) {
         try {
-            return userMid.checkUserExists(id);
+            return userMid.checkUserExists(id).toUserView();
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
 
     // Create user
-    public User createUser(UserDto userDto) {
+    public UserView createUser(UserDto userDto) {
         try {
 
             // Build a new user with user builder
@@ -80,7 +81,7 @@ public class UserService {
 
             // Create user
             userRepo.save(user);
-            return user;
+            return user.toUserView();
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
@@ -105,7 +106,7 @@ public class UserService {
     }
 
     // Update a user
-    public User updateUser(String id, User updateUser) {
+    public UserView updateUser(String id, User updateUser) {
         try {
             // Check if user exists and email is not already in use
             User existingUser = userMid.checkUserExists(id);
@@ -117,7 +118,7 @@ public class UserService {
 
             // Update user
             userRepo.save(existingUser);
-            return existingUser;
+            return existingUser.toUserView();
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

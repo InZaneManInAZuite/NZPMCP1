@@ -1,23 +1,19 @@
 package com.nzpmcp2.demo.models;
 
 import com.nzpmcp2.demo.config.UserRoles;
-import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class UserView {
 
-    private String id;
+    private final String id;
+    private final String name;
+    private final String email;
+    private final UserRoles role;
+    private final List<String> events;
     private String token;
-    private String name;
-    private String email;
-    private UserRoles role;
-    private List<String> events;
 
     public UserView(String id, String token, String name, String email, UserRoles role, List<String> events) {
         this.id = id;
