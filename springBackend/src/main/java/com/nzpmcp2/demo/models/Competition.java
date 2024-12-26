@@ -98,7 +98,7 @@ public class Competition {
         return "Competition{" +
                 "title='" + title + '\'' +
                 ", questionIds='" + Arrays.toString(questionIds) + '\'' +
-                ", events='" + events + '\'' +
+                ", events='" + events +
                 '}';
     }
 }
