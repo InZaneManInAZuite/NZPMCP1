@@ -70,7 +70,7 @@ public class AttemptController {
         }
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping
     public ResponseEntity<Void> deleteAttemptById(@RequestParam String attemptId) {
         try {
             attemptService.deleteAttempt(attemptId);
@@ -80,7 +80,7 @@ public class AttemptController {
         }
     }
 
-    @PutMapping("/id")
+    @PutMapping
     public ResponseEntity<Void> updateAttemptById(@RequestBody Attempt attemptUpdate) {
         try {
             Attempt attempt = attemptService.updateAttempt(attemptUpdate.getId(), attemptUpdate);

@@ -31,7 +31,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/specific")
+    @GetMapping("/title")
     public ResponseEntity<Question> getQuestionById(@RequestParam String title) {
         try {
             Question question = questionService.getQuestionByTitle(title);
@@ -51,7 +51,7 @@ public class QuestionController {
         }
     }
 
-    @DeleteMapping("/specific")
+    @DeleteMapping
     public ResponseEntity<Void> deleteQuestionById(@RequestParam String title) {
         try {
             questionService.deleteQuestion(title);
@@ -61,7 +61,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/specific")
+    @PutMapping
     public ResponseEntity<Void> updateQuestion(@RequestBody QuestionInput questionInput) {
         try {
             Question newQuestion = new Question.Builder()

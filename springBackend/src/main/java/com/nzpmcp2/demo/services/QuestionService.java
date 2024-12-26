@@ -6,7 +6,6 @@ import com.nzpmcp2.demo.repositories.QuestionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -35,13 +34,12 @@ public class QuestionService {
     }
 
     // Create a new question
-    public Question createQuestion(Question question) {
+    public void createQuestion(Question question) {
         try {
             questionMid.checkQuestionFields(question);
             questionMid.checkQuestionExists(question.getTitle());
 
             questionRepo.save(question);
-            return question;
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -63,20 +61,21 @@ public class QuestionService {
     }
 
     // Update a question
-    public void updateQuestion(String title, Question question) {
+    public void updateQuestion(String currentTitle, Question newQuestion) {
         try {
             // Check question exists
-            Question foundQuestion = questionMid.checkQuestionExists(title);
+            Question question = questionMid.checkQuestionExists(currentTitle);
 
             // Check if duplicated
-            Optional<Question> optionalQuestion = questionRepo.findById(question.getTitle());
-            if (optionalQuestion.isPresent()) {
-                throw new IllegalStateException("Question already exists");
+            String newTitle = newQuestion.getTitle();
+            if (!newTitle.isEmpty() && !currentTitle.equals(newTitle)) {
+                questionMid.checkQuestionExists(newTitle);
+                throw new IllegalStateException("Question title already exists");
             }
 
             // Update question
-            foundQuestion.update(question);
-            questionRepo.deleteById(title);
+            question.update(newQuestion);
+            questionRepo.deleteById(currentTitle);
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

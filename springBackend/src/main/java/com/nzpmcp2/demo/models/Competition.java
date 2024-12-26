@@ -101,4 +101,29 @@ public class Competition {
                 ", events='" + events +
                 '}';
     }
+
+    public static class Builder {
+        private String title;
+        private String[] questionIds;
+        private List<String> events;
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setQuestionIds(String[] questionIds) {
+            this.questionIds = questionIds;
+            return this;
+        }
+
+        public Builder setEvents(List<String> events) {
+            this.events = events;
+            return this;
+        }
+
+        public Competition build() {
+            return new Competition(title, questionIds, events);
+        }
+    }
 }
