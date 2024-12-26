@@ -45,7 +45,7 @@ public class QuestionController {
     public ResponseEntity<Void> createQuestion(@RequestBody Question question) {
         try {
             questionService.createQuestion(question);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
