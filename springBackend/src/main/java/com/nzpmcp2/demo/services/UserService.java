@@ -7,9 +7,6 @@ import com.nzpmcp2.demo.middlewares.AuthMiddleware;
 import com.nzpmcp2.demo.models.UserDto;
 import com.nzpmcp2.demo.models.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,25 +23,19 @@ public class UserService {
     private final AttendeeMiddleware attendeeMid;
     private final AuthMiddleware authMid;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final TokenService tokenService;
 
     @Autowired
     public UserService(UserRepository userRepo,
                        UserMiddleware userMid,
                        AttendeeMiddleware attendeeMid,
                        AuthMiddleware authMid,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,
-                       TokenService tokenService) {
+                       PasswordEncoder passwordEncoder) {
 
         this.userRepo = userRepo;
         this.userMid = userMid;
         this.attendeeMid = attendeeMid;
         this.authMid = authMid;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
     }
 
 

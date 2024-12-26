@@ -29,7 +29,7 @@ const updateUser = (id, updatedUser) => {
 }
 
 const authUser = (email, password) => {
-    const request = axios.post(`${API_URL}/auth`, { 
+    const request = axios.post(`${API_URL}/auth`, {
         email: email, 
         password: password
     });
