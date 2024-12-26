@@ -35,4 +35,12 @@ public class CompetitionMiddleware {
             throw new IllegalStateException("Competition missing fields");
         }
     }
+
+    // Check if duplicate competition exists
+    public void checkCompetitionDuplicated(String title) {
+        Optional<Competition> competition = competeRepo.findById(title);
+        if (competition.isPresent()) {
+            throw new IllegalStateException("Competition already exists");
+        }
+    }
 }

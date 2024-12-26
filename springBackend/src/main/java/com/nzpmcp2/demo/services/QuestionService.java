@@ -37,8 +37,7 @@ public class QuestionService {
     public void createQuestion(Question question) {
         try {
             questionMid.checkQuestionFields(question);
-            questionMid.checkQuestionExists(question.getTitle());
-
+            questionMid.checkQuestionDuplicated(question.getTitle());
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
@@ -69,8 +68,7 @@ public class QuestionService {
             // Check if duplicated
             String newTitle = newQuestion.getTitle();
             if (!newTitle.isEmpty() && !currentTitle.equals(newTitle)) {
-                questionMid.checkQuestionExists(newTitle);
-                throw new IllegalStateException("Question title already exists");
+                questionMid.checkQuestionDuplicated(newTitle);
             }
 
             // Update question

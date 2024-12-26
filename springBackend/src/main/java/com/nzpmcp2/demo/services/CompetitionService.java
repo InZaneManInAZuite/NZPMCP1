@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CompetitionService {
@@ -43,10 +42,8 @@ public class CompetitionService {
     // Create a new competition
     public Competition createCompetition(Competition competition) {
         try {
-            // Check if competition is valid
             competeMid.checkCompetitionFields(competition);
-
-            // save competition
+            competeMid.checkCompetitionDuplicated(competition.getTitle());
             competeRepo.save(competition);
             return competition;
         } catch (IllegalStateException e) {
@@ -78,8 +75,7 @@ public class CompetitionService {
             // Check if competition is duplicated
             String newTitle = competitionUpdate.getTitle();
             if (!newTitle.isEmpty() && !newTitle.equals(currentTitle)) {
-                competeMid.checkCompetitionExists(newTitle);
-                throw new IllegalStateException("Competition already exists");
+                competeMid.checkCompetitionDuplicated(newTitle);
             }
 
             // Update the competition

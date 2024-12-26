@@ -38,4 +38,12 @@ public class QuestionMiddleware {
             throw new IllegalStateException("Event has missing fields");
         }
     }
+
+    // Check if duplicate question exists
+    public void checkQuestionDuplicated(String title) {
+        Optional<Question> question = questionRepo.findById(title);
+        if (question.isPresent()) {
+            throw new IllegalStateException("Question already exists");
+        }
+    }
 }
