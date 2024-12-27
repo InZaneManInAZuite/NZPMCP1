@@ -1,25 +1,38 @@
-import axios from "axios";
-import {config} from "./Config.js";
+import axios from "../api/axios.js"
 
-const API_URL = config.API;
-
-const addAttendeeToEvent = (eventId, userId) => {
-    const request = axios.put(`${API_URL}/events/${eventId}/add/${userId}`);
+const addAttendeeToEvent = (eventId, userId, jwtToken) => {
+    const request = axios.put(`/events/${eventId}/add/${userId}`,{
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data);
 }
 
-const removeAttendeeFromEvent = (eventId, userId) => {
-    const request = axios.put(`${API_URL}/events/${eventId}/remove/${userId}`);
+const removeAttendeeFromEvent = (eventId, userId, jwtToken) => {
+    const request = axios.put(`/events/${eventId}/remove/${userId}`,{
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data);
 }
 
-const getAllAttendeesForEvent = (eventId) => {
-    const request = axios.get(`${API_URL}/events/${eventId}/attendees`);
+const getAllAttendeesForEvent = (eventId, jwtToken) => {
+    const request = axios.get(`/events/${eventId}/attendees`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data);
 }
 
-const getAllEventsOfUser = (userId) => {
-    const request = axios.get(`${API_URL}/users/${userId}/events`);
+const getAllEventsOfUser = (userId, jwtToken) => {
+    const request = axios.get(`/users/${userId}/events`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data);
 }
 

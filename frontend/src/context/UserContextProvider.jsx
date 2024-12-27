@@ -45,8 +45,6 @@ const UserContextProvider = ({ children }) => {
             setIsLogged(false)
             setUser(null)
         } else {
-            document.cookie = `email=${user.email}; path=/; secure`
-            document.cookie = `password=${user.password}; path=/; secure`
             setIsLogged(true)
             setUser(user)
         }
@@ -63,8 +61,7 @@ const UserContextProvider = ({ children }) => {
             setIsAdmin(false)
             return
         }
-        document.cookie = `email=${ADMIN_ID}; path=/; secure`
-        document.cookie = `password=${ADMIN_PW}; path=/; secure`
+
         setIsAdmin(true)
         setIsLogged(true)
     }
