@@ -6,7 +6,7 @@ let config = {
 
 if (import.meta.env.MODE === 'development') {
     config = {
-    API: 'http://localhost:3001/api' 
+    API: 'http://localhost:8080/api' 
     } 
 }
 

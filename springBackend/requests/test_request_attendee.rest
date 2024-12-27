@@ -1,0 +1,10 @@
+PUT http://localhost:8080/api/events/----/add/----
+
+###
+PUT http://localhost:8080/api/events/----/remove/----
+
+###
+GET http://localhost:8080/api/events/----/attendees
+
+###
+GET http://localhost:8080/api/users/----/events

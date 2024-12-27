@@ -1,0 +1,26 @@
+GET http://localhost:8080/api/events 
+
+###
+GET http://localhost:8080/api/events/---------------------
+
+###
+POST http://localhost:8080/api/events
+Content-Type: application/json
+
+{
+  "name": "Test Event: Super Cool NZPMC Event",
+  "description": "Event 1 description imagine",
+  "date": "2021-12-12"
+}
+
+###
+PUT http://localhost:8080/api/events/---------------------
+Content-Type: application/json
+
+{
+  "name": "An Event with a Semi-Long Name",
+  "description": "Event description modified more to be a little longer"
+}
+
+###
+DELETE http://localhost:8080/api/events/---------------------
