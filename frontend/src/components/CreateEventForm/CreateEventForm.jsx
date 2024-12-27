@@ -41,7 +41,7 @@ const CreateEventForm = () => {
 
         const newEvent = {
             name: form.values.name,
-            date: newDate.toLocaleString(),
+            date: newDate,
             description: form.values.description,
         }
 

@@ -1,4 +1,4 @@
-// Imports to create a sign up form
+// Imports to create a sign-up form
 import { Anchor, Card, Button, TextInput, PasswordInput, Stack } from '@mantine/core'
 import UserContext from '../../context/UserContext'
 import { useForm } from '@mantine/form'
@@ -9,7 +9,7 @@ import { createUser } from '../../services/user.services'
 
 
 /**
- * This component is a sign up form that allows users to create a new account
+ * This component is a sign-up form that allows users to create a new account
  * 
  * @returns SignUpForm component
  */
@@ -97,7 +97,7 @@ const SignUpForm = () => {
     const onPasswordChange = (event) => {form.setFieldValue('password', event.currentTarget.value)}
     const onConfirmPasswordChange = (event) => {form.setFieldValue('confirmPassword', event.currentTarget.value)}
 
-    // Return the sign up form
+    // Return the sign-up form
     return (
         <Card radius="lg" p="xl" className={classes.AuthCard} withBorder>
             <form onSubmit={form.onSubmit(() => handleSignUp())}>

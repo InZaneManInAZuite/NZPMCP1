@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.middlewares;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class EventMiddleware {
         // Obtain event fields
         String name = event.getName();
         String description = event.getDescription();
-        String date = event.getDate();
+        Date date = event.getDate();
 
         // Check if fields are empty
         if (name == null || description == null || date == null) {

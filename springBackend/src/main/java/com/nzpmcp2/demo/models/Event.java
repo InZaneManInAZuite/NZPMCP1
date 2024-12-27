@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.models;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -13,13 +14,13 @@ public class Event {
     @Id
     private String id;
     private String name;
-    private String date;
+    private Date date;
     private String description;
     private List<String> attendees;
 
 
     // Constructors
-    public Event(String id, String name, String date, String description, List<String> attendees) {
+    public Event(String id, String name, Date date, String description, List<String> attendees) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -37,7 +38,7 @@ public class Event {
         return name;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -53,7 +54,7 @@ public class Event {
         this.name = name;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
