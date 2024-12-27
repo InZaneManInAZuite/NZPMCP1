@@ -40,7 +40,7 @@ const EventsList = () => {
                     />
                     <Checkbox
                         labelPosition='left'
-                        label="Includes Previous Events"
+                        label="Include Previous Events"
                         checked={checked}
                         onChange={onCheckChange}
                     />
