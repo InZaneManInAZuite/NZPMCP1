@@ -1,30 +1,43 @@
-import axios from "axios";
-import {config} from "./Config.js";
+import axios from '../api/axios.js'
 
-const API_URL = `${config.API}/events`
+const EVENT_URL = `/events`
 
 const getAllEvents = () => {
-    const request = axios.get(API_URL)
+    const request = axios.get(EVENT_URL)
     return request.then(response => response.data)
 }
 
 const getEvent = (id) => {
-    const request = axios.get(`${API_URL}/${id}`)
+    const request = axios.get(`${EVENT_URL}/${id}`)
     return request.then(response => response.data)
 }
 
-const removeEvent = (id) => {
-    const request = axios.delete(`${API_URL}/${id}`)
+const removeEvent = (id, jwtToken) => {
+    const request = axios.delete(`${EVENT_URL}/${id}`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    })
     return request.then(response => response.data)
 }
 
-const updateEvent = (id, updatedEvent) => {
-    const request = axios.put(`${API_URL}/${id}`, updatedEvent)
+const updateEvent = (id, updatedEvent, jwtToken) => {
+    const request = axios.put(`${EVENT_URL}/${id}`, JSON.stringify(updatedEvent),{
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data)
 }
 
-const createEvent = (newEvent) => {
-    const request = axios.post(API_URL, newEvent)
+const createEvent = (newEvent, jwtToken) => {
+    const request = axios.post(`${EVENT_URL}`, JSON.stringify(newEvent), {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
     return request.then(response => response.data)
 }
 

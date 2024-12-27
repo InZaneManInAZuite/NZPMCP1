@@ -16,14 +16,21 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 @Service
 public class AttendeeService {
 
+    private final EventRepository eventRepo;
+    private final UserRepository userRepo;
+    private final EventMiddleware eventMid;
+    private final UserMiddleware userMid;
+
     @Autowired
-    public EventRepository eventRepo;
-    @Autowired
-    public UserRepository userRepo;
-    @Autowired
-    public EventMiddleware eventMid;
-    @Autowired
-    public UserMiddleware userMid;
+    public AttendeeService(EventRepository eventRepo,
+                           UserRepository userRepo,
+                           EventMiddleware eventMid,
+                           UserMiddleware userMid) {
+        this.eventRepo = eventRepo;
+        this.userRepo = userRepo;
+        this.eventMid = eventMid;
+        this.userMid = userMid;
+    }
     
     // Add attendee to event
     public Event addAttendee(String eventId, String userId) {
@@ -75,7 +82,7 @@ public class AttendeeService {
             
             // Get all attendees
             List<String> attendeeIds = event.getAttendees();
-            List<User> attendees = new ArrayList<User>();
+            List<User> attendees = new ArrayList<>();
             for (String id : attendeeIds) {
                 try {
                     User attendee = userMid.checkUserExists(id);
@@ -99,7 +106,7 @@ public class AttendeeService {
             
             // Get all events
             List<String> eventIds = user.getEvents();
-            List<Event> events = new ArrayList<Event>();
+            List<Event> events = new ArrayList<>();
             for (String id : eventIds) {
                 try {
                     Event event = eventMid.checkEventExists(id);

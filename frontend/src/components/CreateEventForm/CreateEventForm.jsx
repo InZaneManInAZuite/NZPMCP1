@@ -9,7 +9,7 @@ import { DatePickerInput } from '@mantine/dates'
 
 const CreateEventForm = () => {
 
-    const {events, setEvents } = useContext(UserContext);
+    const {events, setEvents, jwtToken } = useContext(UserContext);
     const [newDate, setNewDate] = useState(null);
 
     const form = useForm({
@@ -41,11 +41,11 @@ const CreateEventForm = () => {
 
         const newEvent = {
             name: form.values.name,
-            date: newDate,
+            date: newDate.toLocaleString(),
             description: form.values.description,
         }
 
-        createEvent(newEvent)
+        createEvent(newEvent, jwtToken)
             .then((eventMade) => {
                 setEvents(events.concat(eventMade))
                 form.values.name = ''

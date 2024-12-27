@@ -1,13 +1,16 @@
 package com.nzpmcp2.demo.models;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.nzpmcp2.demo.config.UserRoles;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Document(collection = "users")
-public class User {
-
+public class User implements UserDetails {
 
     // Fields
     @Id
@@ -15,18 +18,17 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private List<String> events = List.of();
+    private UserRoles role;
+    private List<String> events;
 
-
-    // Constructor
-    public User(String id, String name, String email, String password, List<String> events) {
+    public User(String id, String name, String email, String password, UserRoles role, List<String> events) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.events = events;
     }
-
 
     // Getters and Setters
     public String getId() {
@@ -41,8 +43,23 @@ public class User {
         return email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getGrantedAuthorities();
+    }
+
+    @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public UserRoles getRole() {
+        return role;
     }
 
     public List<String> getEvents() {
@@ -61,6 +78,10 @@ public class User {
         this.password = password;
     }
 
+    public void setRole(UserRoles role) {
+        this.role = role;
+    }
+
     public void setEvents(List<String> events) {
         this.events = events;
     }
@@ -75,10 +96,7 @@ public class User {
         List<String> newEvents = List.copyOf(events);
 
         // Create a new user object with the copied fields
-        User newUser = new User(id, name, email, password, newEvents);
-
-        // Return the new user object
-        return newUser;
+        return new User(id, name, email, password, role, newEvents);
     }
 
     // Add an event to the user
@@ -100,7 +118,12 @@ public class User {
         name = updateUser.getName() == null ? name : updateUser.getName();
         email = updateUser.getEmail() == null ? email : updateUser.getEmail();
         password = updateUser.getPassword() == null ? password : updateUser.getPassword();
+        role = updateUser.getRole() == null ? role : updateUser.getRole();
         events = updateUser.getEvents() == null ? events : updateUser.getEvents();
+    }
+
+    public UserView toUserView() {
+        return new UserView(id, null, name, email, role, events);
     }
 
     // Override the toString method
@@ -111,7 +134,52 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role + '\''+
                 ", events=" + events +
                 '}';
+    }
+
+    public static class Builder {
+
+        private String id;
+        private String name;
+        private String email;
+        private String password;
+        private UserRoles role;
+        private List<String> events;
+
+        public Builder addId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder addName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder addEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder addPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder addRole(UserRoles role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder addEvents(List<String> events) {
+            this.events = events;
+            return this;
+        }
+
+        public User build() {
+            return new User(id, name, email, password, role, events);
+        }
     }
 }

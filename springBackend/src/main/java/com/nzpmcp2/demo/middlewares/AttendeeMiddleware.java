@@ -13,14 +13,20 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 @Service
 public class AttendeeMiddleware {
 
-    @Autowired
-    public EventRepository eventRepo;
-    @Autowired
-    public UserRepository userRepo;
-    @Autowired
-    public EventMiddleware eventMid;
-    @Autowired
-    public UserMiddleware userMid;
+    private final EventRepository eventRepo;
+    private final UserRepository userRepo;
+    private final EventMiddleware eventMid;
+    private final UserMiddleware userMid;
+
+    public AttendeeMiddleware(EventRepository eventRepo,
+                              UserRepository userRepo,
+                              EventMiddleware eventMid,
+                              UserMiddleware userMid) {
+        this.eventRepo = eventRepo;
+        this.userRepo = userRepo;
+        this.eventMid = eventMid;
+        this.userMid = userMid;
+    }
 
     // Remove user from all joined events
     public void removeUserFromEvents(String userId) {
@@ -35,7 +41,9 @@ public class AttendeeMiddleware {
                     Event event = eventMid.checkEventExists(eventId);
                     event.removeAttendee(userId);
                     eventRepo.save(event);
-                } catch (Exception e) { continue; }
+                } catch (Exception e) {
+                    // Do nothing, simply do not remove non-existent user
+                }
             }
 
         } catch (Exception e) {
@@ -56,7 +64,9 @@ public class AttendeeMiddleware {
                     User user = userMid.checkUserExists(userId);
                     user.removeEvent(eventId);
                     userRepo.save(user);
-                } catch (Exception e) { continue; }
+                } catch (Exception e) {
+                    // Do nothing, simply do not remove non-existent event
+                }
             }
 
         } catch (Exception e) {

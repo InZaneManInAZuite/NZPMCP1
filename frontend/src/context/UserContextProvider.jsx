@@ -18,6 +18,7 @@ const UserContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [events, setEvents] = useState([])
     const [isAdmin, setIsAdmin] = useState(false)
+    const [jwtToken, setJwtToken] = useState("")
 
     // Admin credentials
     const ADMIN_ID = import.meta.env.VITE_ADMIN_ID
@@ -44,8 +45,6 @@ const UserContextProvider = ({ children }) => {
             setIsLogged(false)
             setUser(null)
         } else {
-            document.cookie = `email=${user.email}; path=/; secure`
-            document.cookie = `password=${user.password}; path=/; secure`
             setIsLogged(true)
             setUser(user)
         }
@@ -54,7 +53,7 @@ const UserContextProvider = ({ children }) => {
     /**
      * Function to handle cases where user is an admin
      * 
-     * @param {bool} bool it is a boolean value that indicates if the user is an admin
+     * @param {boolean} bool it is a boolean value that indicates if the user is an admin
      */
     const handleAdmin = (bool) => {
         if (!bool) {
@@ -62,8 +61,7 @@ const UserContextProvider = ({ children }) => {
             setIsAdmin(false)
             return
         }
-        document.cookie = `email=${ADMIN_ID}; path=/; secure`
-        document.cookie = `password=${ADMIN_PW}; path=/; secure`
+
         setIsAdmin(true)
         setIsLogged(true)
     }
@@ -102,10 +100,12 @@ const UserContextProvider = ({ children }) => {
         user: user,
         events: events,
         isAdmin: isAdmin,
+        jwtToken: jwtToken,
         setIsLogged: setIsLogged,
         setUser: setUser,
         setEvents: setEvents,
         setIsAdmin: setIsAdmin,
+        setJwtToken: setJwtToken,
         emailIsValid: emailIsValid,
         handleUser: handleUser,
         handleAdmin: handleAdmin,

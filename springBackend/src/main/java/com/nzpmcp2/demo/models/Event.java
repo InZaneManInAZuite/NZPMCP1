@@ -15,7 +15,7 @@ public class Event {
     private String name;
     private String date;
     private String description;
-    private List<String> attendees = List.of();
+    private List<String> attendees;
 
 
     // Constructors

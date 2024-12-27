@@ -11,9 +11,13 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 
 @Service
 public class UserMiddleware {
-    
+
+    private final UserRepository userRepository;
+
     @Autowired
-    public UserRepository userRepository;
+    public UserMiddleware(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     // Check if user exists
     public User checkUserExists(String id) {
@@ -48,7 +52,7 @@ public class UserMiddleware {
 
         // Check if email is already in use
         for (User existingUser : allUsers) {
-            if (existingUser.getEmail() == email) {
+            if (existingUser.getEmail().equals(email)) {
                 throw new IllegalStateException("Email already in use");
             }
         }

@@ -16,7 +16,7 @@ const LoginForm = () => {
 
 
     // Manage states and contexts
-    const { handleUser, emailIsValid, handleAdmin, ADMIN_ID, ADMIN_PW } = useContext(UserContext)
+    const { handleUser, emailIsValid, handleAdmin, ADMIN_ID, ADMIN_PW, setJwtToken } = useContext(UserContext)
     const [loginFail, toggleLoginFail] = useState(false);
 
     // Create a navigate function for redirecting the user
@@ -73,9 +73,17 @@ const LoginForm = () => {
                 // Store the user in the context
                 handleUser(user)
 
+                if (user.role === `ADMIN`) {
+                    handleAdmin(true)
+                }
+
                 // Set the email and password in the cookies
-                document.cookie = `email=${user.email}; path=/; secure`
-                document.cookie = `password=${user.password}; path=/; secure`
+                document.cookie = `email=${user.email}; path=/; SameSite=Strict; secure; HttpOnly`
+                document.cookie = `password=${password}; path=/; SameSite=Strict; secure; HttpOnly`
+
+                setJwtToken(user.token)
+
+                // TODO: ADD REFRESH TOKEN LATER
 
                 // Redirect the user to the landing page
                 navigate('/')
@@ -84,6 +92,8 @@ const LoginForm = () => {
                 toggleLoginFail(true) 
                 console.log(err)
             })
+
+
     }
 
     // Create functions to handle the email and password changes
