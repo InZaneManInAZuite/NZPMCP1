@@ -1,18 +1,17 @@
-import {Card, Button, Paper, Title, Text, UnstyledButton} from '@mantine/core';
+import {Card, Button, Paper, Title, Text, UnstyledButton, Modal} from '@mantine/core';
 import classes from './EventsCard.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../context/UserContext';
 import { useContext, useState, useEffect } from 'react';
 import { addAttendeeToEvent } from '../../services/attendee.services';
-import {
-    IconEdit,
-    IconTrash,
-} from "@tabler/icons-react";
+import {useDisclosure} from "@mantine/hooks";
+import EventUpdateModal from "../EventUpdateModal/EventUpdateModal.jsx";
 
 const EventsCard = ({ event }) => {
 
     const { isLogged, user, setUser, isAdmin } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
+    const [ opened, { open, close }] = useDisclosure(false);
 
     const handleClick = () => {
         if (isJoined) {
@@ -38,9 +37,13 @@ const EventsCard = ({ event }) => {
 
     return (
         <Card className={classes.card} withBorder>
+            <EventUpdateModal event={event} opened={opened} close={close}/>
             <Paper className={classes.eventSection}>
                 <Paper className={classes.titleSection}>
-                    <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
+                    <UnstyledButton onClick={open}>
+                        <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
+                    </UnstyledButton>
+
                 </Paper>
                 <Text lineClamp={3}>{formattedDate} - {event.description}</Text>
             </Paper>
@@ -54,6 +57,8 @@ const EventsCard = ({ event }) => {
                         {isJoined ? 'Joined' : 'Join'}
                     </Button>
                 }
+
+                {isAdmin}
             </Paper>
         </Card>
     )
