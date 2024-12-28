@@ -21,7 +21,7 @@ const QuestionCard = ({ question }) => {
                             fw = 700;
                         }
                         return (
-                            <Group key={option} className={classes.optionSection}>
+                            <Group key={option + index} className={classes.optionSection}>
                                 <Card className={classes.options}>
                                     <Text  fw={fw}>
                                         {String.fromCharCode(97 + index)} - {option}

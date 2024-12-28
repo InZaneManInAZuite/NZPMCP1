@@ -5,6 +5,7 @@ import classes from './AdminLanding.module.css';
 import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import UsersList from '../UsersList/UsersList';
 import QuestionsList from "../QuestionsList/QuestionsList.jsx";
+import CompetitionList from "../CompetitionsList/CompetitionsList.jsx";
 
 const AdminLanding = () => {
     return (
@@ -23,6 +24,9 @@ const AdminLanding = () => {
 
                 <Title mb='xl' mt='xl'>Questions</Title>
                 <QuestionsList />
+
+                <Title mb='xl' mt='xl'>Competitions</Title>
+                <CompetitionList />
             </ScrollArea>
         </Paper>
     );

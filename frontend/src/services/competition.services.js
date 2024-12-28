@@ -2,8 +2,12 @@ import axios from '../api/axios.js'
 
 const COMPETE_URL = `/competitions`
 
-const getAllCompetitions = () => {
-    const request = axios.get(COMPETE_URL)
+const getAllCompetitions = (jwtToken) => {
+    const request = axios.get(COMPETE_URL, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    })
     return request.then(response => response.data)
 }
 
