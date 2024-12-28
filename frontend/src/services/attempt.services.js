@@ -1,6 +1,6 @@
 import axios from '../api/axios.js'
 
-const ATTEMPT_URL = `/competitions`
+const ATTEMPT_URL = `/attempts`
 
 const getAllAttempts = () => {
     const request = axios.get(ATTEMPT_URL)

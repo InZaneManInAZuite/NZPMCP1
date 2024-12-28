@@ -1,9 +1,13 @@
 import axios from '../api/axios.js'
 
-const QUESTION_URL = `/competitions`
+const QUESTION_URL = `/questions`
 
-const getAllQuestions = () => {
-    const request = axios.get(QUESTION_URL)
+const getAllQuestions = (jwtToken) => {
+    const request = axios.get(QUESTION_URL, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    })
     return request.then(response => response.data)
 }
 
