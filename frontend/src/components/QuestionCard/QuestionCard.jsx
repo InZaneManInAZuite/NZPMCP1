@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 
 const QuestionCard = ({ question }) => {
 
-    console.log(question)
-
     return (
         <Card className={classes.card} withBorder>
             <Paper className={classes.eventSection}>

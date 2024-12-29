@@ -2,7 +2,7 @@ import {Card, Paper, Title, Text, Code, Group} from '@mantine/core';
 import classes from './UserCard.module.css';
 import PropTypes from 'prop-types';
 
-const UserCard = ({ user }) => {
+const UserCard = ({ item: user }) => {
 
     return (
         <Card className={classes.card} withBorder>
@@ -21,10 +21,11 @@ const UserCard = ({ user }) => {
     )
 
 
+
 }
 
 UserCard.propTypes = {
-    user: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
 }
 
 export default UserCard;

@@ -6,6 +6,7 @@ import { useContext, useState, useEffect } from 'react';
 import { addAttendeeToEvent } from '../../services/attendee.services';
 import {useDisclosure} from "@mantine/hooks";
 import EventUpdateModal from "../EventUpdateModal/EventUpdateModal.jsx";
+import { IconDotsVertical } from "@tabler/icons-react";
 
 const EventsCard = ({ event }) => {
 
@@ -40,7 +41,7 @@ const EventsCard = ({ event }) => {
             <EventUpdateModal event={event} opened={opened} close={close}/>
             <Paper className={classes.eventSection}>
                 <Paper className={classes.titleSection}>
-                    <UnstyledButton onClick={open}>
+                    <UnstyledButton>
                         <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
                     </UnstyledButton>
 
@@ -58,7 +59,11 @@ const EventsCard = ({ event }) => {
                     </Button>
                 }
 
-                {isAdmin}
+                {isAdmin && (
+                    <UnstyledButton onClick={open}>
+                        <IconDotsVertical/>
+                    </UnstyledButton>
+                )}
             </Paper>
         </Card>
     )

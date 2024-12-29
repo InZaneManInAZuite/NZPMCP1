@@ -60,7 +60,7 @@ const UsersList = () => {
             <Card.Section withBorder>
                 <ScrollArea className={classes.scroll} scrollbars='y' type='scroll'>
                     <Card className={classes.eventsList}>
-                        {filtered.map(user => ( <UserCard key={user.id} user={user} />))}
+                        {filtered.map(user => ( <UserCard key={user.id} item={user} />))}
                     </Card>
                 </ScrollArea>
             </Card.Section>

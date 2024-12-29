@@ -15,6 +15,7 @@ const getEvent = (id) => {
 const removeEvent = (id, jwtToken) => {
     const request = axios.delete(`${EVENT_URL}/${id}`, {
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })

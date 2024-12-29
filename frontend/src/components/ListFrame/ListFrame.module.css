@@ -1,0 +1,21 @@
+.layout {
+    height: 670px;
+    width: 75%;
+    margin: 0 auto 50px;
+
+    @media (max-width: 750px) {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+.multi {
+    width: 10px;
+}
+
+
+.nonSearch {
+    @media (max-width: 750px) {
+        display: none;
+    }
+}

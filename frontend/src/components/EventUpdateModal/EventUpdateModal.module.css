@@ -15,6 +15,12 @@
 }
 
 .save {
-    margin-top: 20px;
-    width: 100%;
+    margin: 20px;
+    width: 50%;
+}
+
+.buttonGroup {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
 }

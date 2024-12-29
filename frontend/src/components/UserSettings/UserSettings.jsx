@@ -110,16 +110,13 @@ const UserSettings = () => {
 
                     </form>
                 )}
-                {!isEditing && !isAdmin && (
+                {!isEditing && (
                     <div>
                         <Text>Name: {user?.name}</Text>
                         <Text>Email: {user?.email}</Text>
                         <Button className={classes.edit} onClick={() => setIsEditing(true)}>Edit</Button>
                         <Button className={classes.logout} onClick={() => handleLogout()}>Log Out</Button>
                     </div>
-                )}
-                {isAdmin && (
-                    <Button className={classes.logout} onClick={() => handleLogout()}>Logout</Button>
                 )}
             </Card>
         </Paper>

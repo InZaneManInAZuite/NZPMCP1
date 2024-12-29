@@ -6,6 +6,7 @@ import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import UsersList from '../UsersList/UsersList';
 import QuestionsList from "../QuestionsList/QuestionsList.jsx";
 import CompetitionList from "../CompetitionsList/CompetitionsList.jsx";
+import TestList from "../TestList/TestList.jsx";
 
 const AdminLanding = () => {
     return (
@@ -16,17 +17,8 @@ const AdminLanding = () => {
             </Paper>
 
             <ScrollArea mt='xl' className={classes.lists}>
-                <Title mb='xl' mt='xl'>Events</Title>
-                <EventsList />
-
-                <Title mb='xl' mt='xl'>Users</Title>
-                <UsersList />
-
-                <Title mb='xl' mt='xl'>Questions</Title>
-                <QuestionsList />
-
-                <Title mb='xl' mt='xl'>Competitions</Title>
-                <CompetitionList />
+                <Title mb='xl' mt='xl'>Test</Title>
+                <TestList />
             </ScrollArea>
         </Paper>
     );

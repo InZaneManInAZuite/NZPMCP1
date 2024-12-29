@@ -63,8 +63,7 @@ public class EventService {
             // Check if event exists
             eventMid.checkEventExists(id);
 
-            // Remove event from all joined users
-            attendeeMid.removeEventFromUsers(id);
+            // TODO: REMOVE EVENT FROM EVERYWHERE ELSE
 
             // Delete event
             eventRepo.deleteById(id);

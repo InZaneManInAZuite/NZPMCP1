@@ -1,9 +1,9 @@
-import {Paper, Card, Title, Divider, TextInput, Button, Modal, Textarea} from '@mantine/core'
+import {Paper, Card, Title, Divider, TextInput, Button, Modal, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import UserContext from '../../context/UserContext'
 import {useContext, useState} from 'react'
 import classes from './EventUpdateModal.module.css'
-import { updateEvent } from '../../services/event.services'
+import {removeEvent, updateEvent} from '../../services/event.services'
 import '@mantine/dates/styles.css'
 import { DatePickerInput } from '@mantine/dates'
 import PropTypes from "prop-types";
@@ -32,6 +32,15 @@ const EventUpdateModal = ({event, opened, close}) => {
             }
         }
     });
+
+    const handleDelete = () => {
+        removeEvent(event.id, jwtToken)
+            .then(() => {
+                setEvents(events.filter(eachEvent => eachEvent.id !== event.id));
+                close();
+            })
+            .catch((err) => console.log(err));
+    }
 
 
     const handleUpdate = () => {
@@ -92,12 +101,23 @@ const EventUpdateModal = ({event, opened, close}) => {
                             value={newDate}
                             onChange={setNewDate}
                         />
-                        <Button
-                            className={classes.save}
-                            type='submit'
-                        >
-                            Update Event
-                        </Button>
+
+                        <Card className={classes.buttonGroup}>
+                            <Button
+                                className={classes.save}
+                                type='submit'
+                            >
+                                Save Event
+                            </Button>
+
+                            <Button
+                                className={classes.save}
+                                onClick={handleDelete}
+                            >
+                                Remove Event
+                            </Button>
+                        </Card>
+
                     </form>
                 </Card>
             </Paper>
