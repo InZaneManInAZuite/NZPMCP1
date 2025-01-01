@@ -33,5 +33,14 @@
 }
 
 .title {
-    align-tracks: start;    
+    align-tracks: start;
+}
+
+.frame {
+    margin: auto;
+    width: 700px;
+
+    @media (max-width: 1050px) {
+        width: 100%;
+    }
 }

@@ -2,7 +2,7 @@ import {Card, Checkbox, Group, LoadingOverlay, ScrollArea, Text, TextInput} from
 import UserContext from '../../context/UserContext';
 import {useContext, useEffect, useState} from 'react';
 import classes from './EventsList.module.css';
-import EventsCard from '../EventsCard/EventsCard';
+import EventsCard from '../Admin/Mains/Events/EventsCard.jsx';
 
 const EventsList = () => {
 

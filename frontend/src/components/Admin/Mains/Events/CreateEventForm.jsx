@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 import { createEvent } from '../../../../services/event.services.js'
 import '@mantine/dates/styles.css'
 import { DatePickerInput } from '@mantine/dates'
-import classes from './CreateEventForm.module.css'
+import classes from './AdminEvents.module.css'
 
 const CreateEventForm = () => {
 

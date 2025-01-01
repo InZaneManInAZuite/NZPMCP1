@@ -22,7 +22,7 @@ import {
 import {useToggle} from "@mantine/hooks";
 
 
-const ListFrame = ({ getAllFunc,
+const ListFrame = ({ items,
                        Component,
                        search = ['title'],
                        sort = search,
@@ -36,19 +36,8 @@ const ListFrame = ({ getAllFunc,
 
 
     // MARK: Initialize
-    // Start obtaining data from api and set up filtered list
-    const [ items, setItems ] = useState([]);
-    const { jwtToken } = useContext(UserContext);
     const [ filtered, setFiltered ] = useState([]);
     const [ hasBeenFiltered, setHasBeenFiltered ] = useState(false)
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const allItems = await getAllFunc(jwtToken)
-            setItems(allItems)
-        }
-        fetchData()
-    }, [getAllFunc, jwtToken])
 
 
 
@@ -260,7 +249,7 @@ const ListFrame = ({ getAllFunc,
 // MARK: Proptypes
 // List property types inserted into ListFrame
 ListFrame.propTypes = {
-    getAllFunc: PropTypes.func.isRequired,
+    items: PropTypes.array.isRequired,
     Component: PropTypes.elementType.isRequired,
 
     search: PropTypes.oneOfType([

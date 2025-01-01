@@ -1,5 +1,5 @@
 import NavBarAdmin from "../components/NavBarAdmin/NavBarAdmin.jsx";
-import AdminMainEvents from "../components/Admin/Mains/AdminMainEvents.jsx";
+import AdminMainEvents from "../components/Admin/Mains/Events/AdminMainEvents.jsx";
 
 
 const AdminEventsPage = () => {
