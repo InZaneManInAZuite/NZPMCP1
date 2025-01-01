@@ -1,9 +1,9 @@
 import ListFrame from "../../../ListFrame/ListFrame.jsx";
-import {Paper} from "@mantine/core";
+import {Card, Center, Paper} from "@mantine/core";
 import {getAllEvents} from "../../../../services/event.services.js";
 import EventsCard from "./EventsCard.jsx";
-import CreateEventForm from "./CreateEventForm.jsx";
-import {useContext, useEffect} from "react";
+import EventForm from "./EventForm.jsx";
+import { useContext, useEffect } from "react";
 import UserContext from "../../../../context/UserContext.js";
 
 
@@ -34,7 +34,12 @@ const AdminMainEvents = () => {
                 checkBoxLabel='Include Previous Events'
             />
 
-            <CreateEventForm/>
+            <Center>
+                <Card p='xl' radius='xl' mt='xl'  w='700px'>
+                    <EventForm/>
+                </Card>
+            </Center>
+
         </Paper>
     )
 }

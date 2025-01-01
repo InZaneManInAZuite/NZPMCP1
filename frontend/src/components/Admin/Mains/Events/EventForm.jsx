@@ -1,20 +1,30 @@
-import {Title, Divider, TextInput, Button, Modal, Textarea, Group, Checkbox, Paper, Flex} from '@mantine/core'
+import {
+    Title,
+    Divider,
+    TextInput,
+    Button,
+    Textarea,
+    Checkbox,
+    Flex,
+    Group,
+    Stack
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import UserContext from '../../../../context/UserContext.js'
 import {useContext, useEffect, useState} from 'react'
-import {updateEvent} from '../../../../services/event.services.js'
+import {createEvent, updateEvent} from '../../../../services/event.services.js'
 import '@mantine/dates/styles.css'
-import {DatePickerInput, TimeInput} from '@mantine/dates'
+import { DatePickerInput, TimeInput } from '@mantine/dates'
 import PropTypes from "prop-types";
 
-const EventUpdateModal = ({event, opened, close}) => {
+const EventForm = ({event, close}) => {
 
     const {events, setEvents, jwtToken } = useContext(UserContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
 
-    const [ startChecked, setStartChecked ] = useState(event.start);
-    const [ endChecked, setEndChecked ] = useState(event.end);
-    const [ locatedChecked, setLocatedChecked ] = useState(event.location);
+    const [ startChecked, setStartChecked ] = useState(event?.start || false);
+    const [ endChecked, setEndChecked ] = useState(event?.end || false);
+    const [ locatedChecked, setLocatedChecked ] = useState(event?.location || false);
 
     const handleNameChange = (event) => form.setFieldValue('name', event.currentTarget.value);
     const handleDescriptionChange = (event) => form.setFieldValue('description', event.currentTarget.value);
@@ -46,17 +56,14 @@ const EventUpdateModal = ({event, opened, close}) => {
 
 
 
-
-
-
     const form = useForm({
         initialValues: {
-            name: event.name,
-            date: event.date,
-            description: event.description,
-            location: event.location,
-            start: event.start,
-            end: event.end,
+            name: event?.name,
+            date: event?.date || new Date(),
+            description: event?.description,
+            location: event?.location,
+            start: event?.start,
+            end: event?.end,
         },
         validate: {
             name: (value) => {
@@ -69,6 +76,16 @@ const EventUpdateModal = ({event, opened, close}) => {
                     return 'Description is required'
                 }
             },
+            date: (value) => {
+                if (value.length === 0) {
+                    return 'Date is required'
+                }
+            },
+            start: (value) => {
+                if ((new Date(form.values.start)) < (new Date(value))) {
+                    return 'Ending time must be after start time'
+                }
+            }
         }
     });
 
@@ -79,7 +96,7 @@ const EventUpdateModal = ({event, opened, close}) => {
     const getNewEvent = () => {
         const converted = `${(new Date(form.values.date)).toISOString().substring(0, 23)}+00:00`
         return {
-            id: event.id,
+            id: event?.id,
             name: form.values.name,
             date: converted,
             description: form.values.description,
@@ -91,15 +108,19 @@ const EventUpdateModal = ({event, opened, close}) => {
 
     const getOldEvent = () => {
         return {
-            id: event.id,
-            name: event.name,
-            date: event.date,
-            description: event.description,
-            location: event.location,
-            start: event.start,
-            end: event.end,
+            id: event?.id,
+            name: event?.name,
+            date: event?.date,
+            description: event?.description,
+            location: event?.location,
+            start: event?.start,
+            end: event?.end,
         }
     }
+
+
+
+
 
     useEffect(() => {
         const newEvent = getNewEvent()
@@ -111,9 +132,24 @@ const EventUpdateModal = ({event, opened, close}) => {
 
 
 
+    const handleCreate = () => {
+        const newEvent = getNewEvent()
+        createEvent(newEvent, jwtToken)
+            .then((eventMade) => {
+                setEvents(events.concat(eventMade))
+                form.setFieldValue('name', '');
+                form.setFieldValue('date', '');
+                form.setFieldValue('description', '');
+                form.setFieldValue('location', '');
+                form.setFieldValue('start', '');
+                form.setFieldValue('end', '');
+            })
+            .catch((err) => console.log(err))
+    }
+
     const handleUpdate = () => {
         const newEvent = getNewEvent()
-        updateEvent(event.id, newEvent, jwtToken)
+        updateEvent(event?.id, newEvent, jwtToken)
             .then(() => {
                 setEvents(events.map(eachEvent => {
                     if (eachEvent.id === event.id) {
@@ -132,15 +168,19 @@ const EventUpdateModal = ({event, opened, close}) => {
 
 
     return (
-        <Modal size='800px' opened={opened} onClose={close}>
+            <>
+                {(event) ? (
                     <Title order={3}>Update Event</Title>
-                    <Divider mb='xl' mt='md'/>
+                ) : (
+                    <Title order={2}>Create New Event</Title>
+                )}
 
 
 
 
 
-                    <form onSubmit={form.onSubmit(() => handleUpdate())}>
+                <Divider m='md'/>
+                    <form onSubmit={form.onSubmit(() => handleCreate())}>
                         <TextInput
                             required
                             label='Name'
@@ -152,13 +192,12 @@ const EventUpdateModal = ({event, opened, close}) => {
                         <Textarea
                             required
                             autosize
-                            minRows={4}
                             label='Description'
+                            minRows={4}
                             placeholder='Enter event description'
                             value={form.values.description}
                             onChange={handleDescriptionChange}
                             error={form.errors.description}
-                            mt='md'
                         />
 
 
@@ -175,7 +214,7 @@ const EventUpdateModal = ({event, opened, close}) => {
                             onChange={handleDateChange}
                         />
                         <Flex gap='xl' wrap='wrap'  mt='lg'>
-                            <Paper>
+                            <Stack>
                                 <Checkbox
                                     label='With Starting Time'
                                     checked={startChecked}
@@ -187,8 +226,8 @@ const EventUpdateModal = ({event, opened, close}) => {
                                     value={form.values.start}
                                     onChange={handleStartChange}
                                 />
-                            </Paper>
-                            <Paper>
+                            </Stack>
+                            <Stack>
                                 <Checkbox
                                     label='With Ending Time'
                                     checked={endChecked}
@@ -201,7 +240,7 @@ const EventUpdateModal = ({event, opened, close}) => {
                                     value={form.values.end}
                                     onChange={handleEndChange}
                                 />
-                            </Paper>
+                            </Stack>
                         </Flex>
 
 
@@ -215,6 +254,7 @@ const EventUpdateModal = ({event, opened, close}) => {
                             onChange={onLocatedClicked}
                         />
                         <TextInput
+                            mt='sm'
                             label='Location'
                             placeholder='Enter event location'
                             value={form.values.location}
@@ -225,20 +265,29 @@ const EventUpdateModal = ({event, opened, close}) => {
 
 
 
-
                         <Divider m='lg' variant='dashed'/>
-                        <Group justify='center' mt='xl' gap='xl' grow>
-                            <Button type='submit' disabled={!changesPresent}>
+                        {(!event ? (
+                            <Button
+                                mt='sm'
+                                w='100%'
+                                type='submit'
+                            >
+                                Create Event
+                            </Button>
+                        ) : (
+                            <Group justify='center' mt='xl' gap='xl' grow>
+                                <Button disabled={!changesPresent}
+                                        onClick={handleUpdate}>
                                     Save
-                            </Button>
+                                </Button>
 
-                            <Button onClick={close}>
-                                Cancel
-                            </Button>
-                        </Group>
+                                <Button onClick={close}>
+                                    Cancel
+                                </Button>
+                            </Group>
+                        ))}
                     </form>
-        </Modal>
-
+            </>
     );
 }
 
@@ -246,10 +295,9 @@ const EventUpdateModal = ({event, opened, close}) => {
 
 
 
-EventUpdateModal.propTypes = {
-    event: PropTypes.object.isRequired,
-    opened: PropTypes.bool,
+EventForm.propTypes = {
+    event: PropTypes.object,
     close: PropTypes.func,
 }
 
-export default EventUpdateModal
+export default EventForm

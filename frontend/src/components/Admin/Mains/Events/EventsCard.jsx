@@ -1,13 +1,13 @@
-import {Card, Button, Paper, Title, Text, UnstyledButton, Flex} from '@mantine/core';
+import {Card, Button, Paper, Title, Text, UnstyledButton, Flex, Modal, Anchor} from '@mantine/core';
 import classes from './AdminEvents.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
 import { addAttendeeToEvent } from '../../../../services/attendee.services.js';
 import {useDisclosure} from "@mantine/hooks";
-import EventUpdateModal from "./EventUpdateModal.jsx";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {removeEvent} from "../../../../services/event.services.js";
+import EventForm from "./EventForm.jsx";
 
 const EventsCard = ({ item: event }) => {
 
@@ -15,18 +15,19 @@ const EventsCard = ({ item: event }) => {
     const [isJoined, setIsJoined] = useState(false);
     const [ openedUpdate, { open, close }] = useDisclosure(false);
 
-    const handleJoin = () => {
-        if (isJoined) {
-            // Leave event
-            return
-        }
-        // Join event
-        const events = user.events;
-        const updatedUser = { ...user, events: events.push(event.id) };
-        setUser(updatedUser, jwtToken);
 
-        setIsJoined(true);
-        addAttendeeToEvent(event.id, user.id);
+
+
+
+    const handleJoin = () => {
+        if (!isJoined) {
+            const events = user.events;
+            const updatedUser = { ...user, events: events.push(event.id) };
+            setUser(updatedUser, jwtToken);
+
+            setIsJoined(true);
+            addAttendeeToEvent(event.id, user.id);
+        }
     }
 
     const handleDelete = () => {
@@ -40,26 +41,46 @@ const EventsCard = ({ item: event }) => {
         }
     }
 
+
+
+
+
     useEffect(() => {
         if (user && user.events) {
             setIsJoined(user.events.includes(event.id));
         }
     }, [])
 
-    const formattedDate = new Date(event.date).toDateString();
+
+
+
 
     return (
         <Card className={classes.card} withBorder>
-            {openedUpdate && (<EventUpdateModal event={event} opened={openedUpdate} close={close}/>)}
+            {openedUpdate && (
+                <Modal opened={openedUpdate} onClose={close} size='800px'>
+                    <EventForm event={event} close={close}/>
+                </Modal>
+            )}
+
+
+
+
+
             <Paper className={classes.eventSection}>
                 <Paper className={classes.titleSection}>
-                    <UnstyledButton>
+                    <Anchor c='white'>
                         <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
-                    </UnstyledButton>
+                    </Anchor>
 
                 </Paper>
-                <Text lineClamp={3}>{formattedDate} - {event.description}</Text>
+                <Text lineClamp={3}>{new Date(event.date).toDateString()} - {event.description}</Text>
             </Paper>
+
+
+
+
+
             <Paper className={classes.buttonSection}>
                 {(isLogged && !isAdmin) && 
                     <Button 
@@ -70,7 +91,6 @@ const EventsCard = ({ item: event }) => {
                         {isJoined ? 'Joined' : 'Join'}
                     </Button>
                 }
-
                 {isAdmin && (
                     <Flex w='fit-content' gap='md'>
                         <UnstyledButton onClick={open}>
@@ -80,14 +100,15 @@ const EventsCard = ({ item: event }) => {
                             <IconTrash size='35px'/>
                         </UnstyledButton>
                     </Flex>
-
                 )}
             </Paper>
         </Card>
     )
-
-
 }
+
+
+
+
 
 EventsCard.propTypes = {
     item: PropTypes.object.isRequired,
