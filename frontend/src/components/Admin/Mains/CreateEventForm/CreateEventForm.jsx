@@ -1,11 +1,11 @@
-import { Paper, Card, Title, Divider, TextInput, Button } from '@mantine/core'
+import {Card, Title, Divider, TextInput, Button, Textarea} from '@mantine/core'
 import { useForm } from '@mantine/form'
-import UserContext from '../../context/UserContext'
+import UserContext from '../../../../context/UserContext.js'
 import { useContext, useState } from 'react'
-import classes from './CreateEventForm.module.css'
-import { createEvent } from '../../services/event.services'
+import { createEvent } from '../../../../services/event.services.js'
 import '@mantine/dates/styles.css'
 import { DatePickerInput } from '@mantine/dates'
+import classes from './CreateEventForm.module.css'
 
 const CreateEventForm = () => {
 
@@ -59,9 +59,8 @@ const CreateEventForm = () => {
     const handleDescriptionChange = (event) => {form.setFieldValue('description', event.currentTarget.value)};
 
     return (
-        <Paper p='xl' className={classes.side}>
-            <Card p='xl'>
-                <Title order={1}>Create New Event</Title>
+            <Card p='xl' radius='xl' mt='xl' className={classes.frame}>
+                <Title order={2}>Create New Event</Title>
                 <Divider m='md'/>
                     <form onSubmit={form.onSubmit(() => handleCreate())}>
                         <TextInput
@@ -72,7 +71,7 @@ const CreateEventForm = () => {
                             onChange={handleNameChange}
                             error={form.errors.name}
                         />
-                        <TextInput
+                        <Textarea
                             required
                             label='Description'
                             placeholder='Enter event description'
@@ -88,15 +87,15 @@ const CreateEventForm = () => {
                             value={newDate}
                             onChange={setNewDate}
                         />
-                        <Button 
-                            className={classes.save} 
+                        <Button
+                            mt='sm'
+                            w='100%'
                             type='submit' 
                         >
                             Create Event
                         </Button>
                     </form>
             </Card>
-        </Paper>
     );
 }
 

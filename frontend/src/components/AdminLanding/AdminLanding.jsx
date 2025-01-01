@@ -2,7 +2,7 @@ import { Paper, ScrollArea, Title } from '@mantine/core'
 import EventsList from '../EventsList/EventsList';
 import UserSettings from '../UserSettings/UserSettings';
 import classes from './AdminLanding.module.css';
-import CreateEventForm from '../CreateEventForm/CreateEventForm';
+import CreateEventForm from '../Admin/Mains/CreateEventForm/CreateEventForm';
 import UsersList from '../UsersList/UsersList';
 import QuestionsList from "../QuestionsList/QuestionsList.jsx";
 import CompetitionList from "../CompetitionsList/CompetitionsList.jsx";

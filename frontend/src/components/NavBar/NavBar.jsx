@@ -14,12 +14,6 @@ import {
     Text
 } from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
-import {
-    IconCalendarEvent,
-    IconSettings,
-    IconTournament,
-    IconTriangle,
-} from "@tabler/icons-react";
 import classes from "./NavBar.module.css";
 import UserContext from "../../context/UserContext.js";
 import PropTypes from "prop-types";
@@ -27,12 +21,6 @@ import LogoutButton from "../LogoutButton/LogoutButton.jsx";
 
 
 
-const navUser = [
-    {link: `/events`, label: `Events`, icon: IconCalendarEvent},
-    {link: `/competitions`, label: `Competitions`, icon: IconTournament},
-    {link: `/attempts`, label: `Attempts`, icon: IconTriangle},
-    {link: `/settings`, label: `Settings`, icon: IconSettings},
-]
 
 
 const NavBar = ({navData, children, pageActive,
@@ -42,7 +30,7 @@ const NavBar = ({navData, children, pageActive,
 
                     withFooter = false,
                     footerComp
-                }) => {
+}) => {
 
     const navigate = useNavigate();
     const { isAdmin, user } = useContext(UserContext);

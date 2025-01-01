@@ -1,11 +1,10 @@
 .layout {
     height: 670px;
-    width: 75%;
-    margin: 0 auto 50px;
+    width: 1000px;
+    margin: 0 auto;
 
-    @media (max-width: 750px) {
-        width: 100%;
-        margin: 0 auto;
+    @media (max-width: 1350px) {
+        width: 100%
     }
 }
 

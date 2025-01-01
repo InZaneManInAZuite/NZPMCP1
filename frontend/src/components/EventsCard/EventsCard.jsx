@@ -1,4 +1,4 @@
-import {Card, Button, Paper, Title, Text, UnstyledButton, Modal} from '@mantine/core';
+import {Card, Button, Paper, Title, Text, UnstyledButton} from '@mantine/core';
 import classes from './EventsCard.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../context/UserContext';
@@ -8,7 +8,7 @@ import {useDisclosure} from "@mantine/hooks";
 import EventUpdateModal from "../EventUpdateModal/EventUpdateModal.jsx";
 import { IconDotsVertical } from "@tabler/icons-react";
 
-const EventsCard = ({ event }) => {
+const EventsCard = ({ item: event }) => {
 
     const { isLogged, user, setUser, isAdmin } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
@@ -72,7 +72,7 @@ const EventsCard = ({ event }) => {
 }
 
 EventsCard.propTypes = {
-    event: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
 }
 
 export default EventsCard;

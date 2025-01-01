@@ -132,9 +132,19 @@ const ListFrame = ({ getAllFunc,
         }
 
         const sorter = (itemsToSort) => {
+            const dataKey = selectedSort ? selectedSort : toSort[0]
+            const dataType = dataKey.includes('date') ? 'date' : (typeof(itemsToSort[0][dataKey]));
             return  itemsToSort.sort((item1, item2) => {
                 const [ itemFrom, itemTo ] = reorder(item1, item2)
-                return itemFrom[selectedSort || toSort[0]].localeCompare(itemTo[selectedSort || toSort[0]])
+                if (dataType === 'date') {
+                    return Date.parse(itemFrom.date)  - Date.parse(itemTo.date)
+                } else if (dataType === 'string') {
+                    return itemFrom[dataKey].localeCompare(itemTo[dataKey])
+                } else if (dataType === 'number') {
+                    return itemFrom[dataKey] - itemTo[dataKey]
+                } else {
+                    return -1
+                }
             })
         }
 
@@ -232,7 +242,7 @@ const ListFrame = ({ getAllFunc,
                 { (hasBeenFiltered ? (
                     <ScrollArea scrollbars='y' type='always' h='600px'>
                         <Card>
-                            {filtered.map(item => <Component key={item[toSearch[0]]} item={item} />)}
+                            {filtered.map(item => <Component key={item.id || item[toSearch[0]]} item={item} />)}
                         </Card>
                     </ScrollArea>
                 ) : <LoadingOverlay visible={true} />
