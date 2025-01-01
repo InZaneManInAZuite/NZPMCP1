@@ -16,6 +16,7 @@ const TestList = () => {
                 Component={UserCard}
                 search={['name', 'email']}
                 filter={{role: ['ADMIN', 'USER']}}
+                withSorter
                 setChecker={setChecker}
                 checkBoxLabel='Include Admins'
 

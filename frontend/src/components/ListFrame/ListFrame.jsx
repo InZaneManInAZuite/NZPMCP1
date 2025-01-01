@@ -31,7 +31,7 @@ const ListFrame = ({ getAllFunc,
                        checkBoxLabel,
                        setChecker}) => {
     
-    
+
 
 
 
@@ -65,7 +65,6 @@ const ListFrame = ({ getAllFunc,
     const toSearch = Array.prototype.concat(search);
     const toSort = Array.prototype.concat(sort);
 
-
     const iconSearch = <IconSearch style={{width: rem(16), height: rem(16)}}/>;
     
 
@@ -84,7 +83,7 @@ const ListFrame = ({ getAllFunc,
 
     // MARK: Categories Filter
     // Manage categories
-    const [ selected, setSelected ] = useState([])
+    const [ selectedFilters, setSelectedFilters ] = useState([])
     const [ cleanCategories, setCleanCategories ] = useState()
 
     useEffect(() => {
@@ -96,6 +95,7 @@ const ListFrame = ({ getAllFunc,
         }))
     }, [])
     
+
 
 
 
@@ -138,16 +138,30 @@ const ListFrame = ({ getAllFunc,
             })
         }
 
+        const chooser = (itemsToChoose) => {
+            if (selectedFilters === null || selectedFilters.length === 0) {
+                return itemsToChoose
+            } else {
+                return itemsToChoose.filter(item => {
+                    return Object.keys(filter).map(category =>
+                        selectedFilters.includes(item[category]))
+                        .includes(true)
+                })
+            }
+        }
 
-        setFiltered(sorter(checker(searcher(items))))
+        setFiltered(sorter(chooser(checker(searcher(items)))));
 
         if (items.length > 0) {
             setHasBeenFiltered(true)
         }
-    }, [searching, items, order, checked, selected, selectedSort]);
+    }, [searching, items, order, checked, selectedFilters, selectedSort]);
 
 
-    
+
+
+    // MARK: ListFrame Header
+    // React components detailing the header of the frame list
     const listFrameHeader = (
         <Card.Section withBorder p='sm'>
             <Group justify='flex-end'>
@@ -161,8 +175,8 @@ const ListFrame = ({ getAllFunc,
                 <Group className={classes.nonSearch}>
                     {withSorter && (<>
                         <Select
+                            size='xs'
                             checkIconPosition='right'
-                            w='100px'
                             data={toSort}
                             value={selectedSort}
                             onChange={setSelectedSort}
@@ -173,24 +187,23 @@ const ListFrame = ({ getAllFunc,
                                 value={order}
                                 onClick={toggleOrder}
                             >
-                                <IconArrowsSort/>
+                                <IconArrowsSort style={{width: rem(16), height: rem(16)}}/>
                             </ActionIcon>
                         }
                     </>)}
 
-                    <MultiSelect
-                        className={{inputField: classes.multi}}
-                        clearable
-                        checkIconPosition='right'
-                        size='xs'
-                        w='200px'
-                        placeholder='Filter'
-                        leftSection={<IconFilter style={{width: rem(16), height: rem(16)}}/>}
-                        value={selected}
-                        onChange={setSelected}
-                        data={cleanCategories}
-                    />
-
+                    {filter && (<>
+                        <MultiSelect
+                            clearable
+                            checkIconPosition='right'
+                            size='xs'
+                            w='200px'
+                            leftSection={<IconFilter style={{width: rem(16), height: rem(16)}}/>}
+                            value={selectedFilters}
+                            onChange={setSelectedFilters}
+                            data={cleanCategories}
+                        />
+                    </>)}
 
                     {setChecker && checkBoxLabel && (
                         <Checkbox
@@ -209,6 +222,7 @@ const ListFrame = ({ getAllFunc,
 
 
 
+    // MARK: Return components
     return (
         <Card className={classes.layout} radius='md'>
 
@@ -221,7 +235,7 @@ const ListFrame = ({ getAllFunc,
                             {filtered.map(item => <Component key={item[toSearch[0]]} item={item} />)}
                         </Card>
                     </ScrollArea>
-                ) : <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
+                ) : <LoadingOverlay visible={true} />
                 )}
 
             </Card.Section>

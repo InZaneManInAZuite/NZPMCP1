@@ -1,24 +1,11 @@
-import { useEffect, useContext } from "react";
-import AdminLanding from "../components/AdminLanding/AdminLanding";
-import { useNavigate } from 'react-router-dom';
-import UserContext from "../context/UserContext";
+import NavBarAdmin from "../components/NavBarAdmin/NavBarAdmin.jsx";
 
 const AdminPage = () => {
-
-  const navigate = useNavigate();
-
-  const { isAdmin } = useContext(UserContext);
-
-  useEffect (() => {
-    if (!isAdmin) {
-      navigate('/');
-    }
-  }, [navigate, isAdmin]);
-
-
-  return (
-    <AdminLanding />
-  );
+  return(
+      <NavBarAdmin pageActive='Events'>
+        <p> HEYYY </p>
+      </NavBarAdmin>
+  )
 }
 
 export default AdminPage;

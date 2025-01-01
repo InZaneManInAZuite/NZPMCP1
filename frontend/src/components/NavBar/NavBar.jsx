@@ -1,93 +1,180 @@
-import classes from './NavBar.module.css';
+import {useEffect, useContext, useState} from "react";
+import { useNavigate } from 'react-router-dom';
+import {
+    Anchor,
+    AppShell,
+    Burger,
+    Card,
+    Divider,
+    Group,
+    LoadingOverlay,
+    NavLink,
+    Paper,
+    Stack,
+    Text
+} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
 import {
     IconCalendarEvent,
-    IconUsers,
+    IconSettings,
     IconTournament,
     IconTriangle,
-    IconQuestionMark,
-    IconSettings,
-    IconUserFilled,
-    IconMail,
-    IconLogout,
-} from '@tabler/icons-react';
-import {useContext, useEffect, useState} from 'react';
+} from "@tabler/icons-react";
+import classes from "./NavBar.module.css";
 import UserContext from "../../context/UserContext.js";
-import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import LogoutButton from "../LogoutButton/LogoutButton.jsx";
 
-const data = [
-    {link: `/admin/events`, label: `Events`, icon: IconCalendarEvent},
-    {link: `/admin/users`, label: `Users`, icon: IconUsers},
-    {link: `/admin/competitions`, label: `Competitions`, icon: IconTournament},
-    {link: `/admin/attempts`, label: `Attempts`, icon: IconTriangle},
-    {link: `/admin/questions`, label: `Questions`, icon: IconQuestionMark},
-    {link: `/admin/settings`, label: `Settings`, icon: IconSettings},
+
+
+const navUser = [
+    {link: `/events`, label: `Events`, icon: IconCalendarEvent},
+    {link: `/competitions`, label: `Competitions`, icon: IconTournament},
+    {link: `/attempts`, label: `Attempts`, icon: IconTriangle},
+    {link: `/settings`, label: `Settings`, icon: IconSettings},
 ]
 
-const NavBar = () => {
 
-    const [active, setActive] = useState(`Users`);
-    const { user, handleUser, isLogged } = useContext(UserContext)
-    const navigate = useNavigate()
+const NavBar = ({navData, children, pageActive,
 
-    useEffect(() => {
+                    withAside = false,
+                    asideComp,
 
-    }, [isLogged]);
+                    withFooter = false,
+                    footerComp
+                }) => {
 
-    const links = data.map((item) => (
-        <a className={classes.link}
-        data-active={item.label === active || undefined}
-        key={item.label}
-        onClick={(event) => {
-            event.preventDefault();
-            setActive(item.label);
-        }}>
-            <item.icon className={classes.linkIcon} stroke={1.5}></item.icon>
-            <span>{item.label}</span>
-        </a>
+    const navigate = useNavigate();
+    const { isAdmin, user } = useContext(UserContext);
+    const [opened, { toggle }] = useDisclosure()
+    const [ authorized, setAuthorized ] = useState(false)
+    const [active, setActive] = useState(pageActive);
+
+
+
+
+
+    useEffect (() => {
+        if (!isAdmin) {
+            navigate('/');
+        } else {
+            setAuthorized(true)
+        }
+    }, [navigate, isAdmin]);
+
+
+
+
+
+    const links = navData.map((item) => (
+        <NavLink leftSection={<item.icon />}
+                 data-active={item.label === active || undefined}
+                 key={item.label}
+                 onClick={(event) => {
+                     event.preventDefault();
+                     setActive(item.label);
+                     navigate(`/admin/${item.label.toLowerCase()}`)
+                 }}
+                 label={item.label}
+        />
     ))
 
-    const handleSwitch = (link) => {
-        navigate(link);
-    }
-
-    const handleLogout = () => {
-        document.cookie = 'email=; path=/; SameSite=Strict; secure; HttpOnly'
-        document.cookie = 'password=; path=/; SameSite=Strict; secure; HttpOnly'
-        handleUser(null)
-        navigate("/");
-    }
-
-    if (!isLogged) {
-        return(
-            <div>
-                <p>LOGGED OFF</p>
-            </div>
-        )
-    }
 
 
-    return (<nav className={classes.navbar}>
-        <div className={classes.navbarMain}>
-            {links}
-        </div>
-
-        <div className={classes.footer}>
-            <a className={classes.link}>
-                <IconMail className={classes.linkIcon} stroke={1.5}/>
-                <span>user.email</span>
-            </a>
-            <a className={classes.link}>
-                <IconUserFilled className={classes.linkIcon} stroke={1.5}/>
-                <span>user.email</span>
-            </a>
-            <a className={classes.link}>
-                <IconLogout className={classes.linkIcon} stroke={1.5}/>
-                <span>user.email</span>
-            </a>
-        </div>
 
 
-    </nav>)
+    return (
+        <AppShell
+            padding={{
+                base: 10,
+                sm: 15,
+                lg: 'xl'
+            }}
+            header={{
+                height: 60,
+            }}
+            navbar={{
+                width:300,
+                breakpoint: '750px',
+                collapsed: { desktop: false, mobile: !opened }
+            }}
+        >
+            <AppShell.Header>
+                <Group justify='space-between' p='sm'>
+                    <Paper>
+                        <Text size='xl' fw={700}>NZPMC</Text>
+                    </Paper>
+                    <Burger
+                        opened={opened}
+                        onClick={toggle}
+                        size="sm"
+                        className={classes.burger}
+                    />
+                </Group>
+            </AppShell.Header>
+
+
+
+
+
+            {(authorized ? (<>
+                <AppShell.Navbar p='lg'>
+                    <Stack justify='space-between' h='100%'>
+                        <Stack gap='xs' >
+                            {links}
+                        </Stack>
+                        <Stack>
+                            <Divider/>
+                            <Card>
+                                <Text>{user.name}</Text>
+                                <Anchor c='gray' underline='never' ta='left' mb='lg'>{user.email}</Anchor>
+                                <LogoutButton/>
+                            </Card>
+                        </Stack>
+                    </Stack>
+                </AppShell.Navbar>
+                <AppShell.Main>
+                    {children}
+                </AppShell.Main>
+            </>) : (
+                <LoadingOverlay/>
+            ))}
+
+
+
+
+
+            {withAside && (
+                <AppShell.Aside>
+                    {asideComp}
+                </AppShell.Aside>
+            )}
+
+
+
+
+
+            {withFooter && (
+                <AppShell.Footer>
+                    {footerComp}
+                </AppShell.Footer>
+            )}
+        </AppShell>
+    );
 }
 
-export default NavBar
+
+
+
+
+NavBar.propTypes = {
+    navData: PropTypes.array.isRequired,
+    children: PropTypes.element,
+    pageActive: PropTypes.string,
+    withAside: PropTypes.bool,
+    asideComp: PropTypes.element,
+    withFooter: PropTypes.bool,
+    footerComp: PropTypes.element,
+}
+
+export default NavBar;

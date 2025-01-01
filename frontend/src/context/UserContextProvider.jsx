@@ -43,6 +43,7 @@ const UserContextProvider = ({ children }) => {
     const handleUser = (user) => {
         if (!user) {
             setIsLogged(false)
+            setIsAdmin(false)
             setUser(null)
         } else {
             setIsLogged(true)
