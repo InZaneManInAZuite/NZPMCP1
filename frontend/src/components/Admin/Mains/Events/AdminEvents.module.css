@@ -31,16 +31,3 @@
 .button {
     width: 150px;
 }
-
-.title {
-    align-tracks: start;
-}
-
-.frame {
-    margin: auto;
-    width: 700px;
-
-    @media (max-width: 1050px) {
-        width: 100%;
-    }
-}

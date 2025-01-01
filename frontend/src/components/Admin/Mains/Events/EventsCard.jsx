@@ -4,20 +4,37 @@ import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
 import { addAttendeeToEvent } from '../../../../services/attendee.services.js';
-import {useDisclosure} from "@mantine/hooks";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {removeEvent} from "../../../../services/event.services.js";
 import EventForm from "./EventForm.jsx";
+import EventInfo from "./EventInfo.jsx";
 
 const EventsCard = ({ item: event }) => {
 
     const { isLogged, user, setUser, isAdmin, jwtToken, setEvents, events } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
-    const [ openedUpdate, { open, close }] = useDisclosure(false);
+    const [ updateOpened, setUpdateOpened] = useState(false);
+    const [ infoOpened, setInfoOpened] = useState(false)
 
 
 
 
+
+    const handleUpdateClose = () => {
+        setUpdateOpened(false)
+    }
+
+    const handleUpdateOpen = () => {
+        setUpdateOpened(true)
+    }
+
+
+
+
+
+    const handleTitle = () => {
+        setInfoOpened(true)
+    }
 
     const handleJoin = () => {
         if (!isJoined) {
@@ -57,10 +74,14 @@ const EventsCard = ({ item: event }) => {
 
     return (
         <Card className={classes.card} withBorder>
-            {openedUpdate && (
-                <Modal opened={openedUpdate} onClose={close} size='800px'>
-                    <EventForm event={event} close={close}/>
+            {updateOpened && (
+                <Modal opened={updateOpened} onClose={handleUpdateClose} size='800px'>
+                    <EventForm event={event} close={handleUpdateClose}/>
                 </Modal>
+            )}
+
+            {infoOpened && (
+                <EventInfo event={event} opened={infoOpened} setOpened={setInfoOpened}/>
             )}
 
 
@@ -69,7 +90,7 @@ const EventsCard = ({ item: event }) => {
 
             <Paper className={classes.eventSection}>
                 <Paper className={classes.titleSection}>
-                    <Anchor c='white'>
+                    <Anchor c='white' onClick={handleTitle}>
                         <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
                     </Anchor>
 
@@ -93,7 +114,7 @@ const EventsCard = ({ item: event }) => {
                 }
                 {isAdmin && (
                     <Flex w='fit-content' gap='md'>
-                        <UnstyledButton onClick={open}>
+                        <UnstyledButton onClick={handleUpdateOpen}>
                             <IconEdit size='35px'/>
                         </UnstyledButton>
                         <UnstyledButton onClick={handleDelete}>

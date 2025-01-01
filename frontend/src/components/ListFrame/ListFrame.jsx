@@ -10,9 +10,8 @@ import {
     Select,
     TextInput
 } from '@mantine/core';
-import {useContext, useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import classes from './ListFrame.module.css';
-import UserContext from "../../context/UserContext";
 import PropTypes from "prop-types";
 import {
     IconSearch,
@@ -29,7 +28,8 @@ const ListFrame = ({ items,
                        withSorter = false,
                        filter,
                        checkBoxLabel,
-                       setChecker}) => {
+                       setChecker,
+                   }) => {
     
 
 
@@ -93,17 +93,20 @@ const ListFrame = ({ items,
     useEffect(() => {
 
         const searcher = (itemsToSearch) => {
-            return itemsToSearch.filter(item => {
-                const tempo = toSearch.map(info => {
-                    return item[info]?.toLowerCase().includes(searching.toLowerCase());
-                })
-                return tempo.includes(true)
-            });
-
+            if (itemsToSearch?.length > 0) {
+                return itemsToSearch.filter(item => {
+                    const tempo = toSearch.map(info => {
+                        return item[info]?.toLowerCase().includes(searching.toLowerCase());
+                    })
+                    return tempo.includes(true)
+                });
+            } else {
+                return itemsToSearch;
+            }
         }
 
         const checker = (itemsToCheck) => {
-            if (!checked) {
+            if (!checked && itemsToCheck?.length > 0) {
                 return itemsToCheck.filter(item => {
                     return setChecker(item)
                 })
@@ -121,24 +124,28 @@ const ListFrame = ({ items,
         }
 
         const sorter = (itemsToSort) => {
-            const dataKey = selectedSort ? selectedSort : toSort[0]
-            const dataType = dataKey.includes('date') ? 'date' : (typeof(itemsToSort[0][dataKey]));
-            return  itemsToSort.sort((item1, item2) => {
-                const [ itemFrom, itemTo ] = reorder(item1, item2)
-                if (dataType === 'date') {
-                    return Date.parse(itemFrom.date)  - Date.parse(itemTo.date)
-                } else if (dataType === 'string') {
-                    return itemFrom[dataKey].localeCompare(itemTo[dataKey])
-                } else if (dataType === 'number') {
-                    return itemFrom[dataKey] - itemTo[dataKey]
-                } else {
-                    return -1
-                }
-            })
+            if (itemsToSort?.length > 0) {
+                const dataKey = selectedSort ? selectedSort : toSort[0]
+                const dataType = dataKey.includes('date') ? 'date' : (typeof(itemsToSort[0][dataKey] || 'string'));
+                return  itemsToSort.sort((item1, item2) => {
+                    const [ itemFrom, itemTo ] = reorder(item1, item2)
+                    if (dataType === 'date') {
+                        return Date.parse(itemFrom.date)  - Date.parse(itemTo.date)
+                    } else if (dataType === 'string') {
+                        return itemFrom[dataKey].localeCompare(itemTo[dataKey])
+                    } else if (dataType === 'number') {
+                        return itemFrom[dataKey] - itemTo[dataKey]
+                    } else {
+                        return -1
+                    }
+                })
+            } else {
+                return itemsToSort
+            }
         }
 
         const chooser = (itemsToChoose) => {
-            if (selectedFilters === null || selectedFilters.length === 0) {
+            if (selectedFilters?.length === 0 || !filter) {
                 return itemsToChoose
             } else {
                 return itemsToChoose.filter(item => {
@@ -149,9 +156,14 @@ const ListFrame = ({ items,
             }
         }
 
-        setFiltered(sorter(chooser(checker(searcher(items)))));
+        const afterSearched = searcher(items);
+        const afterChecked = checker(afterSearched);
+        const afterChoosen = chooser(afterChecked);
+        const afterSorted = sorter(afterChoosen);
 
-        if (items.length > 0) {
+        setFiltered(afterSorted);
+
+        if (items?.length > 0) {
             setHasBeenFiltered(true)
         }
     }, [searching, items, order, checked, selectedFilters, selectedSort]);
@@ -231,7 +243,7 @@ const ListFrame = ({ items,
                 { (hasBeenFiltered ? (
                     <ScrollArea scrollbars='y' type='always' h='600px'>
                         <Card>
-                            {filtered.map(item => <Component key={item.id || item[toSearch[0]]} item={item} />)}
+                            {filtered?.map(item => <Component key={item.id || item[toSearch[0]]} item={item} />)}
                         </Card>
                     </ScrollArea>
                 ) : <LoadingOverlay visible={true} />
