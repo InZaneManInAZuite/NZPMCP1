@@ -14,7 +14,7 @@ public class RequestManger {
                             auth
                                     /////////// Attendee APIs ///////////
                                     // Removing attendee or getting all attendee from an event needs to be by ADMIN
-                                    .requestMatchers(HttpMethod.PUT, "/events/*/delete/*").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.PUT, "/events/*/remove/*").hasRole(ADMIN)
                                     .requestMatchers(HttpMethod.GET, "/events/*/attendees").hasRole(ADMIN)
                                     // Adding event or getting all events attended by a user needs to be by the user, or
                                     // by an ADMIN

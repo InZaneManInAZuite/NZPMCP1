@@ -2,6 +2,7 @@ package com.nzpmcp2.demo.models;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.nzpmcp2.demo.config.UserRoles;
 import org.springframework.data.annotation.Id;
@@ -103,14 +104,14 @@ public class User implements UserDetails {
     public void addEvent(String eventId) {
         if (events == null) {
             events = List.of(eventId);
-        } else {
+        } else if (!events.contains(eventId)) {
             events.add(eventId);
         }
     }
 
     // Remove an event from the user
     public void removeEvent(String eventId) {
-        events.remove(eventId);
+        events = events.stream().filter(e -> !e.equals(eventId)).toList();
     }
 
     // Update the entire user based on another user

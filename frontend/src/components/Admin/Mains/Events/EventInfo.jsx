@@ -9,7 +9,7 @@ import UserCard from "../../../UserCard/UserCard.jsx";
 const EventInfo = ({event, opened, setOpened}) => {
 
     const { jwtToken, user } = useContext(UserContext);
-    const [ users, setUsers ] = useState();
+    const [ attendees, setAttendees ] = useState();
 
 
 
@@ -18,7 +18,7 @@ const EventInfo = ({event, opened, setOpened}) => {
     useEffect(() => {
         if (user?.role === 'ADMIN') {
             getAllAttendeesForEvent(event.id, jwtToken)
-                .then(attendees => setUsers(attendees))
+                .then(allAttendees => setAttendees(allAttendees))
                 .catch(e => console.log(e.message))
         }
     }, [event, user, jwtToken]);
@@ -97,7 +97,7 @@ const EventInfo = ({event, opened, setOpened}) => {
             {(user?.role === 'ADMIN') && (<>
                 <Text mb='sm'>Attendees:</Text>
                 <ListFrame
-                    items={users}
+                    items={attendees}
                     Component={UserCard}
                     search={['name', 'email']}
                     setChecker={setChecker}

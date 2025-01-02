@@ -1,10 +1,10 @@
-import {Card, Button, Paper, Title, Text, UnstyledButton, Flex, Modal, Anchor, Stack, Group} from '@mantine/core';
+import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group} from '@mantine/core';
 import classes from './AdminEvents.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
-import { addAttendeeToEvent } from '../../../../services/attendee.services.js';
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import {addAttendeeToEvent, removeAttendeeFromEvent} from '../../../../services/attendee.services.js';
+import {IconEdit, IconTrash, IconX} from "@tabler/icons-react";
 import {removeEvent} from "../../../../services/event.services.js";
 import EventForm from "./EventForm.jsx";
 import EventInfo from "./EventInfo.jsx";
@@ -41,11 +41,24 @@ const EventsCard = ({ item: event }) => {
             addAttendeeToEvent(event.id, user.id, jwtToken)
                 .then(() => {
                     const events = user.events;
-                    const updatedUser = { ...user, events: events?.push(event.id) || [event.id] };
+                    const updatedUser = { ...user, events: events?.concat(event.id) || [event.id] };
                     setUser(updatedUser);
                     setIsJoined(true);
                 })
                 .catch(e => console.log(e.message));
+        }
+    }
+
+    const handleUnJoin = () => {
+        if (isJoined && user.role === 'ADMIN') {
+            removeAttendeeFromEvent(event.id, user.id, jwtToken)
+                .then(() => {
+                    const events = user.events;
+                    const updatedUser = { ...user, events: events?.filter((eventId) => eventId !== event.id )};
+                    setUser(updatedUser);
+                    setIsJoined(false)
+                })
+                .catch(e => console.log(e.message))
         }
     }
 
@@ -65,8 +78,8 @@ const EventsCard = ({ item: event }) => {
 
 
     useEffect(() => {
-        if (user && user.events) {
-            setIsJoined(user.events.includes(event.id));
+        if (user?.events) {
+            setIsJoined(user.events?.includes(event.id) || false);
         }
     }, [])
 
@@ -90,45 +103,50 @@ const EventsCard = ({ item: event }) => {
 
 
 
-            <Paper className={classes.eventSection}>
-                <Paper className={classes.titleSection}>
+            <Card p='md'>
+                <Card.Section h='60%' p='md'>
                     <Anchor c='white' onClick={handleTitle}>
                         <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
                     </Anchor>
+                </Card.Section>
 
-                </Paper>
-                <Text lineClamp={3}>{new Date(event.date).toDateString()} - {event.description}</Text>
-            </Paper>
+                <Card.Section p='md'>
+                    <Text lineClamp={3}>{new Date(event.date).toDateString()} - {event.description}</Text>
+                </Card.Section>
+            </Card>
 
 
 
 
+            {(isLogged) && (
+                <Stack h='100%' justify='center' >
+                    {(isAdmin) && (
+                        <Group w='100%' gap='md' justify='center'>
+                            <UnstyledButton onClick={handleUpdateOpen}>
+                                <IconEdit size='35px'/>
+                            </UnstyledButton>
+                            <UnstyledButton onClick={handleDelete}>
+                                <IconTrash size='35px'/>
+                            </UnstyledButton>
+                        </Group>
+                    )}
 
-            <Paper className={classes.buttonSection}>
-                {(isLogged) && (
-                    <Stack>
-                        {isAdmin && (
-                            <Group w='100%' gap='md' justify='center'>
-                                <UnstyledButton onClick={handleUpdateOpen}>
-                                    <IconEdit size='35px'/>
-                                </UnstyledButton>
-                                <UnstyledButton onClick={handleDelete}>
-                                    <IconTrash size='35px'/>
-                                </UnstyledButton>
-                            </Group>
-                        )}
+                    <Button
+                        w='125px'
+                        variant='filled'
+                        color={isJoined ? 'red' : 'blue'}
+                        justify='space-between'
+                        rightSection={(user?.role === 'ADMIN' && isJoined) ? <IconX size='15px' /> : <span/>}
+                        leftSection={<span/>}
+                        disabled={isJoined && user?.role !== 'ADMIN'}
+                        onClick={isJoined ? handleUnJoin : handleJoin}
+                    >
+                        {isJoined ? 'Joined' : 'Join'}
+                    </Button>
 
-                        <Button
-                            disabled={isJoined}
-                            className={classes.button}
-                            onClick={handleJoin}
-                        >
-                            {isJoined ? 'Joined' : 'Join'}
-                        </Button>
-                    </Stack>
-                )}
+                </Stack>
+            )}
 
-            </Paper>
         </Card>
     )
 }

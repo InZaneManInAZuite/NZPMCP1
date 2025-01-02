@@ -1,8 +1,13 @@
 import axios from "../api/axios.js"
 
 const addAttendeeToEvent = (eventId, userId, jwtToken) => {
-    const request = axios.put(`/events/${eventId}/add/${userId}`,{
+    const details = {
+        userId: userId,
+        eventId: eventId,
+    }
+    const request = axios.put(`/events/${eventId}/add/${userId}`, details,{
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });
@@ -10,8 +15,13 @@ const addAttendeeToEvent = (eventId, userId, jwtToken) => {
 }
 
 const removeAttendeeFromEvent = (eventId, userId, jwtToken) => {
-    const request = axios.put(`/events/${eventId}/remove/${userId}`,{
+    const details = {
+        userId: userId,
+        eventId: eventId,
+    }
+    const request = axios.put(`/events/${eventId}/remove/${userId}`, details,{
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });
@@ -21,6 +31,7 @@ const removeAttendeeFromEvent = (eventId, userId, jwtToken) => {
 const getAllAttendeesForEvent = (eventId, jwtToken) => {
     const request = axios.get(`/events/${eventId}/attendees`, {
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });
@@ -30,6 +41,7 @@ const getAllAttendeesForEvent = (eventId, jwtToken) => {
 const getAllEventsOfUser = (userId, jwtToken) => {
     const request = axios.get(`/users/${userId}/events`, {
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });

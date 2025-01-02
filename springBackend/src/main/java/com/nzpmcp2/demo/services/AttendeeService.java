@@ -83,14 +83,17 @@ public class AttendeeService {
             // Get all attendees
             List<String> attendeeIds = event.getAttendees();
             List<User> attendees = new ArrayList<User>(){};
-            for (String id : attendeeIds) {
-                try {
-                    User attendee = userMid.checkUserExists(id);
-                    attendees.add(attendee);
-                } catch (IllegalStateException e) {
-                    // Skip if user not found
+            if (attendeeIds != null) {
+                for (String id : attendeeIds) {
+                    try {
+                        User attendee = userMid.checkUserExists(id);
+                        attendees.add(attendee);
+                    } catch (IllegalStateException e) {
+                        // Skip if user not found
+                    }
                 }
             }
+
 
             return attendees;
         } catch (IllegalStateException e) {
@@ -107,14 +110,17 @@ public class AttendeeService {
             // Get all events
             List<String> eventIds = user.getEvents();
             List<Event> events = new ArrayList<>();
-            for (String id : eventIds) {
-                try {
-                    Event event = eventMid.checkEventExists(id);
-                    events.add(event);
-                } catch (IllegalStateException e) {
-                    // Skip if event not found
+            if (eventIds != null) {
+                for (String id : eventIds) {
+                    try {
+                        Event event = eventMid.checkEventExists(id);
+                        events.add(event);
+                    } catch (IllegalStateException e) {
+                        // Skip if event not found
+                    }
                 }
             }
+
 
             return events;
         } catch (IllegalStateException e) {

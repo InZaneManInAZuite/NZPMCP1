@@ -51,6 +51,9 @@ public class AttendeeController {
     public ResponseEntity<List<User>> getAttendees(@PathVariable String eventId) {
         try {
             List<User> users = attendeeService.getAttendees(eventId);
+            if (users.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
             return ResponseEntity.ok(users);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
@@ -61,6 +64,9 @@ public class AttendeeController {
     public ResponseEntity<List<Event>> getEvents(@PathVariable String userId) {
         try {
             List<Event> events = attendeeService.getEvents(userId);
+            if (events.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
             return ResponseEntity.ok(events);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();

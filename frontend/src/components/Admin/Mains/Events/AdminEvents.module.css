@@ -15,19 +15,3 @@
     padding: 20px;
 }
 
-.titleSection{
-    background: var(--mantine-color-dark);
-    height: 60%;
-}
-
-.buttonSection {
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background: var(--mantine-color-dark);
-}
-
-.button {
-    width: 150px;
-}

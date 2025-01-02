@@ -2,6 +2,7 @@ package com.nzpmcp2.demo.models;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -80,14 +81,14 @@ public class Event {
     public void addAttendee(String attendee) {
         if (attendees == null) {
             attendees = List.of(attendee);
-        } else {
+        } else if (!attendees.contains(attendee)) {
             attendees.add(attendee);
         }
     }
 
     // Remove an attendee from the event
     public void removeAttendee(String attendee) {
-        attendees.remove(attendee);
+        attendees = attendees.stream().filter(user -> !user.equals(attendee)).toList();
     }
 
     // Update the event
