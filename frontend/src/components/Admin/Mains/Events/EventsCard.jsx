@@ -1,4 +1,4 @@
-import {Card, Button, Paper, Title, Text, UnstyledButton, Flex, Modal, Anchor} from '@mantine/core';
+import {Card, Button, Paper, Title, Text, UnstyledButton, Flex, Modal, Anchor, Stack, Group} from '@mantine/core';
 import classes from './AdminEvents.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
@@ -38,12 +38,14 @@ const EventsCard = ({ item: event }) => {
 
     const handleJoin = () => {
         if (!isJoined) {
-            const events = user.events;
-            const updatedUser = { ...user, events: events.push(event.id) };
-            setUser(updatedUser, jwtToken);
-
-            setIsJoined(true);
-            addAttendeeToEvent(event.id, user.id);
+            addAttendeeToEvent(event.id, user.id, jwtToken)
+                .then(() => {
+                    const events = user.events;
+                    const updatedUser = { ...user, events: events?.push(event.id) || [event.id] };
+                    setUser(updatedUser);
+                    setIsJoined(true);
+                })
+                .catch(e => console.log(e.message));
         }
     }
 
@@ -103,25 +105,29 @@ const EventsCard = ({ item: event }) => {
 
 
             <Paper className={classes.buttonSection}>
-                {(isLogged && !isAdmin) && 
-                    <Button 
-                        disabled={isJoined} 
-                        className={classes.button} 
-                        onClick={handleJoin}
-                    >
-                        {isJoined ? 'Joined' : 'Join'}
-                    </Button>
-                }
-                {isAdmin && (
-                    <Flex w='fit-content' gap='md'>
-                        <UnstyledButton onClick={handleUpdateOpen}>
-                            <IconEdit size='35px'/>
-                        </UnstyledButton>
-                        <UnstyledButton onClick={handleDelete}>
-                            <IconTrash size='35px'/>
-                        </UnstyledButton>
-                    </Flex>
+                {(isLogged) && (
+                    <Stack>
+                        {isAdmin && (
+                            <Group w='100%' gap='md' justify='center'>
+                                <UnstyledButton onClick={handleUpdateOpen}>
+                                    <IconEdit size='35px'/>
+                                </UnstyledButton>
+                                <UnstyledButton onClick={handleDelete}>
+                                    <IconTrash size='35px'/>
+                                </UnstyledButton>
+                            </Group>
+                        )}
+
+                        <Button
+                            disabled={isJoined}
+                            className={classes.button}
+                            onClick={handleJoin}
+                        >
+                            {isJoined ? 'Joined' : 'Join'}
+                        </Button>
+                    </Stack>
                 )}
+
             </Paper>
         </Card>
     )

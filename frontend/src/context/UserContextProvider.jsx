@@ -41,7 +41,7 @@ const UserContextProvider = ({ children }) => {
      * @param {Object} user refers to the user object
      */
     const handleUser = (user) => {
-        if (user === null) {
+        if (!user) {
             setIsLogged(false)
             setIsAdmin(false)
             setUser(null)

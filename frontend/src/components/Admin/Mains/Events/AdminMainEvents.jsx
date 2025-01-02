@@ -12,15 +12,19 @@ const AdminMainEvents = () => {
     const { jwtToken, events, setEvents } = useContext(UserContext)
 
     useEffect(() => {
-        const fetchData = async () => {
-            const allItems = await getAllEvents(jwtToken)
-            setEvents(allItems)
-        }
-        fetchData()
+        getAllEvents(jwtToken)
+            .then(allEvents => {
+                setEvents(allEvents)
+            })
+            .catch(e => console.log(e.message))
     }, [jwtToken])
 
-    const setChecker = (item) => {
-        return Date.now() < Date.parse(item.date)
+    const setChecker = (item, checked) => {
+        if (checked) {
+            return true
+        } else {
+            return Date.now() < Date.parse(item.date)
+        }
     }
 
     return (
@@ -28,8 +32,8 @@ const AdminMainEvents = () => {
             <ListFrame
                 items={events}
                 Component={EventsCard}
-                search={['name', 'email']}
-                sort={'date'}
+                search={['name', 'description']}
+                sort='date'
                 setChecker={setChecker}
                 checkBoxLabel='Include Previous Events'
             />

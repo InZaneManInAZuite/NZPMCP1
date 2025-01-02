@@ -9,7 +9,7 @@ const LogoutButton = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        handleUser(null)
+        handleUser(undefined)
         navigate('/');
     }
 

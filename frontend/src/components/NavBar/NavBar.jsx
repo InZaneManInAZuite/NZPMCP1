@@ -29,26 +29,15 @@ const NavBar = ({navData, children, pageActive,
                     asideComp,
 
                     withFooter = false,
-                    footerComp
+                    footerComp,
+
+                    authorized = true
 }) => {
 
     const navigate = useNavigate();
-    const { isAdmin, user } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [opened, { toggle }] = useDisclosure()
-    const [ authorized, setAuthorized ] = useState(false)
     const [active, setActive] = useState(pageActive);
-
-
-
-
-
-    useEffect (() => {
-        if (!isAdmin) {
-            navigate('/');
-        } else {
-            setAuthorized(true)
-        }
-    }, [navigate, isAdmin]);
 
 
 
@@ -105,7 +94,7 @@ const NavBar = ({navData, children, pageActive,
 
 
 
-            {(authorized ? (<>
+            {(authorized && user) ? (<>
                 <AppShell.Navbar p='lg'>
                     <Stack justify='space-between' h='100%'>
                         <Stack gap='xs' >
@@ -126,7 +115,7 @@ const NavBar = ({navData, children, pageActive,
                 </AppShell.Main>
             </>) : (
                 <LoadingOverlay/>
-            ))}
+            )}
 
 
 
@@ -163,6 +152,7 @@ NavBar.propTypes = {
     asideComp: PropTypes.element,
     withFooter: PropTypes.bool,
     footerComp: PropTypes.element,
+    authorized: PropTypes.bool,
 }
 
 export default NavBar;

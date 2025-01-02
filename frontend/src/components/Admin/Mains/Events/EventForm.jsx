@@ -34,20 +34,22 @@ const EventForm = ({event, close}) => {
     const handleLocationChange = (event) => form.setFieldValue('location', event.currentTarget.value);
 
     const onEndClicked = (event) => {
-        if (endChecked) form.setFieldValue('end', '');
+        if (endChecked) {
+            form.setFieldValue('end', undefined);
+        }
         setEndChecked(event.currentTarget.checked)
     }
     const onStartClicked = (event) => {
         if (startChecked) {
-            form.setFieldValue('start', '');
-            form.setFieldValue('end', '');
+            form.setFieldValue('start', undefined);
+            form.setFieldValue('end', undefined);
             setEndChecked(false);
         }
         setStartChecked(event.currentTarget.checked);
     }
     const onLocatedClicked = (event) => {
         if (locatedChecked) {
-            form.setFieldValue('location', '');
+            form.setFieldValue('location', undefined);
         }
         setLocatedChecked(event.currentTarget.checked)
     }
@@ -82,8 +84,31 @@ const EventForm = ({event, close}) => {
                 }
             },
             start: (value) => {
-                if ((new Date(form.values.start)) < (new Date(value))) {
-                    return 'Ending time must be after start time'
+                if (startChecked) {
+                    if (!value) {
+                        return 'Please fill out or tick off'
+                    }
+                }
+            },
+            end: (value) => {
+                if (endChecked) {
+                    if (!value) {
+                        return 'Please fill out or tick off'
+                    }
+
+                    const hourDif = parseInt(form.values.start) - parseInt(value);
+                    const minDif = parseInt(form.values.start?.substring(3)) -
+                        parseInt(value.substring(3));
+                    if ((hourDif > 0) || (hourDif === 0 && minDif >= 0)) {
+                        return 'Ending time must be after start time'
+                    }
+                }
+            },
+            location: (value) => {
+                if (locatedChecked) {
+                    if (!value) {
+                        return 'Please fill out or tick off'
+                    }
                 }
             }
         }
@@ -101,8 +126,8 @@ const EventForm = ({event, close}) => {
             date: converted,
             description: form.values.description,
             location: form.values.location,
-            start: form.values.start,
-            end: form.values.end,
+            start: form.values.start?.toString(),
+            end: form.values.end?.toString(),
         }
     }
 
@@ -180,9 +205,10 @@ const EventForm = ({event, close}) => {
 
 
                 <Divider m='md'/>
-                    <form onSubmit={form.onSubmit(() => handleCreate())}>
+                    <form onSubmit={form.onSubmit(() => {
+                        event ? handleUpdate() : handleCreate()
+                    })}>
                         <TextInput
-                            required
                             label='Name'
                             placeholder='Enter event name'
                             value={form.values.name}
@@ -190,7 +216,6 @@ const EventForm = ({event, close}) => {
                             error={form.errors.name}
                         />
                         <Textarea
-                            required
                             autosize
                             label='Description'
                             minRows={4}
@@ -206,12 +231,12 @@ const EventForm = ({event, close}) => {
 
                         <Divider m='lg' variant='dashed'/>
                         <DatePickerInput
-                            required
                             valueFormat='YYYY-MM-DD'
                             label='Date'
                             placeholder='Enter event date'
                             value={new Date(form.values.date)}
                             onChange={handleDateChange}
+                            error={form.errors.date}
                         />
                         <Flex gap='xl' wrap='wrap'  mt='lg'>
                             <Stack>
@@ -223,8 +248,9 @@ const EventForm = ({event, close}) => {
                                 <TimeInput
                                     label='Starting at:'
                                     disabled={!startChecked}
-                                    value={form.values.start}
+                                    value={form.values.start || ''}
                                     onChange={handleStartChange}
+                                    error={form.errors.start}
                                 />
                             </Stack>
                             <Stack>
@@ -237,8 +263,9 @@ const EventForm = ({event, close}) => {
                                 <TimeInput
                                     disabled={!startChecked || !endChecked}
                                     label='Ending at:'
-                                    value={form.values.end}
+                                    value={form.values.end || ''}
                                     onChange={handleEndChange}
+                                    error={form.errors.end}
                                 />
                             </Stack>
                         </Flex>
@@ -257,9 +284,10 @@ const EventForm = ({event, close}) => {
                             mt='sm'
                             label='Location'
                             placeholder='Enter event location'
-                            value={form.values.location}
+                            value={form.values.location || ''}
                             onChange={handleLocationChange}
                             disabled={!locatedChecked}
+                            error={form.errors.location}
                         />
 
 
@@ -277,7 +305,7 @@ const EventForm = ({event, close}) => {
                         ) : (
                             <Group justify='center' mt='xl' gap='xl' grow>
                                 <Button disabled={!changesPresent}
-                                        onClick={handleUpdate}>
+                                        type='submit'>
                                     Save
                                 </Button>
 

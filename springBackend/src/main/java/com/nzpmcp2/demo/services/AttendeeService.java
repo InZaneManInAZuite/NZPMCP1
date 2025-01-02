@@ -82,7 +82,7 @@ public class AttendeeService {
             
             // Get all attendees
             List<String> attendeeIds = event.getAttendees();
-            List<User> attendees = new ArrayList<>();
+            List<User> attendees = new ArrayList<User>(){};
             for (String id : attendeeIds) {
                 try {
                     User attendee = userMid.checkUserExists(id);

@@ -1,6 +1,6 @@
 import {
     ActionIcon,
-    Card,
+    Card, Center,
     Checkbox,
     Group,
     LoadingOverlay,
@@ -8,7 +8,7 @@ import {
     rem,
     ScrollArea,
     Select,
-    TextInput
+    TextInput, Title
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import classes from './ListFrame.module.css';
@@ -29,6 +29,8 @@ const ListFrame = ({ items,
                        filter,
                        checkBoxLabel,
                        setChecker,
+                       width = '100%',
+                       height = '670px',
                    }) => {
     
 
@@ -92,13 +94,15 @@ const ListFrame = ({ items,
     // Manage the flow of how data is filtered
     useEffect(() => {
 
+        setHasBeenFiltered(false)
+
         const searcher = (itemsToSearch) => {
             if (itemsToSearch?.length > 0) {
                 return itemsToSearch.filter(item => {
                     const tempo = toSearch.map(info => {
                         return item[info]?.toLowerCase().includes(searching.toLowerCase());
                     })
-                    return tempo.includes(true)
+                    return tempo.includes(true);
                 });
             } else {
                 return itemsToSearch;
@@ -106,9 +110,9 @@ const ListFrame = ({ items,
         }
 
         const checker = (itemsToCheck) => {
-            if (!checked && itemsToCheck?.length > 0) {
+            if (setChecker && itemsToCheck?.length > 0) {
                 return itemsToCheck.filter(item => {
-                    return setChecker(item)
+                    return setChecker(item, checked)
                 })
             } else {
                 return itemsToCheck
@@ -124,7 +128,7 @@ const ListFrame = ({ items,
         }
 
         const sorter = (itemsToSort) => {
-            if (itemsToSort?.length > 0) {
+            if (sort && itemsToSort?.length > 0) {
                 const dataKey = selectedSort ? selectedSort : toSort[0]
                 const dataType = dataKey.includes('date') ? 'date' : (typeof(itemsToSort[0][dataKey] || 'string'));
                 return  itemsToSort.sort((item1, item2) => {
@@ -145,27 +149,20 @@ const ListFrame = ({ items,
         }
 
         const chooser = (itemsToChoose) => {
-            if (selectedFilters?.length === 0 || !filter) {
-                return itemsToChoose
-            } else {
+            if (filter && selectedFilters?.length > 0) {
                 return itemsToChoose.filter(item => {
                     return Object.keys(filter).map(category =>
                         selectedFilters.includes(item[category]))
                         .includes(true)
                 })
+            } else {
+                return itemsToChoose
             }
         }
 
-        const afterSearched = searcher(items);
-        const afterChecked = checker(afterSearched);
-        const afterChoosen = chooser(afterChecked);
-        const afterSorted = sorter(afterChoosen);
-
+        const afterSorted = sorter(chooser(checker(searcher(items))));
         setFiltered(afterSorted);
-
-        if (items?.length > 0) {
-            setHasBeenFiltered(true)
-        }
+        setHasBeenFiltered(true);
     }, [searching, items, order, checked, selectedFilters, selectedSort]);
 
 
@@ -235,19 +232,25 @@ const ListFrame = ({ items,
 
     // MARK: Return components
     return (
-        <Card className={classes.layout} radius='md'>
+        <Card w={width} h={height} m='auto' radius='md'>
 
             {listFrameHeader}
 
-            <Card.Section withBorder h='100%'>
-                { (hasBeenFiltered ? (
-                    <ScrollArea scrollbars='y' type='always' h='600px'>
-                        <Card>
+            <Card.Section h='100%' withBorder>
+                { (hasBeenFiltered) ? (
+
+                    (filtered?.length > 0) ? (
+                        <ScrollArea scrollbars='y' type='always' h='100%' p='md'>
                             {filtered?.map(item => <Component key={item.id || item[toSearch[0]]} item={item} />)}
-                        </Card>
-                    </ScrollArea>
+                        </ScrollArea>
+                    ) : (
+                        <Center h='100%'>
+                            <Title order={2}>No Result Found</Title>
+                        </Center>
+                    )
+
                 ) : <LoadingOverlay visible={true} />
-                )}
+                }
 
             </Card.Section>
         </Card>
@@ -281,6 +284,9 @@ ListFrame.propTypes = {
 
     checkBoxLabel: PropTypes.string,
     setChecker: PropTypes.func,
+
+    width: PropTypes.string,
+    height: PropTypes.string,
 }
 
 export default ListFrame;

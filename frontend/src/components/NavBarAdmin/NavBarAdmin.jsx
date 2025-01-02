@@ -9,6 +9,9 @@ import {
     IconBlocks,
 } from "@tabler/icons-react";
 import PropTypes from "prop-types";
+import {useContext, useEffect, useState} from "react";
+import UserContext from "../../context/UserContext.js";
+import {useNavigate} from "react-router-dom";
 
 const navAdmin = [
     {link: `/admin/events`, label: `Events`, icon: IconCalendarEvent},
@@ -29,6 +32,18 @@ const NavBarAdmin = ({children, pageActive,
                          footerComp
 }) => {
 
+    const { user } = useContext(UserContext)
+    const [ authorized, setAuthorized ] = useState(false)
+    const navigate = useNavigate()
+
+    useEffect (() => {
+        if (user?.role !== "ADMIN") {
+            navigate('/');
+        } else {
+            setAuthorized(true)
+        }
+    }, [navigate]);
+
     return (
         <NavBar navData={navAdmin}
                 pageActive={pageActive}
@@ -38,6 +53,8 @@ const NavBarAdmin = ({children, pageActive,
 
                 withFooter={withFooter}
                 footerComp={footerComp}
+
+                authorized={authorized}
         >
             {children}
         </NavBar>

@@ -15,7 +15,7 @@ const UserCard = ({ item: user }) => {
                         }
                     </Group>
                 </Paper>
-                <Text lineClamp={3}>{user.email} - {user.id}</Text>
+                <Text lineClamp={3}>{user.email}</Text>
             </Paper>
         </Card>
     )
