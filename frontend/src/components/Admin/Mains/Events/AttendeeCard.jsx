@@ -32,7 +32,7 @@ const AttendeeCard = ({item: user, injection: data}) => {
                 <Card p='sm' w='fit-content'>
                     <Card.Section h='60%' p='sm'>
                         <Group>
-                            <Title align='left' order={3}>{user.name}</Title>
+                            <Title lineClamp={1} align='left' order={3}>{user.name}</Title>
                             {user.role !== 'USER' &&
                                 <Code color='blue'>{user.role}</Code>
                             }

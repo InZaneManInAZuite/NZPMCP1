@@ -8,7 +8,7 @@ import {removeEvent} from "../../../../services/event.services.js";
 import EventForm from "./EventForm.jsx";
 import EventInfo from "./EventInfo.jsx";
 
-const EventsCard = ({ item: event }) => {
+const EventCard = ({ item: event }) => {
 
     const { isLogged, user, setUser, isAdmin, jwtToken, setEvents, events } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
@@ -155,8 +155,8 @@ const EventsCard = ({ item: event }) => {
 
 
 
-EventsCard.propTypes = {
+EventCard.propTypes = {
     item: PropTypes.object.isRequired,
 }
 
-export default EventsCard;
+export default EventCard;

@@ -69,17 +69,17 @@ const EventForm = ({event, close}) => {
         },
         validate: {
             name: (value) => {
-                if (value.length === 0) {
+                if (!value || value.length === 0) {
                     return 'Name is required'
                 }
             },
             description: (value) => {
-                if (value.length === 0) {
+                if (!value || value.length === 0) {
                     return 'Description is required'
                 }
             },
             date: (value) => {
-                if (value.length === 0) {
+                if (!value || value.length === 0) {
                     return 'Date is required'
                 }
             },
@@ -158,16 +158,16 @@ const EventForm = ({event, close}) => {
 
 
     const handleCreate = () => {
-        const newEvent = getNewEvent()
+        const newEvent = {...getNewEvent(), date: new Date(form.values.date)}
         createEvent(newEvent, jwtToken)
             .then((eventMade) => {
-                setEvents(events.concat(eventMade))
+                setEvents(events.concat(eventMade));
                 form.setFieldValue('name', '');
-                form.setFieldValue('date', '');
+                form.setFieldValue('date', new Date());
                 form.setFieldValue('description', '');
-                form.setFieldValue('location', '');
-                form.setFieldValue('start', '');
-                form.setFieldValue('end', '');
+                form.setFieldValue('location', undefined);
+                form.setFieldValue('start', undefined);
+                form.setFieldValue('end', undefined);
             })
             .catch((err) => console.log(err))
     }
@@ -206,7 +206,7 @@ const EventForm = ({event, close}) => {
 
                 <Divider m='md'/>
                     <form onSubmit={form.onSubmit(() => {
-                        event ? handleUpdate() : handleCreate()
+                        return event ? handleUpdate() : handleCreate()
                     })}>
                         <TextInput
                             label='Name'

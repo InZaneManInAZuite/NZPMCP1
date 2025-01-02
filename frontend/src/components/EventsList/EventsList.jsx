@@ -2,7 +2,7 @@ import {Card, Checkbox, Group, LoadingOverlay, ScrollArea, Text, TextInput} from
 import UserContext from '../../context/UserContext';
 import {useContext, useEffect, useState} from 'react';
 import classes from './EventsList.module.css';
-import EventsCard from '../Admin/Mains/Events/EventsCard.jsx';
+import EventCard from '../Admin/Mains/Events/EventCard.jsx';
 
 const EventsList = () => {
 
@@ -50,7 +50,7 @@ const EventsList = () => {
             <Card.Section withBorder>
                 <ScrollArea className={classes.scroll} scrollbars='y' type='scroll'>
                     <Card className={classes.eventsList}>
-                        {filtered.map(event => ( <EventsCard key={event.id} item={event} />))}
+                        {filtered.map(event => ( <EventCard key={event.id} item={event} />))}
                     </Card>
                 </ScrollArea>
             </Card.Section>

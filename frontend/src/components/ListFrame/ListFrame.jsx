@@ -269,7 +269,7 @@ const ListFrame = ({ items,
 // MARK: Proptypes
 // List property types inserted into ListFrame
 ListFrame.propTypes = {
-    items: PropTypes.array.isRequired,
+    items: PropTypes.array,
     injection: PropTypes.object,
     Component: PropTypes.elementType.isRequired,
 

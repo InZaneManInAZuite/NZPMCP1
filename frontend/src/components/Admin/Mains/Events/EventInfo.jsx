@@ -48,7 +48,6 @@ const EventInfo = ({event, opened, setOpened}) => {
         } else {
             return item?.role !== "ADMIN"
         }
-
     }
 
 
@@ -75,7 +74,7 @@ const EventInfo = ({event, opened, setOpened}) => {
 
 
 
-            <Stack gap='xs' p='xl'>
+            <Stack gap='xs' p='sm'>
                 <Text>Description:</Text>
                 <Card>
                     {splitText(event.description)}

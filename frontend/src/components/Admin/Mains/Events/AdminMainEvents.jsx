@@ -1,7 +1,7 @@
 import ListFrame from "../../../ListFrame/ListFrame.jsx";
 import {Card, Center, Paper} from "@mantine/core";
 import {getAllEvents} from "../../../../services/event.services.js";
-import EventsCard from "./EventsCard.jsx";
+import EventCard from "./EventCard.jsx";
 import EventForm from "./EventForm.jsx";
 import { useContext, useEffect } from "react";
 import UserContext from "../../../../context/UserContext.js";
@@ -31,7 +31,7 @@ const AdminMainEvents = () => {
         <Paper>
             <ListFrame
                 items={events}
-                Component={EventsCard}
+                Component={EventCard}
                 search={['name', 'description']}
                 sort='date'
                 setChecker={setChecker}

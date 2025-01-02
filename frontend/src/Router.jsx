@@ -2,8 +2,8 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import LandingPage from './pages/Landing.page';
 import LoginPage from './pages/Login.page';
 import SignUpPage from './pages/Signup.page';
-import AdminPage from "./pages/Admin.page.jsx";
 import AdminEventsPage from "./pages/AdminEvents.page.jsx";
+import AdminUsersPage from "./pages/AdminUsers.page.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     element: <AdminEventsPage />
   }, {
     path: '/admin/users',
-    element: <AdminEventsPage />
+    element: <AdminUsersPage />
   }, {
     path: '/admin/competitions',
     element: <AdminEventsPage />

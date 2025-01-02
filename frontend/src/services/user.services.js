@@ -28,6 +28,7 @@ const createUser = (newUser) => {
 const removeUser = (id, jwtToken) => {
     const request = axios.delete(`${USER_URL}/${id}`, {
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });

@@ -1,4 +1,5 @@
 package com.nzpmcp2.demo.models;
 
-public record UserDto(String name, String email, String password) {
-}
+import com.nzpmcp2.demo.config.UserRoles;
+
+public record UserDto(String name, String email, String password, UserRoles role) { }

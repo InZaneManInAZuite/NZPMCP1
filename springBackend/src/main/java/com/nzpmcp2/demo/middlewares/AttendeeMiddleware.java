@@ -36,16 +36,17 @@ public class AttendeeMiddleware {
             List<String> eventIds = user.getEvents();
 
             // Remove user from all joined events
-            for (String eventId : eventIds) {
-                try {
-                    Event event = eventMid.checkEventExists(eventId);
-                    event.removeAttendee(userId);
-                    eventRepo.save(event);
-                } catch (Exception e) {
-                    // Do nothing, simply do not remove non-existent user
+            if (eventIds != null) {
+                for (String eventId : eventIds) {
+                    try {
+                        Event event = eventMid.checkEventExists(eventId);
+                        event.removeAttendee(userId);
+                        eventRepo.save(event);
+                    } catch (Exception e) {
+                        // Do nothing, simply do not remove non-existent user
+                    }
                 }
             }
-
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());
         }

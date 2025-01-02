@@ -63,8 +63,13 @@ public class UserService {
                     .addName(userDto.name())
                     .addEmail(userDto.email())
                     .addPassword(passwordEncoder.encode(userDto.password()))
-                    .addRole(UserRoles.USER)
                     .build();
+
+            if (userDto.role() != null) {
+                user.setRole(userDto.role());
+            } else {
+                user.setRole(UserRoles.USER);
+            }
 
             // Check user requirements
             userMid.checkUserFields(user);
