@@ -22,6 +22,7 @@ import {useToggle} from "@mantine/hooks";
 
 
 const ListFrame = ({ items,
+                       injection,
                        Component,
                        search = ['title'],
                        sort = search,
@@ -241,7 +242,11 @@ const ListFrame = ({ items,
 
                     (filtered?.length > 0) ? (
                         <ScrollArea scrollbars='y' type='always' h='100%' p='md'>
-                            {filtered?.map(item => <Component key={item.id || item[toSearch[0]]} item={item} />)}
+                            {filtered?.map(item => <Component
+                                key={item.id || item[toSearch[0]]}
+                                item={item}
+                                injection={injection}
+                            />)}
                         </ScrollArea>
                     ) : (
                         <Center h='100%'>
@@ -265,6 +270,7 @@ const ListFrame = ({ items,
 // List property types inserted into ListFrame
 ListFrame.propTypes = {
     items: PropTypes.array.isRequired,
+    injection: PropTypes.object,
     Component: PropTypes.elementType.isRequired,
 
     search: PropTypes.oneOfType([

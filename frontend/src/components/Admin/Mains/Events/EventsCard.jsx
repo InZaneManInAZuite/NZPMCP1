@@ -1,5 +1,4 @@
 import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group} from '@mantine/core';
-import classes from './AdminEvents.module.css';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
@@ -88,7 +87,7 @@ const EventsCard = ({ item: event }) => {
 
 
     return (
-        <Card className={classes.card} withBorder>
+        <Card w='100%' h='250px' withBorder>
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={handleUpdateClose} size='800px'>
                     <EventForm event={event} close={handleUpdateClose}/>
@@ -103,50 +102,51 @@ const EventsCard = ({ item: event }) => {
 
 
 
-            <Card p='md'>
-                <Card.Section h='60%' p='md'>
-                    <Anchor c='white' onClick={handleTitle}>
-                        <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
-                    </Anchor>
-                </Card.Section>
+            <Group w='100%' h='100%' justify='space-between'>
+                <Card p='xl' w='85%' h='100%'>
+                    <Card.Section h='60%' p='md'>
+                        <Anchor c='white' onClick={handleTitle}>
+                            <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
+                        </Anchor>
+                    </Card.Section>
 
-                <Card.Section p='md'>
-                    <Text lineClamp={3}>{new Date(event.date).toDateString()} - {event.description}</Text>
-                </Card.Section>
-            </Card>
+                    <Card.Section p='md'>
+                        <Text lineClamp={3}>{new Date(event.date).toDateString()} - {event.description}</Text>
+                    </Card.Section>
+                </Card>
 
 
 
 
-            {(isLogged) && (
-                <Stack h='100%' justify='center' >
-                    {(isAdmin) && (
-                        <Group w='100%' gap='md' justify='center'>
-                            <UnstyledButton onClick={handleUpdateOpen}>
-                                <IconEdit size='35px'/>
-                            </UnstyledButton>
-                            <UnstyledButton onClick={handleDelete}>
-                                <IconTrash size='35px'/>
-                            </UnstyledButton>
-                        </Group>
-                    )}
+                {(isLogged) && (
+                    <Stack h='100%' justify='center' w='fit-content'>
+                        {(isAdmin) && (
+                            <Group w='100%' gap='md' justify='center'>
+                                <UnstyledButton onClick={handleUpdateOpen}>
+                                    <IconEdit size='35px'/>
+                                </UnstyledButton>
+                                <UnstyledButton onClick={handleDelete}>
+                                    <IconTrash size='35px'/>
+                                </UnstyledButton>
+                            </Group>
+                        )}
 
-                    <Button
-                        w='125px'
-                        variant='filled'
-                        color={isJoined ? 'red' : 'blue'}
-                        justify='space-between'
-                        rightSection={(user?.role === 'ADMIN' && isJoined) ? <IconX size='15px' /> : <span/>}
-                        leftSection={<span/>}
-                        disabled={isJoined && user?.role !== 'ADMIN'}
-                        onClick={isJoined ? handleUnJoin : handleJoin}
-                    >
-                        {isJoined ? 'Joined' : 'Join'}
-                    </Button>
+                        <Button
+                            w='125px'
+                            variant='filled'
+                            color={isJoined ? 'red' : 'blue'}
+                            justify='space-between'
+                            rightSection={(user?.role === 'ADMIN' && isJoined) ? <IconX size='15px' /> : <span/>}
+                            leftSection={<span/>}
+                            disabled={isJoined && user?.role !== 'ADMIN'}
+                            onClick={isJoined ? handleUnJoin : handleJoin}
+                        >
+                            {isJoined ? 'Joined' : 'Join'}
+                        </Button>
 
-                </Stack>
-            )}
-
+                    </Stack>
+                )}
+            </Group>
         </Card>
     )
 }

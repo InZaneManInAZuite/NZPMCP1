@@ -4,7 +4,7 @@ import {useContext, useEffect, useState} from "react";
 import {getAllAttendeesForEvent} from "../../../../services/attendee.services.js";
 import UserContext from "../../../../context/UserContext.js";
 import ListFrame from "../../../ListFrame/ListFrame.jsx";
-import UserCard from "../../../UserCard/UserCard.jsx";
+import AttendeeCard from "./AttendeeCard.jsx";
 
 const EventInfo = ({event, opened, setOpened}) => {
 
@@ -14,11 +14,23 @@ const EventInfo = ({event, opened, setOpened}) => {
 
 
 
+    const injection = {
+        eventId: event.id,
+        attendees: attendees,
+        setAttendees: setAttendees,
+    }
+
+
+
+
 
     useEffect(() => {
         if (user?.role === 'ADMIN') {
             getAllAttendeesForEvent(event.id, jwtToken)
-                .then(allAttendees => setAttendees(allAttendees))
+                .then(allAttendees => {
+                    allAttendees !== undefined &&
+                    setAttendees(allAttendees)
+                })
                 .catch(e => console.log(e.message))
         }
     }, [event, user, jwtToken]);
@@ -98,10 +110,11 @@ const EventInfo = ({event, opened, setOpened}) => {
                 <Text mb='sm'>Attendees:</Text>
                 <ListFrame
                     items={attendees}
-                    Component={UserCard}
+                    Component={AttendeeCard}
                     search={['name', 'email']}
                     setChecker={setChecker}
                     checkBoxLabel='Include Admins'
+                    injection={injection}
                 />
             </>)}
         </Modal>
