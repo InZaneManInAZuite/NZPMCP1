@@ -105,16 +105,20 @@ public class UserService {
     public UserView updateUser(String id, User updateUser) {
         try {
             // Check if user exists and email is not already in use
-            User existingUser = userMid.checkUserExists(id);
-            existingUser.update(updateUser);
-            userMid.checkEmailInUse(existingUser);
+            User foundUser = userMid.checkUserExists(id);
+            User userCopy = foundUser.copy();
+            foundUser.update(updateUser);
+            if (!foundUser.getEmail().equals(userCopy.getEmail())) {
+                userMid.checkEmailInUse(foundUser);
+            }
+
 
             // Encode password
-            existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+            foundUser.setPassword(passwordEncoder.encode(foundUser.getPassword()));
 
             // Update user
-            userRepo.save(existingUser);
-            return existingUser.toUserView();
+            userRepo.save(foundUser);
+            return foundUser.toUserView();
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

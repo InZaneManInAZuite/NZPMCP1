@@ -36,7 +36,7 @@ const removeUser = (id, jwtToken) => {
 }
 
 const updateUser = (id, updatedUser, jwtToken) => {
-    const request = axios.put(`${USER_URL}/${id}`, JSON.stringify(updatedUser),{
+    const request = axios.put(`${USER_URL}/${id}`, updatedUser,{
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`

@@ -133,7 +133,11 @@ const UserForm = ({user, close, injection: data}) => {
     }
 
     const handleUpdate = () => {
-        const newUser = getNewUser()
+        const newUser = {
+            ...getNewUser(),
+            id: user.id,
+        }
+        console.log(newUser)
         updateUser(user?.id, newUser, jwtToken)
             .then(() => {
                 clearFields();
@@ -167,6 +171,7 @@ const UserForm = ({user, close, injection: data}) => {
 
 
             <form onSubmit={form.onSubmit(() => {
+                console.log(getNewUser())
                 return user ? handleUpdate() : handleCreate();
             })}>
                 <TextInput
@@ -197,7 +202,7 @@ const UserForm = ({user, close, injection: data}) => {
 
 
 
-                {(!user) && (
+                {(!user || user.id === loggedInUser.id) && (<>
                     <PasswordInput
                         label='Password'
                         placeholder='Enter password'
@@ -205,24 +210,26 @@ const UserForm = ({user, close, injection: data}) => {
                         onChange={handlePassChange}
                         error={form.errors.password}
                     />
-                )}
-                {(user) && (
+                    {(user?.id === loggedInUser?.id) && (
+                        <PasswordInput
+                            label='New Password'
+                            placeholder='Enter new password'
+                            value={form.values.newPassword || ''}
+                            onChange={handleNewPassChange}
+                            error={form.errors.newPassword}
+                        />
+                    )}
                     <PasswordInput
-                        label='New Password'
-                        placeholder='Enter new password'
-                        value={form.values.newPassword || ''}
-                        onChange={handleNewPassChange}
-                        error={form.errors.newPassword}
+                        label='Confirm Password'
+                        placeholder='Confirm password'
+                        value={form.values.confirmPassword || ''}
+                        onChange={handleConfirmPassChange}
+                        error={form.errors.confirmPassword}
                     />
-                )}
-                <PasswordInput
-                    label='Confirm Password'
-                    placeholder='Confirm password'
-                    value={form.values.confirmPassword || ''}
-                    onChange={handleConfirmPassChange}
-                    error={form.errors.confirmPassword}
-                />
-                <Divider m='lg' variant='dashed'/>
+                    <Divider m='lg' variant='dashed'/>
+                </>)}
+
+
 
 
 
@@ -234,7 +241,10 @@ const UserForm = ({user, close, injection: data}) => {
                     </Button>
                 ) : (
                     <Group justify='center' mt='xl' gap='xl' grow>
-                        <Button disabled={!changesPresent} type='submit'>
+                        <Button disabled={!changesPresent} onClick={() => {
+                            handleUpdate();
+                            close();
+                        }}>
                             Save
                         </Button>
 

@@ -4,7 +4,6 @@ import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {getAllUsers} from "../../../../services/user.services.js";
 import UserCard from "../../../UserCard/UserCard.jsx";
-import EventForm from "../Events/EventForm.jsx";
 import UserForm from "./UserForm.jsx";
 
 

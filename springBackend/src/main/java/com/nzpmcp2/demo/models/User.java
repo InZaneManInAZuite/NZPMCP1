@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.models;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,10 +95,13 @@ public class User implements UserDetails {
     public User copy() {
 
         // Copy the events list
-        List<String> newEvents = List.copyOf(events);
+        if (events == null) {
+            return new User(id, name, email, password, role, events);
+        } else {
+            List<String> eventsCopy = List.copyOf(events);
+            return new User(id, name, email, password, role, eventsCopy);
+        }
 
-        // Create a new user object with the copied fields
-        return new User(id, name, email, password, role, newEvents);
     }
 
     // Add an event to the user

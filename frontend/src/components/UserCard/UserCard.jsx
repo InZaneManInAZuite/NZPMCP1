@@ -4,8 +4,8 @@ import { useContext, useState } from 'react';
 import {IconEdit, IconTrash} from "@tabler/icons-react";
 import {removeUser} from "../../services/user.services.js";
 import UserContext from "../../context/UserContext.js";
-import EventForm from "../Admin/Mains/Events/EventForm.jsx";
 import EventInfo from "../Admin/Mains/Events/EventInfo.jsx";
+import UserForm from "../Admin/Mains/Users/UserForm.jsx";
 
 const UserCard = ({ item: user, injection: data }) => {
 
@@ -52,7 +52,7 @@ const UserCard = ({ item: user, injection: data }) => {
         <Card w='100%' withBorder>
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={handleUpdateClose} size='800px'>
-                    <EventForm user={user} close={handleUpdateClose}/>
+                    <UserForm user={user} close={handleUpdateClose} injection={data}/>
                 </Modal>
             )}
 
