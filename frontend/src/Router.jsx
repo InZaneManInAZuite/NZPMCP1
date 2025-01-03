@@ -4,6 +4,7 @@ import LoginPage from './pages/Login.page';
 import SignUpPage from './pages/Signup.page';
 import AdminEventsPage from "./pages/AdminEvents.page.jsx";
 import AdminUsersPage from "./pages/AdminUsers.page.jsx";
+import AdminCompetitionsPage from "./pages/AdminCompetitions.page.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
     element: <AdminUsersPage />
   }, {
     path: '/admin/competitions',
-    element: <AdminEventsPage />
+    element: <AdminCompetitionsPage />
   }, {
     path: '/admin/attempts',
     element: <AdminEventsPage />

@@ -11,11 +11,8 @@ const getAllCompetitions = (jwtToken) => {
     return request.then(response => response.data)
 }
 
-const getCompetition = (title, jwtToken) => {
-    const competeInput = {
-        title: title
-    }
-    const request = axios.get(`${COMPETE_URL}/title`, JSON.stringify(competeInput), {
+const getCompetition = (id, jwtToken) => {
+    const request = axios.get(`${COMPETE_URL}/title`, JSON.stringify({id}), {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
@@ -34,21 +31,17 @@ const createCompetition = (newCompete, jwtToken) => {
     return request.then(response => response.data)
 }
 
-const removeCompetition = (title, jwtToken) => {
-    const competeInput = {
-        title: title
-    }
-    const request = axios.delete(COMPETE_URL, JSON.stringify(competeInput), {
+const removeCompetition = (id, jwtToken) => {
+    const request = axios.delete(`${COMPETE_URL}/${id}`, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })
     return request.then(response => response.data)
 }
 
-const updateCompetition = (competeInput, jwtToken) => {
-    const request = axios.put(COMPETE_URL, JSON.stringify(competeInput),{
+const updateCompetition = (compete, jwtToken) => {
+    const request = axios.put(COMPETE_URL, JSON.stringify(compete),{
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`

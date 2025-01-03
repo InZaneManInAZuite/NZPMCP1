@@ -274,6 +274,7 @@ ListFrame.propTypes = {
     Component: PropTypes.elementType.isRequired,
 
     search: PropTypes.oneOfType([
+        PropTypes.string,
         PropTypes.array
     ]),
     sort: PropTypes.oneOfType([

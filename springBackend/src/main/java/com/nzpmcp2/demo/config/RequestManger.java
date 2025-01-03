@@ -44,6 +44,21 @@ public class RequestManger {
                                     .requestMatchers(HttpMethod.DELETE, "/api/events/*").hasRole(ADMIN)
 
 
+                                    /////////// Competitions APIs ///////////
+                                    .requestMatchers("/api/competitions").hasRole(ADMIN)
+                                    .requestMatchers("/api/competitions/*").hasRole(ADMIN)
+
+
+                                    /////////// Questions APIs ///////////
+                                    .requestMatchers("/api/questions").hasRole(ADMIN)
+                                    .requestMatchers("/api/questions/*").hasRole(ADMIN)
+
+
+                                    /////////// Attempts APIs ///////////
+                                    .requestMatchers("/api/competitions").hasRole(ADMIN)
+                                    .requestMatchers("/api/competitions/*").hasRole(ADMIN)
+
+
                                     /////////// Default ///////////
                                     .anyRequest().authenticated());
         } catch (Exception e) {

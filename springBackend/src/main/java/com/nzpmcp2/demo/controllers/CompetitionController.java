@@ -30,8 +30,8 @@ public class CompetitionController {
         }
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<Competition> getCompetitionById(@RequestParam String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Competition> getCompetitionById(@PathVariable String id) {
         try {
             Competition competition = competeService.getCompetitionById(id);
             return ResponseEntity.ok(competition);
@@ -50,11 +50,11 @@ public class CompetitionController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteCompetition(@RequestParam String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCompetition(@PathVariable String id) {
         try {
             competeService.deleteCompetition(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

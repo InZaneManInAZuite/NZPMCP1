@@ -45,7 +45,7 @@ public class TokenService {
                 .claim("authorities", authority)
                 .issuer("NZPMCP2")
                 .issueTime(Date.from(Instant.now()))
-                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
+                .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.HOURS)))
                 .build();
 
         // Sign the jwt with the secret key
