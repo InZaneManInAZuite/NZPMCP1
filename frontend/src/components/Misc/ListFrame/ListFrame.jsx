@@ -152,8 +152,10 @@ const ListFrame = ({ items,
         const chooser = (itemsToChoose) => {
             if (filter && selectedFilters?.length > 0) {
                 return itemsToChoose.filter(item => {
-                    return Object.keys(filter).map(category =>
-                        selectedFilters.includes(item[category]))
+                    return Object.keys(filter).map(category => {
+                        const arrayed = Array.prototype.concat(item[category]);
+                        return selectedFilters.some(sel => arrayed.includes(sel));
+                    })
                         .includes(true)
                 })
             } else {

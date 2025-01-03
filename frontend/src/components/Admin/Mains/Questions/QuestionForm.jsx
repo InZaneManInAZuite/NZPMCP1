@@ -31,8 +31,12 @@ const QuestionForm = ({question, close, injection: data}) => {
         return parseInt(index);
     });
     const handleRemoveOption = (event) => form.setFieldValue('options', () => {
+        const origOptions = form.values.options;
+        if (origOptions?.length <= 1) {
+            return origOptions
+        }
         const index = event.currentTarget.getAttribute('indexer');
-        return form.values.options.filter((val, i) => parseInt(index) !== i);
+        return origOptions.filter((val, i) => parseInt(index) !== i);
     })
     const handleTopicChange = (event) => form.setFieldValue('topics', event);
 
@@ -132,7 +136,7 @@ const QuestionForm = ({question, close, injection: data}) => {
         updateQuestion(newQue, jwtToken)
             .then(() => {
                 clearFields();
-                data.setQuestions(data.questions.map(eachQue => {
+                data.setQuestions(data.questions?.map(eachQue => {
                     if (eachQue.id === question.id) {
                         return newQue
                     } else {
@@ -182,7 +186,7 @@ const QuestionForm = ({question, close, injection: data}) => {
                     mt='xs'
                     label='Topics'
                     placeholder='Add topics'
-                    value={form.values.topics}
+                    value={form.values.topics || []}
                     onChange={handleTopicChange}
                     data={['Mechanics', 'Waves', 'Algebra', 'Geometry']}
                     w='50%'

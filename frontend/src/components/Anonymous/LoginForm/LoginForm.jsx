@@ -68,7 +68,6 @@ const LoginForm = () => {
 
                 // If the user is authenticated, set the loginFail to false and log the message
                 toggleLoginFail(false)
-                console.log('User Authenticated')
 
                 // Store the user in the context
                 handleUser(user)

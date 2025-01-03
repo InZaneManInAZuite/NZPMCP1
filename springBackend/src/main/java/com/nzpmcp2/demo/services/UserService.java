@@ -112,9 +112,10 @@ public class UserService {
                 userMid.checkEmailInUse(foundUser);
             }
 
-
             // Encode password
-            foundUser.setPassword(passwordEncoder.encode(foundUser.getPassword()));
+            if (updateUser.getPassword() != null) {
+                foundUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+            }
 
             // Update user
             userRepo.save(foundUser);

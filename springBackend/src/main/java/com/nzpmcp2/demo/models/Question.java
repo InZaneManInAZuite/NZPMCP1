@@ -14,13 +14,22 @@ public class Question {
     private String title;
     private List<String> options;
     private int correctChoiceIndex;
+    private String difficulty;
+    private List<String> topics;
 
     /// Constructor ///
-    public Question(String id, String title, List<String> options, int correctChoiceIndex) {
+    public Question(String id,
+                    String title,
+                    List<String> options,
+                    int correctChoiceIndex,
+                    String difficulty,
+                    List<String> topics) {
         this.id = id;
         this.title = title;
         this.options = options;
         this.correctChoiceIndex = correctChoiceIndex;
+        this.difficulty = difficulty;
+        this.topics = topics;
     }
 
     /// Getter and Setters ///
@@ -40,6 +49,14 @@ public class Question {
         return correctChoiceIndex;
     }
 
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public List<String> getTopics() {
+        return topics;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -56,11 +73,25 @@ public class Question {
         this.correctChoiceIndex = correctChoiceIndex;
     }
 
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setTopics(List<String> topics) {
+        this.topics = topics;
+    }
+
     /// Methods ///
 
     public Question copy(Question question) {
         List<String> options = question.getOptions();
-        return new Question(question.getId(), question.getTitle(), options, question.getCorrectChoiceIndex());
+        List<String> topics = question.getTopics();
+        return new Question(question.getId(),
+                question.getTitle(),
+                options,
+                question.getCorrectChoiceIndex(),
+                question.getDifficulty(),
+                topics);
     }
 
     public void update(Question question) {
@@ -69,6 +100,8 @@ public class Question {
         if (correctChoiceIndex != question.getCorrectChoiceIndex()) {
             correctChoiceIndex = question.getCorrectChoiceIndex();
         }
+        difficulty = question.getDifficulty() == null ? difficulty : question.getDifficulty();
+        topics = question.getTopics() == null ? topics : question.getTopics();
     }
 
     // Change contents of specific option
@@ -83,6 +116,8 @@ public class Question {
                 "title='" + title + '\'' +
                 ", options='" + options + '\'' +
                 ", correctChoiceIndex='" + correctChoiceIndex +
+                ", difficulty='" + difficulty + '\'' +
+                ", topics=" + topics +
                 '}';
     }
 
@@ -91,6 +126,8 @@ public class Question {
         private String title;
         private List<String> options;
         private int correctChoiceIndex;
+        private String difficulty;
+        private List<String> topics;
 
         public Builder id(String id) {
             this.id = id;
@@ -112,8 +149,18 @@ public class Question {
             return this;
         }
 
+        public Builder setDifficulty(String difficulty) {
+            this.difficulty = difficulty;
+            return this;
+        }
+
+        public Builder setTopics(List<String> topics) {
+            this.topics = topics;
+            return this;
+        }
+
         public Question build() {
-            return new Question(id, title, options, correctChoiceIndex);
+            return new Question(id, title, options, correctChoiceIndex, difficulty, topics);
         }
     }
 }

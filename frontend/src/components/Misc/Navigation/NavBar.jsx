@@ -4,14 +4,14 @@ import {
     Anchor,
     AppShell,
     Burger,
-    Card,
+    Card, Code,
     Divider,
     Group,
     LoadingOverlay,
     NavLink,
     Paper,
     Stack,
-    Text
+    Text, Title
 } from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import classes from "./NavBar.module.css";
@@ -103,7 +103,12 @@ const NavBar = ({navData, children, pageActive,
                         <Stack>
                             <Divider/>
                             <Card>
-                                <Text>{user.name}</Text>
+                                <Group>
+                                    <Title order={2} >{user.name}</Title>
+                                    {user.role !== 'USER' && (
+                                        <Code color='blue' w='fit-content'>{user.role}</Code>
+                                    )}
+                                </Group>
                                 <Anchor c='gray' underline='never' ta='left' mb='lg'>{user.email}</Anchor>
                                 <LogoutButton/>
                             </Card>

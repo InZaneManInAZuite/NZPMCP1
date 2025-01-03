@@ -13,7 +13,6 @@ const LandingPage = () => {
 
     useEffect(() => {
         if (user?.role === 'ADMIN') {
-            console.log('navigating to admin');
             navigate('/admin');
         } else {
             setAuthorized(true);
