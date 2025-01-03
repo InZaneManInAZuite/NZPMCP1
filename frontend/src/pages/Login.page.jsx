@@ -1,4 +1,4 @@
-import LoginForm from '../components/LoginForm/LoginForm'
+import LoginForm from '../components/Anonymous/LoginForm/LoginForm'
 import UserContext from '../context/UserContext';
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

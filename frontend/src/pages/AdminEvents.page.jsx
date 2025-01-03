@@ -1,4 +1,4 @@
-import NavBarAdmin from "../components/NavBarAdmin/NavBarAdmin.jsx";
+import NavBarAdmin from "../components/Misc/Navigation/NavBarAdmin.jsx";
 import AdminMainEvents from "../components/Admin/Mains/Events/AdminMainEvents.jsx";
 
 

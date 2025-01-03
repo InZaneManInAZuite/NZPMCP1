@@ -3,7 +3,7 @@ import {Card, Code, Divider, Modal, Stack, Text, Title} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import {getAllEventsOfUser} from "../../../../services/attendee.services.js";
 import UserContext from "../../../../context/UserContext.js";
-import ListFrame from "../../../ListFrame/ListFrame.jsx";
+import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import JoinedEventCard from "./JoinedEventCard.jsx";
 
 const UserInfo = ({user, opened, setOpened}) => {

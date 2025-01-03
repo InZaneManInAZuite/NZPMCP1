@@ -1,4 +1,4 @@
-import NavBar from "../NavBar/NavBar.jsx";
+import NavBar from "./NavBar.jsx";
 import {
     IconCalendarEvent,
     IconQuestionMark,
@@ -10,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import PropTypes from "prop-types";
 import {useContext, useEffect, useState} from "react";
-import UserContext from "../../context/UserContext.js";
+import UserContext from "../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
 
 const navAdmin = [

@@ -1,8 +1,8 @@
 import { Image, Overlay, AspectRatio } from '@mantine/core'
-import Welcome from '../Welcome/Welcome';
-import LandingFront from '../LandingFront/LandingFront';
+import Welcome from '../Welcome/Welcome.jsx';
+import LandingFront from '../LandingFront/LandingFront.jsx';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
-import examImage from '../../assets/Exam.jpg';
+import examImage from '../../../assets/Exam.jpg';
 
 const LoggedOutLanding = () => {
     return (

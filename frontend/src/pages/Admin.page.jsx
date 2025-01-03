@@ -1,4 +1,4 @@
-import NavBarAdmin from "../components/NavBarAdmin/NavBarAdmin.jsx";
+import NavBarAdmin from "../components/Misc/Navigation/NavBarAdmin.jsx";
 
 const AdminPage = () => {
   return(

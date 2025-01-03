@@ -1,9 +1,9 @@
 import {Card, Group, LoadingOverlay, ScrollArea, Text, TextInput} from '@mantine/core';
 import {useContext, useEffect, useState} from 'react';
 import classes from './QuestionsList.module.css';
-import QuestionCard from '../QuestionCard/QuestionCard';
-import { getAllQuestions } from '../../services/question.services';
-import UserContext from "../../context/UserContext";
+import QuestionCard from '../QuestionCard/QuestionCard.jsx';
+import { getAllQuestions } from '../../../../../services/question.services.js';
+import UserContext from "../../../../../context/UserContext.js";
 
 const QuestionsList = () => {
 

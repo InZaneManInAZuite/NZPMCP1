@@ -1,23 +1,33 @@
 import {Card, Checkbox, Group, LoadingOverlay, ScrollArea, Text, TextInput} from '@mantine/core';
-import UserContext from '../../context/UserContext';
 import {useContext, useEffect, useState} from 'react';
-import classes from './EventsList.module.css';
-import EventCard from '../Admin/Mains/Events/EventCard.jsx';
+import classes from './CompetitionsList.module.css';
+import { getAllCompetitions } from '../../../../../services/competition.services.js';
+import CompetitionCard from "../CompetitionCard/CompetitionCard.jsx";
+import UserContext from "../../../../../context/UserContext.js";
 
-const EventsList = () => {
+const CompetitionList = () => {
 
-    const { events } = useContext(UserContext);
-    const [ filtered, setFiltered ] = useState(events);
+    const [ competitions, setCompetitions ] = useState([]);
+    const { jwtToken } = useContext(UserContext);
+    const [ filtered, setFiltered ] = useState(competitions);
     const [ checked, setChecked ] = useState(false);
     const [ searching, setSearching ] = useState('');
 
     useEffect(() => {
-        const f = events.filter(event => {
-            return event.name?.toLowerCase().includes(searching.toLowerCase()) &&
-                (checked || Date.now() < Date.parse(event.date));
+        getAllCompetitions(jwtToken)
+            .then(allCompete  => {
+                setCompetitions(allCompete);
+            })
+            .catch(err => console.log(err));
+    }, [jwtToken])
+
+    useEffect(() => {
+        const f = competitions.filter(compete => {
+            return compete.title?.toLowerCase().includes(searching.toLowerCase()) &&
+                (checked || !compete.events?.length);
         })
-        setFiltered(f.sort((a,b) => Date.parse(a.date) - Date.parse(b.date)))
-    }, [ searching, checked, events ]);
+        setFiltered(f.sort((a,b) => a.title.localeCompare(b.title)))
+    }, [ searching, checked, competitions ]);
 
     const onSearchChange = (event) => setSearching(event.currentTarget.value)
     const onCheckChange = (event) => setChecked(event.currentTarget.checked)
@@ -34,13 +44,13 @@ const EventsList = () => {
                 <Group>
                     <Text>Search:</Text>
                     <TextInput
-                        placeholder='Look for an event'
+                        placeholder='Look for a competition'
                         value={searching}
                         onChange={onSearchChange}
                     />
                     <Checkbox
                         labelPosition='left'
-                        label="Include Previous Events"
+                        label="Include used competitions"
                         checked={checked}
                         onChange={onCheckChange}
                     />
@@ -50,14 +60,12 @@ const EventsList = () => {
             <Card.Section withBorder>
                 <ScrollArea className={classes.scroll} scrollbars='y' type='scroll'>
                     <Card className={classes.eventsList}>
-                        {filtered.map(event => ( <EventCard key={event.id} item={event} />))}
+                        {filtered.map(compete => ( <CompetitionCard key={compete.title} competition={compete} />))}
                     </Card>
                 </ScrollArea>
             </Card.Section>
         </Card>
-
-        
     )
 }
 
-export default EventsList;
+export default CompetitionList;

@@ -1,11 +1,11 @@
 // Imports to create a login form
 import { Anchor, Card, Button, TextInput, PasswordInput, Stack } from '@mantine/core'
-import UserContext from '../../context/UserContext'
+import UserContext from '../../../context/UserContext.js'
 import { useForm } from '@mantine/form'
 import { useNavigate } from 'react-router-dom'
 import classes from './LoginForm.module.css'
 import { useState, useContext } from 'react'
-import { authUser } from '../../services/user.services'
+import { authUser } from '../../../services/user.services.js'
 
 /**
  * This component is a login form that allows users to login to the application

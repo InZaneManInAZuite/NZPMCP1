@@ -1,4 +1,4 @@
-import ListFrame from "../../../ListFrame/ListFrame.jsx";
+import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import {Card, Center, Paper} from "@mantine/core";
 import {getAllEvents} from "../../../../services/event.services.js";
 import EventCard from "./EventCard.jsx";

@@ -15,9 +15,9 @@ import {
 } from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import classes from "./NavBar.module.css";
-import UserContext from "../../context/UserContext.js";
+import UserContext from "../../../context/UserContext.js";
 import PropTypes from "prop-types";
-import LogoutButton from "../LogoutButton/LogoutButton.jsx";
+import LogoutButton from "./LogoutButton.jsx";
 
 
 
