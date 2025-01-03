@@ -3,7 +3,7 @@ import {Card, Center, Paper} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {getAllUsers} from "../../../../services/user.services.js";
-import UserCard from "../../../UserCard/UserCard.jsx";
+import UserCard from "./UserCard.jsx";
 import UserForm from "./UserForm.jsx";
 
 

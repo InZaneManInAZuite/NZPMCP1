@@ -137,7 +137,6 @@ const UserForm = ({user, close, injection: data}) => {
             ...getNewUser(),
             id: user.id,
         }
-        console.log(newUser)
         updateUser(user?.id, newUser, jwtToken)
             .then(() => {
                 clearFields();
@@ -170,10 +169,7 @@ const UserForm = ({user, close, injection: data}) => {
 
 
 
-            <form onSubmit={form.onSubmit(() => {
-                console.log(getNewUser())
-                return user ? handleUpdate() : handleCreate();
-            })}>
+            <form onSubmit={form.onSubmit(() => handleCreate())}>
                 <TextInput
                     label='Name'
                     placeholder='Enter name'
@@ -243,6 +239,7 @@ const UserForm = ({user, close, injection: data}) => {
                     <Group justify='center' mt='xl' gap='xl' grow>
                         <Button disabled={!changesPresent} onClick={() => {
                             handleUpdate();
+                            clearFields();
                             close();
                         }}>
                             Save

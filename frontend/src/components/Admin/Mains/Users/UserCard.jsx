@@ -2,10 +2,10 @@ import {Card, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Code} fr
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import {IconEdit, IconTrash} from "@tabler/icons-react";
-import {removeUser} from "../../services/user.services.js";
-import UserContext from "../../context/UserContext.js";
-import EventInfo from "../Admin/Mains/Events/EventInfo.jsx";
-import UserForm from "../Admin/Mains/Users/UserForm.jsx";
+import {removeUser} from "../../../../services/user.services.js";
+import UserContext from "../../../../context/UserContext.js";
+import UserForm from "./UserForm.jsx";
+import UserInfo from "./UserInfo.jsx";
 
 const UserCard = ({ item: user, injection: data }) => {
 
@@ -57,7 +57,7 @@ const UserCard = ({ item: user, injection: data }) => {
             )}
 
             {infoOpened && (
-                <EventInfo user={user} opened={infoOpened} setOpened={setInfoOpened}/>
+                <UserInfo user={user} opened={infoOpened} setOpened={setInfoOpened}/>
             )}
 
 

@@ -1,6 +1,6 @@
 import ListFrame from "../ListFrame/ListFrame.jsx";
 import {getAllUsers} from "../../services/user.services.js";
-import UserCard from "../UserCard/UserCard.jsx";
+import UserCard from "../Admin/Mains/Users/UserCard.jsx";
 
 
 const TestList = () => {

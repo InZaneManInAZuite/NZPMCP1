@@ -1,7 +1,7 @@
 import {Card, Checkbox, Group, LoadingOverlay, ScrollArea, Text, TextInput} from '@mantine/core';
 import {useContext, useEffect, useState} from 'react';
 import classes from './UsersList.module.css';
-import UserCard from '../UserCard/UserCard';
+import UserCard from '../Admin/Mains/Users/UserCard.jsx';
 import { getAllUsers } from '../../services/user.services';
 import UserContext from "../../context/UserContext.js";
 
