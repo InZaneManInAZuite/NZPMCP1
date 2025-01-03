@@ -108,6 +108,7 @@ const EventInfo = ({event, opened, setOpened}) => {
             {(user?.role === 'ADMIN') && (<>
                 <Text mb='sm'>Attendees:</Text>
                 <ListFrame
+                    width='100%'
                     items={attendees}
                     Component={AttendeeCard}
                     search={['name', 'email']}

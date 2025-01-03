@@ -11,7 +11,28 @@ public enum Permissions {
     EVENT_GET_BY_ID("event:getbyid"),
     EVENT_CREATE("event:create"),
     EVENT_UPDATE("event:update"),
-    EVENT_DELETE("event:delete");
+    EVENT_DELETE("event:delete"),
+
+    COMPETITION_GET_ALL("competition:getall"),
+    COMPETITION_GET_BY_ID("competition:getbyid"),
+    COMPETITION_CREATE("competition:create"),
+    COMPETITION_UPDATE("competition:update"),
+    COMPETITION_DELETE("competition:delete"),
+
+    QUESTION_GET_ALL("question:getall"),
+    QUESTION_GET_BY_ID("question:getbyid"),
+    QUESTION_CREATE("question:create"),
+    QUESTION_UPDATE("question:update"),
+    QUESTION_DELETE("question:delete"),
+
+    ATTEMPT_GET_ALL("attempt:getall"),
+    ATTEMPT_GET_BY_ID("attempt:getbyid"),
+    ATTEMPT_GET_BY_STUDENT("attempt:getbystudent"),
+    ATTEMPT_GET_BY_COMPETITION("attempt:getbycompetition"),
+    ATTEMPT_CREATE("attempt:create"),
+    ATTEMPT_UPDATE("attempt:update"),
+    ATTEMPT_DELETE("attempt:delete");
+
 
 
     private final String permission;

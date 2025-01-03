@@ -30,7 +30,7 @@ const AdminMainUsers = () => {
         if (checked) {
             return true
         } else {
-            return item.role !== 'ADMIN'
+            return item.role === 'USER'
         }
     }
 
@@ -41,7 +41,7 @@ const AdminMainUsers = () => {
                 Component={UserCard}
                 search={['name', 'email']}
                 setChecker={setChecker}
-                checkBoxLabel='Include Admins'
+                checkBoxLabel='Include All Roles'
                 injection={injection}
             />
 

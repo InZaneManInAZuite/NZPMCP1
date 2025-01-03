@@ -1,4 +1,4 @@
-import {Card, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Code} from '@mantine/core';
+import {Card, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Code, Flex} from '@mantine/core';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import {IconEdit, IconTrash} from "@tabler/icons-react";
@@ -63,8 +63,8 @@ const UserCard = ({ item: user, injection: data }) => {
 
 
 
-            <Group w='100%' justify='space-between'>
-                <Card p='sm' w='fit-content'>
+            <Flex direction={{base: 'column', sm: 'row'}} justify='flex-end'>
+                <Card p='sm' w='100%' h='100px'>
                     <Card.Section h='60%' p='sm'>
                         <Group>
                             <Anchor c='white' onClick={handleTitle}>
@@ -77,7 +77,7 @@ const UserCard = ({ item: user, injection: data }) => {
                     </Card.Section>
 
                     <Card.Section p='sm'>
-                        <Text lineClamp={3}>{user.email} - {user.id}</Text>
+                        <Text lineClamp={1}>{user.email} - {user.id}</Text>
                     </Card.Section>
                 </Card>
 
@@ -85,18 +85,16 @@ const UserCard = ({ item: user, injection: data }) => {
 
 
                 {(isLogged) && (
-                    <Stack h='100%' justify='center' w='fit-content'>
-                            <Group  w='100%' gap='md' justify='center'>
+                            <Flex gap='sm'>
                                 <UnstyledButton onClick={handleUpdateOpen}>
                                     <IconEdit size='35px'/>
                                 </UnstyledButton>
                                 <UnstyledButton onClick={handleDelete}>
                                     <IconTrash size='35px'/>
                                 </UnstyledButton>
-                            </Group>
-                    </Stack>
+                            </Flex>
                 )}
-            </Group>
+            </Flex>
         </Card>
     )
 }

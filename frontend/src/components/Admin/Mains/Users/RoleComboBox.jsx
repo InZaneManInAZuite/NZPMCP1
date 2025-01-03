@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const RoleComboBox = ({form}) => {
 
-    const roles = ['USER', 'ADMIN'];
+    const roles = ['USER', 'ADMIN', 'BUILDER'];
 
     const comboBox = useCombobox({
         onDropdownClose: () => comboBox.resetSelectedOption(),
@@ -17,7 +17,7 @@ const RoleComboBox = ({form}) => {
     return(<>
         <Text fw={500} size='sm'>Role</Text>
         <Combobox
-            w='fit-content'
+            w='50%'
             store={comboBox}
             onOptionSubmit={(value) => {
                 form.setFieldValue('role', value)

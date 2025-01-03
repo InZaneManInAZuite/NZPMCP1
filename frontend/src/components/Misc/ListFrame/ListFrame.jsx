@@ -30,7 +30,7 @@ const ListFrame = ({ items,
                        filter,
                        checkBoxLabel,
                        setChecker,
-                       width = '100%',
+                       width,
                        height = '670px',
                    }) => {
     
@@ -233,7 +233,7 @@ const ListFrame = ({ items,
 
     // MARK: Return components
     return (
-        <Card w={width} h={height} m='auto' radius='md'>
+        <Card w={width} h={height} className={classes.layout} m='auto' radius='md'>
 
             {listFrameHeader}
 

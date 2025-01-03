@@ -1,4 +1,4 @@
-import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group} from '@mantine/core';
+import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Flex} from '@mantine/core';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
@@ -87,7 +87,7 @@ const EventCard = ({ item: event }) => {
 
 
     return (
-        <Card w='100%' h='250px' withBorder>
+        <Card w='100%' withBorder>
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={handleUpdateClose} size='800px'>
                     <EventForm event={event} close={handleUpdateClose}/>
@@ -102,8 +102,8 @@ const EventCard = ({ item: event }) => {
 
 
 
-            <Group w='100%' h='100%' justify='space-between'>
-                <Card p='xl' w='85%' h='100%'>
+            <Flex direction={{base: 'column', sm: 'row'}} justify='flex-end'>
+                <Card p='xl' w='100%' h='200px'>
                     <Card.Section h='60%' p='md'>
                         <Anchor c='white' onClick={handleTitle}>
                             <Title lineClamp={2} align='left' order={2}>{event.name}</Title>
@@ -119,9 +119,14 @@ const EventCard = ({ item: event }) => {
 
 
                 {(isLogged) && (
-                    <Stack h='100%' justify='center' w='fit-content'>
+                    <Flex
+                        h='100%'
+                        direction={{base: 'row',sm: 'column'}}
+                        justify='flex-end'
+                        gap='md'
+                    >
                         {(isAdmin) && (
-                            <Group w='100%' gap='md' justify='center'>
+                            <Group gap='md' justify='center'>
                                 <UnstyledButton onClick={handleUpdateOpen}>
                                     <IconEdit size='35px'/>
                                 </UnstyledButton>
@@ -144,9 +149,9 @@ const EventCard = ({ item: event }) => {
                             {isJoined ? 'Joined' : 'Join'}
                         </Button>
 
-                    </Stack>
+                    </Flex>
                 )}
-            </Group>
+            </Flex>
         </Card>
     )
 }
