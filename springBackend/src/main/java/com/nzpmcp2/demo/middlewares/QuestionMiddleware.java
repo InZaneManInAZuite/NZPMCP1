@@ -19,8 +19,8 @@ public class QuestionMiddleware {
     }
 
     // Check question exists
-    public Question checkQuestionExists(String title) {
-        Optional<Question> question = questionRepo.findById(title);
+    public Question checkQuestionExists(String id) {
+        Optional<Question> question = questionRepo.findById(id);
         if (question.isPresent()) {
             return question.get();
         } else {
@@ -36,14 +36,6 @@ public class QuestionMiddleware {
 
         if (title == null || options == null || options.size() <= correctChoiceIndex || correctChoiceIndex == -1) {
             throw new IllegalStateException("Event has missing fields");
-        }
-    }
-
-    // Check if duplicate question exists
-    public void checkQuestionDuplicated(String title) {
-        Optional<Question> question = questionRepo.findById(title);
-        if (question.isPresent()) {
-            throw new IllegalStateException("Question already exists");
         }
     }
 }

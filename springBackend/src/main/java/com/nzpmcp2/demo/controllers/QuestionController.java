@@ -1,6 +1,5 @@
 package com.nzpmcp2.demo.controllers;
 
-import com.nzpmcp2.demo.inputs.QuestionInput;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +30,10 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/title")
-    public ResponseEntity<Question> getQuestionById(@RequestParam String title) {
+    @GetMapping("/id")
+    public ResponseEntity<Question> getQuestionById(@RequestParam String id) {
         try {
-            Question question = questionService.getQuestionByTitle(title);
+            Question question = questionService.getQuestionById(id);
             return ResponseEntity.ok(question);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -62,15 +61,9 @@ public class QuestionController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateQuestion(@RequestBody QuestionInput questionInput) {
+    public ResponseEntity<Void> updateQuestion(@RequestBody Question question) {
         try {
-            Question newQuestion = new Question.Builder()
-                    .setTitle(questionInput.newTitle())
-                    .setOptions(questionInput.options())
-                    .setCorrectChoiceIndex(questionInput.correctChoiceIndex())
-                    .build();
-
-            questionService.updateQuestion(questionInput.title(), newQuestion);
+            questionService.updateQuestion(question);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

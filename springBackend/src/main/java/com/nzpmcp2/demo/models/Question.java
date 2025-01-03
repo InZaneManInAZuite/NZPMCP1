@@ -10,18 +10,24 @@ public class Question {
 
     /// Fields ///
     @Id
+    private String id;
     private String title;
     private List<String> options;
     private int correctChoiceIndex;
 
     /// Constructor ///
-    public Question(String title, List<String> options, int correctChoiceIndex) {
+    public Question(String id, String title, List<String> options, int correctChoiceIndex) {
+        this.id = id;
         this.title = title;
         this.options = options;
         this.correctChoiceIndex = correctChoiceIndex;
     }
 
     /// Getter and Setters ///
+    public String getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -32,6 +38,10 @@ public class Question {
 
     public int getCorrectChoiceIndex() {
         return correctChoiceIndex;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {
@@ -50,7 +60,7 @@ public class Question {
 
     public Question copy(Question question) {
         List<String> options = question.getOptions();
-        return new Question(question.getTitle(), options, question.getCorrectChoiceIndex());
+        return new Question(question.getId(), question.getTitle(), options, question.getCorrectChoiceIndex());
     }
 
     public void update(Question question) {
@@ -69,6 +79,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
+                "id='" + id + '\'' +
                 "title='" + title + '\'' +
                 ", options='" + options + '\'' +
                 ", correctChoiceIndex='" + correctChoiceIndex +
@@ -76,9 +87,15 @@ public class Question {
     }
 
     public static class Builder {
+        private String id;
         private String title;
         private List<String> options;
         private int correctChoiceIndex;
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -96,7 +113,7 @@ public class Question {
         }
 
         public Question build() {
-            return new Question(title, options, correctChoiceIndex);
+            return new Question(id, title, options, correctChoiceIndex);
         }
     }
 }

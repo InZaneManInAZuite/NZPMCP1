@@ -11,18 +11,23 @@ public class Competition {
 
     // Fields
     @Id
+    private String id;
     private String title;
     private String[] questionIds;
     private List<String> events;
 
     // Constructor
-    public Competition(String title, String[] questionIds, List<String> events) {
+    public Competition(String id, String title, String[] questionIds, List<String> events) {
+        this.id = id;
         this.title = title;
         this.questionIds = questionIds;
         this.events = events;
     }
 
     // Getters and Setters
+    public String getId() {
+        return id;
+    }
 
     public String getTitle() {
         return title;
@@ -34,6 +39,10 @@ public class Competition {
 
     public List<String> getEvents() {
         return events;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {
@@ -53,7 +62,7 @@ public class Competition {
     public Competition copy() {
         String[] questionsCopy = Arrays.copyOf(this.questionIds, this.questionIds.length);
         List<String> eventsCopy = Arrays.asList(questionsCopy);
-        return new Competition(title, questionsCopy, eventsCopy);
+        return new Competition(id, title, questionsCopy, eventsCopy);
     }
 
     public void addAQuestion(String questionId) {
@@ -96,6 +105,7 @@ public class Competition {
     @Override
     public String toString() {
         return "Competition{" +
+                "id='" + id + '\'' +
                 "title='" + title + '\'' +
                 ", questionIds='" + Arrays.toString(questionIds) + '\'' +
                 ", events='" + events +
@@ -103,9 +113,15 @@ public class Competition {
     }
 
     public static class Builder {
+        private String id;
         private String title;
         private String[] questionIds;
         private List<String> events;
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -123,7 +139,7 @@ public class Competition {
         }
 
         public Competition build() {
-            return new Competition(title, questionIds, events);
+            return new Competition(id, title, questionIds, events);
         }
     }
 }

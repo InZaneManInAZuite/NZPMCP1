@@ -31,9 +31,9 @@ public class CompetitionService {
     }
 
     // Get competition by title
-    public Competition getCompetitionByTitle(String title) {
+    public Competition getCompetitionById(String id) {
         try {
-            return competeMid.checkCompetitionExists(title);
+            return competeMid.checkCompetitionExists(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -43,7 +43,6 @@ public class CompetitionService {
     public Competition createCompetition(Competition competition) {
         try {
             competeMid.checkCompetitionFields(competition);
-            competeMid.checkCompetitionDuplicated(competition.getTitle());
             competeRepo.save(competition);
             return competition;
         } catch (IllegalStateException e) {
@@ -52,35 +51,28 @@ public class CompetitionService {
     }
 
     // Remove a competition
-    public void deleteCompetition(String title) {
+    public void deleteCompetition(String id) {
         try {
             // Obtain competition
-            competeMid.checkCompetitionExists(title);
+            competeMid.checkCompetitionExists(id);
 
             // TODO: Remove competition from all included events
 
             // Remove competition
-            competeRepo.deleteById(title);
+            competeRepo.deleteById(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
 
     // Update a competition
-    public void updateCompetition(String currentTitle, Competition competitionUpdate) {
+    public void updateCompetition(Competition competitionUpdate) {
         try {
             // Check if competition exists
-            Competition competition = competeMid.checkCompetitionExists(currentTitle);
-
-            // Check if competition is duplicated
-            String newTitle = competitionUpdate.getTitle();
-            if (!newTitle.isEmpty() && !newTitle.equals(currentTitle)) {
-                competeMid.checkCompetitionDuplicated(newTitle);
-            }
+            Competition competition = competeMid.checkCompetitionExists(competitionUpdate.getId());
 
             // Update the competition
             competition.update(competitionUpdate);
-            competeRepo.deleteById(currentTitle);
             competeRepo.save(competition);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

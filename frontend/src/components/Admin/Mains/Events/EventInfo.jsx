@@ -109,7 +109,7 @@ const EventInfo = ({event, opened, setOpened}) => {
                 <Text mb='sm'>Attendees:</Text>
                 <ListFrame
                     width='100%'
-                    items={attendees}
+                    items={attendees || []}
                     Component={AttendeeCard}
                     search={['name', 'email']}
                     setChecker={setChecker}

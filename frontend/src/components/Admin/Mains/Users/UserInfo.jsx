@@ -76,7 +76,7 @@ const UserInfo = ({user, opened, setOpened}) => {
             <Text mb='sm'>Joined Events:</Text>
             <ListFrame
                 width='100%'
-                items={events}
+                items={events || []}
                 Component={JoinedEventCard}
                 search={['name', 'description']}
                 sort='date'

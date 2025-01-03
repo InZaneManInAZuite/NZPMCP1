@@ -25,9 +25,9 @@ public class QuestionService {
     }
 
     // Get question by id
-    public Question getQuestionByTitle(String title) {
+    public Question getQuestionById(String id) {
         try {
-            return questionMid.checkQuestionExists(title);
+            return questionMid.checkQuestionExists(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -37,7 +37,6 @@ public class QuestionService {
     public void createQuestion(Question question) {
         try {
             questionMid.checkQuestionFields(question);
-            questionMid.checkQuestionDuplicated(question.getTitle());
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
@@ -60,20 +59,13 @@ public class QuestionService {
     }
 
     // Update a question
-    public void updateQuestion(String currentTitle, Question newQuestion) {
+    public void updateQuestion(Question newQuestion) {
         try {
             // Check question exists
-            Question question = questionMid.checkQuestionExists(currentTitle);
-
-            // Check if duplicated
-            String newTitle = newQuestion.getTitle();
-            if (!newTitle.isEmpty() && !currentTitle.equals(newTitle)) {
-                questionMid.checkQuestionDuplicated(newTitle);
-            }
+            Question question = questionMid.checkQuestionExists(newQuestion.getId());
 
             // Update question
             question.update(newQuestion);
-            questionRepo.deleteById(currentTitle);
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

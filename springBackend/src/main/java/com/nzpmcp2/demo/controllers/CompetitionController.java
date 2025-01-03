@@ -1,6 +1,5 @@
 package com.nzpmcp2.demo.controllers;
 
-import com.nzpmcp2.demo.inputs.CompetitionInput;
 import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.services.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +30,10 @@ public class CompetitionController {
         }
     }
 
-    @GetMapping("/title")
-    public ResponseEntity<Competition> getCompetitionById(@RequestParam String title) {
+    @GetMapping("/id")
+    public ResponseEntity<Competition> getCompetitionById(@RequestParam String id) {
         try {
-            Competition competition = competeService.getCompetitionByTitle(title);
+            Competition competition = competeService.getCompetitionById(id);
             return ResponseEntity.ok(competition);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -44,17 +43,17 @@ public class CompetitionController {
     @PostMapping
     public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition) {
         try{
-            Competition newCompetition = competeService.createCompetition(competition);
-            return ResponseEntity.ok(newCompetition);
+            competeService.createCompetition(competition);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteCompetition(@RequestParam String title) {
+    public ResponseEntity<Void> deleteCompetition(@RequestParam String id) {
         try {
-            competeService.deleteCompetition(title);
+            competeService.deleteCompetition(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -62,17 +61,10 @@ public class CompetitionController {
     }
 
     @PutMapping
-    public ResponseEntity<Competition> updateCompetition(@RequestBody CompetitionInput competeInput) {
+    public ResponseEntity<Competition> updateCompetition(@RequestBody Competition competition) {
         try {
-            Competition newCompete = new Competition.Builder()
-                    .setTitle(competeInput.newTitle())
-                    .setQuestionIds(competeInput.questionIds())
-                    .setEvents(competeInput.events())
-                    .build();
-
-            String title = competeInput.title();
-            competeService.updateCompetition(title, newCompete);
-            return ResponseEntity.ok(newCompete);
+            competeService.updateCompetition(competition);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

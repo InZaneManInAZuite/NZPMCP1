@@ -18,8 +18,8 @@ public class CompetitionMiddleware {
     }
 
     // Check if competition exists
-    public Competition checkCompetitionExists(String title) {
-        Optional<Competition> competition = competeRepo.findById(title);
+    public Competition checkCompetitionExists(String id) {
+        Optional<Competition> competition = competeRepo.findById(id);
         if (competition.isPresent()) {
             return competition.get();
         } else {
@@ -33,14 +33,6 @@ public class CompetitionMiddleware {
 
         if (title == null) {
             throw new IllegalStateException("Competition missing fields");
-        }
-    }
-
-    // Check if duplicate competition exists
-    public void checkCompetitionDuplicated(String title) {
-        Optional<Competition> competition = competeRepo.findById(title);
-        if (competition.isPresent()) {
-            throw new IllegalStateException("Competition already exists");
         }
     }
 }
