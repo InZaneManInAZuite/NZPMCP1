@@ -11,13 +11,9 @@ const getAllQuestions = (jwtToken) => {
     return request.then(response => response.data)
 }
 
-const getQuestion = (title, jwtToken) => {
-    const qInput = {
-        title: title
-    }
-    const request = axios.get(`${QUESTION_URL}/title`, JSON.stringify(qInput), {
+const getQuestion = (id, jwtToken) => {
+    const request = axios.get(`${QUESTION_URL}/${id}`, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })
@@ -34,13 +30,9 @@ const createQuestion = (newQ, jwtToken) => {
     return request.then(response => response.data)
 }
 
-const removeQuestion = (title, jwtToken) => {
-    const qInput = {
-        title: title
-    }
-    const request = axios.delete(QUESTION_URL, JSON.stringify(qInput), {
+const removeQuestion = (id, jwtToken) => {
+    const request = axios.delete(`${QUESTION_URL}/${id}`, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })

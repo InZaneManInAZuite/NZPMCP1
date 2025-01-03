@@ -30,8 +30,8 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<Question> getQuestionById(@RequestParam String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Question> getQuestionById(@PathVariable String id) {
         try {
             Question question = questionService.getQuestionById(id);
             return ResponseEntity.ok(question);
@@ -50,11 +50,11 @@ public class QuestionController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteQuestionById(@RequestParam String title) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteQuestionById(@PathVariable String id) {
         try {
-            questionService.deleteQuestion(title);
-            return ResponseEntity.ok().build();
+            questionService.deleteQuestion(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

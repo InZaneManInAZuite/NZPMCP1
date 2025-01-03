@@ -7,7 +7,7 @@ import {removeCompetition} from "../../../../services/competition.services.js";
 import CompetitionForm from "./CompetitionForm.jsx";
 import {useNavigate} from "react-router-dom";
 
-const UserCard = ({ item: competition, injection: data }) => {
+const CompetitionCard = ({ item: competition, injection: data }) => {
 
     const { jwtToken } = useContext(UserContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
@@ -80,9 +80,9 @@ const UserCard = ({ item: competition, injection: data }) => {
 
 
 
-UserCard.propTypes = {
+CompetitionCard.propTypes = {
     item: PropTypes.object.isRequired,
     injection: PropTypes.object,
 }
 
-export default UserCard;
+export default CompetitionCard;

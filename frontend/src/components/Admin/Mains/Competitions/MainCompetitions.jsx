@@ -20,7 +20,6 @@ const MainCompetitions = () => {
         getAllCompetitions(jwtToken)
             .then(allCompetes => {
                 setCompetitions(allCompetes)
-                console.log(allCompetes)
             })
             .catch(e => console.log(e))
     }, [jwtToken])

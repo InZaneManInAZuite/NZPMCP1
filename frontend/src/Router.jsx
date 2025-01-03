@@ -5,6 +5,7 @@ import SignUpPage from './pages/Signup.page';
 import AdminEventsPage from "./pages/AdminEvents.page.jsx";
 import AdminUsersPage from "./pages/AdminUsers.page.jsx";
 import AdminCompetitionsPage from "./pages/AdminCompetitions.page.jsx";
+import AdminQuestionsPage from "./pages/AdminQuestions.page.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,12 +31,12 @@ const router = createBrowserRouter([
     element: <AdminEventsPage />
   }, {
     path: '/admin/questions',
-    element: <AdminEventsPage />
+    element: <AdminQuestionsPage />
   }, {
     path: '/admin/settings',
     element: <AdminEventsPage />
   }, {
-    path: '/admin/builder',
+    path: '/builder',
     element: <AdminEventsPage />
   }, {
     path: '/events',

@@ -20,7 +20,7 @@ const navAdmin = [
     {link: `/admin/attempts`, label: `Attempts`, icon: IconTriangle},
     {link: `/admin/questions`, label: `Questions`, icon: IconQuestionMark},
     {link: `/admin/settings`, label: `Settings`, icon: IconSettings},
-    {link: `/admin/builder`, label: `Builder`, icon: IconBlocks}
+    {link: `/builder`, label: `Builder`, icon: IconBlocks}
 ]
 
 const NavBarAdmin = ({children, pageActive,
