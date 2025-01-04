@@ -1,4 +1,4 @@
-import NavBar from "./NavBar.jsx";
+import LinkedNavBar from "./LinkedNavBar.jsx";
 import {
     IconCalendarEvent,
     IconSettings,
@@ -24,17 +24,17 @@ const NavBarUser = ({children, pageActive,
 }) => {
 
     return (
-        <NavBar navData={navUser}
-                pageActive={pageActive}
+        <LinkedNavBar navData={navUser}
+                      pageActive={pageActive}
 
-                withAside={withAside}
-                asideComp={asideComp}
+                      withAside={withAside}
+                      asideComp={asideComp}
 
-                withFooter={withFooter}
-                footerComp={footerComp}
+                      withFooter={withFooter}
+                      footerComp={footerComp}
         >
             {children}
-        </NavBar>
+        </LinkedNavBar>
     )
 }
 

@@ -232,7 +232,7 @@ const QuestionForm = ({question, close, injection: data}) => {
                     value={form.values.topics || []}
                     onChange={handleTopicChange}
                     data={['Mechanics', 'Waves', 'Algebra', 'Geometry']}
-                    w='40%'
+                    w='60%'
                 />
                 <Divider m='lg' variant='dashed'/>
 

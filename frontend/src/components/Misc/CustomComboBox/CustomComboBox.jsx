@@ -16,7 +16,7 @@ const CustomComboBox = ({form, selection, field, disabled}) => {
         <Text fw={500} size='sm'>{field}</Text>
         <Combobox
             disabled={disabled}
-            w='40%'
+            w='60%'
             store={comboBox}
             onOptionSubmit={(value) => {
                 form.setFieldValue(field.toLowerCase(), value)

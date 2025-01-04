@@ -1,29 +1,24 @@
 import {useContext, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import {
-    Anchor,
     AppShell,
     Burger,
-    Card, Code,
-    Divider,
     Group,
     LoadingOverlay,
     NavLink,
     Paper,
-    Stack,
-    Text, Title
+    Text,
 } from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
-import classes from "./NavBar.module.css";
+import {useDisclosure, useMediaQuery} from "@mantine/hooks";
 import UserContext from "../../../context/UserContext.js";
 import PropTypes from "prop-types";
-import LogoutButton from "./LogoutButton.jsx";
+import NavBarFrame from "./AppFrame/NavBarFrame.jsx";
 
 
 
 
 
-const NavBar = ({navData, children, pageActive,
+const LinkedNavBar = ({navData, children, pageActive,
 
                     withAside = false,
                     asideComp,
@@ -31,13 +26,18 @@ const NavBar = ({navData, children, pageActive,
                     withFooter = false,
                     footerComp,
 
-                    authorized = true
+                    authorized = true,
+
+                    withNavFooter = true,
+                    label,
+                    nav,
 }) => {
 
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
     const [opened, { toggle }] = useDisclosure()
     const [active, setActive] = useState(pageActive);
+    const matches = useMediaQuery(`(min-width: 750px)`);
 
 
 
@@ -81,12 +81,13 @@ const NavBar = ({navData, children, pageActive,
                     <Paper>
                         <Text size='xl' fw={700}>NZPMC</Text>
                     </Paper>
-                    <Burger
-                        opened={opened}
-                        onClick={toggle}
-                        size="sm"
-                        className={classes.burger}
-                    />
+                    {!matches && (
+                        <Burger
+                            opened={opened}
+                            onClick={toggle}
+                            size="sm"
+                        />
+                    )}
                 </Group>
             </AppShell.Header>
 
@@ -96,25 +97,15 @@ const NavBar = ({navData, children, pageActive,
 
             {(authorized && user) ? (<>
                 <AppShell.Navbar p='lg'>
-                    <Stack justify='space-between' h='100%'>
-                        <Stack gap='xs' >
-                            {links}
-                        </Stack>
-                        <Stack>
-                            <Divider/>
-                            <Card>
-                                <Group>
-                                    <Title order={2} >{user.name}</Title>
-                                    {user.role !== 'USER' && (
-                                        <Code color='blue' w='fit-content'>{user.role}</Code>
-                                    )}
-                                </Group>
-                                <Anchor c='gray' underline='never' ta='left' mb='lg'>{user.email}</Anchor>
-                                <LogoutButton/>
-                            </Card>
-                        </Stack>
-                    </Stack>
+                    <NavBarFrame withNavFooter={withNavFooter} nav={nav} label={label}>
+                        {links}
+                    </NavBarFrame>
                 </AppShell.Navbar>
+
+
+
+
+
                 <AppShell.Main>
                     {children}
                 </AppShell.Main>
@@ -149,7 +140,7 @@ const NavBar = ({navData, children, pageActive,
 
 
 
-NavBar.propTypes = {
+LinkedNavBar.propTypes = {
     navData: PropTypes.array.isRequired,
     children: PropTypes.element,
     pageActive: PropTypes.string,
@@ -158,6 +149,9 @@ NavBar.propTypes = {
     withFooter: PropTypes.bool,
     footerComp: PropTypes.element,
     authorized: PropTypes.bool,
+    label: PropTypes.string,
+    nav: PropTypes.string,
+    withNavFooter: PropTypes.bool,
 }
 
-export default NavBar;
+export default LinkedNavBar;

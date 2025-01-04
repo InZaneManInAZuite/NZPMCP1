@@ -1,25 +1,13 @@
-import {
-    Anchor,
-    AppShell,
-    Burger,
-    Card,
-    Code,
-    Divider,
-    Group,
-    LoadingOverlay,
-    Paper,
-    Stack,
-    Text,
-    Title
-} from "@mantine/core";
-import classes from "./Builder.module.css";
-import LogoutButton from "../../../Misc/Navigation/LogoutButton.jsx";
+import {AppShell, LoadingOverlay} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
 import {useDisclosure, useMediaQuery} from "@mantine/hooks";
 import PropTypes from "prop-types";
 import AsideBuilder from "./AsideBuilder.jsx";
+import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
+import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
+import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
 
 
 
@@ -29,7 +17,9 @@ const ShellBuilder = ({children}) => {
     const [opened, { toggle }] = useDisclosure()
     const [ authorized, setAuthorized ] = useState(false)
     const navigate = useNavigate();
-    const matches = useMediaQuery('(min-width: 800px)')
+    const sideMatches = useMediaQuery('(min-width: 800px)')
+    const navMatches = useMediaQuery('(min-width: 1250px)')
+
 
     useEffect (() => {
         if (user?.role === "ADMIN") {
@@ -39,12 +29,8 @@ const ShellBuilder = ({children}) => {
         }
     }, [navigate]);
 
-
-
-
-
-
-
+    const nav = '/admin'
+    const label = 'Exit Builder'
 
 
     return (
@@ -67,62 +53,39 @@ const ShellBuilder = ({children}) => {
                 breakpoint: '800px',
                 collapsed: { desktop: false, mobile: true }
             }}
+            footer={{
+                height: '100px',
+                collapsed: !navMatches,
+            }}
         >
 
-
-
-
-
             <AppShell.Header>
-                <Group justify='space-between' p='sm'>
-                    <Paper>
-                        <Text size='xl' fw={700}>NZPMC</Text>
-                    </Paper>
-                    <Burger
-                        opened={opened}
-                        onClick={toggle}
-                        size="sm"
-                        className={classes.burger}
-                    />
-                </Group>
+                <HeaderFrame navMatcher={navMatches} opened={opened} toggle={toggle}/>
             </AppShell.Header>
-
-
-
-
 
 
             {(authorized && user) ? (<>
                 <AppShell.Navbar p='lg' zIndex={300}>
-                    <Stack justify='space-between' h='100%'>
-                        <Stack gap='xs' >
-                            <p>navBar</p>
-                        </Stack>
-                        <Stack>
-                            <Divider/>
-                            <Card>
-                                <Group>
-                                    <Title order={2} >{user.name}</Title>
-                                    {user.role !== 'USER' && (
-                                        <Code color='blue' w='fit-content'>{user.role}</Code>
-                                    )}
-                                </Group>
-                                <Anchor c='gray' underline='never' ta='left' mb='lg'>{user.email}</Anchor>
-                                <LogoutButton/>
-                            </Card>
-                        </Stack>
-                    </Stack>
+                    <NavBarFrame nav={nav} withNavFooter={!navMatches} label={label}>
+                        <p>Navbar Temporary</p>
+                    </NavBarFrame>
                 </AppShell.Navbar>
+
+
                 <AppShell.Main>
                     {children}
-                    {!matches && <AsideBuilder/>}
+                    {!sideMatches && <AsideBuilder/>}
                 </AppShell.Main>
-
 
 
                 <AppShell.Aside>
                     <AsideBuilder/>
                 </AppShell.Aside>
+
+
+                <AppShell.Footer p='md'>
+                    <FooterFrame nav={nav} label={label}/>
+                </AppShell.Footer>
             </>) : (
                 <LoadingOverlay/>
             )}

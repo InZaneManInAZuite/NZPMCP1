@@ -1,4 +1,4 @@
-import NavBar from "./NavBar.jsx";
+import LinkedNavBar from "./LinkedNavBar.jsx";
 import {
     IconCalendarEvent,
     IconQuestionMark,
@@ -45,19 +45,19 @@ const NavBarAdmin = ({children, pageActive,
     }, [navigate]);
 
     return (
-        <NavBar navData={navAdmin}
-                pageActive={pageActive}
+        <LinkedNavBar navData={navAdmin}
+                      pageActive={pageActive}
 
-                withAside={withAside}
-                asideComp={asideComp}
+                      withAside={withAside}
+                      asideComp={asideComp}
 
-                withFooter={withFooter}
-                footerComp={footerComp}
+                      withFooter={withFooter}
+                      footerComp={footerComp}
 
-                authorized={authorized}
+                      authorized={authorized}
         >
             {children}
-        </NavBar>
+        </LinkedNavBar>
     )
 }
 
