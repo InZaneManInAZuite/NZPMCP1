@@ -243,7 +243,7 @@ const ListFrame = ({ items,
                 { (hasBeenFiltered) ? (
 
                     (filtered?.length > 0) ? (
-                        <ScrollArea scrollbars='y' type='always' h='100%' p='md'>
+                        <ScrollArea scrollbars='y' type='always' h='100%' p='md' scrollbarSize={4}>
                             {filtered?.map(item => <Component
                                 key={item.id || item[toSearch[0]]}
                                 item={item}

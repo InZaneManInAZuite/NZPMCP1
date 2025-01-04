@@ -1,11 +1,15 @@
 import ShellBuilder from "../components/Admin/Mains/Builder/ShellBuilder.jsx";
+import MainBuilder from "../components/Admin/Mains/Builder/MainBuilder.jsx";
+import BuilderContextProvider from "../components/Admin/Mains/Builder/Context/BuilderContextProvider.jsx";
 
 
 const BuilderPage = () => {
     return (
-        <ShellBuilder>
-            <p>Main</p>
-        </ShellBuilder>
+        <BuilderContextProvider>
+            <ShellBuilder>
+                <MainBuilder/>
+            </ShellBuilder>
+        </BuilderContextProvider>
     )
 }
 

@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {Burger, Group, Paper, Text} from "@mantine/core";
-import classes from "../../../Admin/Mains/Builder/Builder.module.css";
 
 
 const HeaderFrame = ({navMatcher, opened, toggle}) => {
@@ -15,7 +14,6 @@ const HeaderFrame = ({navMatcher, opened, toggle}) => {
                     opened={opened}
                     onClick={toggle}
                     size="sm"
-                    className={classes.burger}
                 />
             )}
         </Group>

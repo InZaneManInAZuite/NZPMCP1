@@ -1,24 +1,34 @@
-import {AppShell, LoadingOverlay} from "@mantine/core";
+import {AppShell, Card, LoadingOverlay, ScrollArea} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
-import {useDisclosure, useMediaQuery} from "@mantine/hooks";
+import {useDisclosure, useMediaQuery, useViewportSize} from "@mantine/hooks";
 import PropTypes from "prop-types";
 import AsideBuilder from "./AsideBuilder.jsx";
 import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
+import NavBarBuilder from "./NavBarBuilder.jsx";
+import CompetitionForm from "../Competitions/CompetitionForm.jsx";
 
-
+const nav = '/admin';
+const label = 'Exit Builder';
+const navW = 400;
+const asideW = 400;
+const mainW = 400;
+const headH = 60;
+const footH = 100;
 
 const ShellBuilder = ({children}) => {
 
     const { user } = useContext(UserContext);
-    const [opened, { toggle }] = useDisclosure()
-    const [ authorized, setAuthorized ] = useState(false)
+    const [opened, { toggle }] = useDisclosure();
+    const [ authorized, setAuthorized ] = useState(false);
     const navigate = useNavigate();
-    const sideMatches = useMediaQuery('(min-width: 800px)')
-    const navMatches = useMediaQuery('(min-width: 1250px)')
+
+    const sideMatches = useMediaQuery(`(min-width: ${asideW + mainW}px)`);
+    const navMatches = useMediaQuery(`(min-width: ${navW + asideW + mainW}px)`);
+    const {height: appH, width: appW} = useViewportSize();
 
 
     useEffect (() => {
@@ -29,34 +39,15 @@ const ShellBuilder = ({children}) => {
         }
     }, [navigate]);
 
-    const nav = '/admin'
-    const label = 'Exit Builder'
+
 
 
     return (
         <AppShell
-            padding={{
-                base: 10,
-                sm: 15,
-                lg: 'xl'
-            }}
-            header={{
-                height: 60,
-            }}
-            navbar={{
-                width:'400px',
-                breakpoint: '1250px',
-                collapsed: { desktop: false, mobile: !opened }
-            }}
-            aside={{
-                width:'400px',
-                breakpoint: '800px',
-                collapsed: { desktop: false, mobile: true }
-            }}
-            footer={{
-                height: '100px',
-                collapsed: !navMatches,
-            }}
+            header={{height: headH,}}
+            navbar={{width: navW, breakpoint: navW + mainW + asideW, collapsed: { desktop: false, mobile: !opened }}}
+            aside={{width: asideW, breakpoint: mainW + asideW, collapsed: { desktop: false, mobile: true }}}
+            footer={{height: footH, collapsed: !navMatches}}
         >
 
             <AppShell.Header>
@@ -65,25 +56,32 @@ const ShellBuilder = ({children}) => {
 
 
             {(authorized && user) ? (<>
-                <AppShell.Navbar p='lg' zIndex={300}>
+                <AppShell.Navbar zIndex={300}>
                     <NavBarFrame nav={nav} withNavFooter={!navMatches} label={label}>
-                        <p>Navbar Temporary</p>
+                        <ScrollArea
+                            pl='xs' pr='xs' pt='xs'
+                            scrollbarSize={4}
+                            w={navMatches ? (navW) : '100%'}
+                            h={navMatches ? (appH - footH - headH) : (appH - 225 - headH )}
+                            type='always'>
+                            <NavBarBuilder w='100%' h={navMatches ? '400px' : '200px'} />
+                        </ScrollArea>
                     </NavBarFrame>
                 </AppShell.Navbar>
 
 
-                <AppShell.Main>
+                <AppShell.Main p='lg'>
                     {children}
                     {!sideMatches && <AsideBuilder/>}
                 </AppShell.Main>
 
 
-                <AppShell.Aside>
+                <AppShell.Aside p='lg'>
                     <AsideBuilder/>
                 </AppShell.Aside>
 
 
-                <AppShell.Footer p='md'>
+                <AppShell.Footer p='md' zIndex={400}>
                     <FooterFrame nav={nav} label={label}/>
                 </AppShell.Footer>
             </>) : (
