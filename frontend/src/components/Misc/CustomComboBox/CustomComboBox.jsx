@@ -2,7 +2,7 @@ import {Combobox, Input, InputBase, Text, useCombobox} from "@mantine/core";
 import PropTypes from "prop-types";
 
 
-const CustomComboBox = ({form, selection, field}) => {
+const CustomComboBox = ({form, selection, field, disabled}) => {
 
     const comboBox = useCombobox({
         onDropdownClose: () => comboBox.resetSelectedOption(),
@@ -15,7 +15,8 @@ const CustomComboBox = ({form, selection, field}) => {
     return(<>
         <Text fw={500} size='sm'>{field}</Text>
         <Combobox
-            w='50%'
+            disabled={disabled}
+            w='40%'
             store={comboBox}
             onOptionSubmit={(value) => {
                 form.setFieldValue(field.toLowerCase(), value)
@@ -46,6 +47,7 @@ CustomComboBox.propTypes = {
     form: PropTypes.object,
     selection: PropTypes.array,
     field: PropTypes.string,
+    disabled: PropTypes.bool,
 }
 
 export default CustomComboBox

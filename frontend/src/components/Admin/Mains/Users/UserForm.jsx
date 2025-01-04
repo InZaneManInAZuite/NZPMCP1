@@ -11,7 +11,7 @@ import {useContext, useEffect, useState} from 'react'
 import '@mantine/dates/styles.css'
 import PropTypes from "prop-types";
 import UserContext from "../../../../context/UserContext.js";
-import {authUser, createUser, updateUser} from "../../../../services/user.services.js";
+import {createUser, updateUser} from "../../../../services/user.services.js";
 import RoleComboBox from "./RoleComboBox.jsx";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -129,6 +129,7 @@ const UserForm = ({user, close, injection: data}) => {
         createUser(newUser)
             .then(() => {
                 data.setUsers(data.users.concat(newUser));
+                clearFields()
             })
             .catch(e => console.log(e));
     }

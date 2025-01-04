@@ -3,7 +3,7 @@ import {
     Divider,
     TextInput,
     Button,
-    Group, Text, UnstyledButton, Textarea, MultiSelect,
+    Group, Text, UnstyledButton, Textarea, MultiSelect, Checkbox,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import {useContext, useEffect, useState} from 'react'
@@ -19,6 +19,9 @@ const QuestionForm = ({question, close, injection: data}) => {
 
     const { jwtToken } = useContext(UserContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
+
+    const [ diffCheck, setDiffCheck ] = useState(question?.difficulty || false);
+    const [ topicCheck, setTopicCheck ] = useState(question?.topics.length > 0 || false);
 
     const handleTitleChange = (event) => form.setFieldValue('title', event.currentTarget.value);
     const handleOptionsChange = (event) => form.setFieldValue('options', () => {
@@ -40,6 +43,18 @@ const QuestionForm = ({question, close, injection: data}) => {
         return origOptions.filter((val, i) => parseInt(index) !== i);
     })
     const handleTopicChange = (event) => form.setFieldValue('topics', event);
+    const onDiffClicked = () => {
+        if (diffCheck) {
+            form.setFieldValue('difficulty', undefined);
+        }
+        setDiffCheck(!diffCheck);
+    }
+    const onTopicClicked = () => {
+        if (topicCheck) {
+            form.setFieldValue('topics', []);
+        }
+        setTopicCheck(!topicCheck)
+    }
 
 
 
@@ -73,6 +88,20 @@ const QuestionForm = ({question, close, injection: data}) => {
                     return 'There must be an answer'
                 }
             },
+            difficulty: (value) => {
+                if (diffCheck) {
+                    if (!value?.length > 0) {
+                        return 'Pick tag or tick off'
+                    }
+                }
+            },
+            topics: (value) => {
+                if (topicCheck) {
+                    if (!value?.length > 0) {
+                        return 'Pick tag/s or tick off'
+                    }
+                }
+            }
         }
     });
 
@@ -106,6 +135,8 @@ const QuestionForm = ({question, close, injection: data}) => {
         form.setFieldValue('title', undefined);
         form.setFieldValue('options', undefined);
         form.setFieldValue('answer', undefined);
+        form.setFieldValue('topics', []);
+        form.setFieldValue('difficulty', undefined)
     }
 
 
@@ -182,15 +213,26 @@ const QuestionForm = ({question, close, injection: data}) => {
 
 
 
-                <DifficultyComboBox form={form}/>
-                <MultiSelect
+                <Checkbox
+                    label='With Difficulty Tag'
+                    checked={diffCheck}
+                    onChange={onDiffClicked}
+                />
+                <DifficultyComboBox disabled={!diffCheck} form={form}/>
+                <Checkbox
                     mt='xs'
+                    label='With Topic Tag/s'
+                    checked={topicCheck}
+                    onChange={onTopicClicked}
+                />
+                <MultiSelect
+                    disabled={!topicCheck}
                     label='Topics'
                     placeholder='Add topics'
                     value={form.values.topics || []}
                     onChange={handleTopicChange}
                     data={['Mechanics', 'Waves', 'Algebra', 'Geometry']}
-                    w='50%'
+                    w='40%'
                 />
                 <Divider m='lg' variant='dashed'/>
 

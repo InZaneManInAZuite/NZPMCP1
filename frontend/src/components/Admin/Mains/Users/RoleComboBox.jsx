@@ -1,51 +1,21 @@
-import {Combobox, Input, InputBase, Text, useCombobox} from "@mantine/core";
 import PropTypes from "prop-types";
+import CustomComboBox from "../../../Misc/CustomComboBox/CustomComboBox.jsx";
 
 
-const RoleComboBox = ({form}) => {
+const RoleComboBox = ({form, disabled}) => {
 
     const roles = ['USER', 'ADMIN', 'BUILDER'];
 
-    const comboBox = useCombobox({
-        onDropdownClose: () => comboBox.resetSelectedOption(),
-    });
+    const field = 'Role'
 
-    const options = roles.map((role) => (
-        <Combobox.Option value={role} key={role}>{role}</Combobox.Option>
-    ))
-
-    return(<>
-        <Text fw={500} size='sm'>Role</Text>
-        <Combobox
-            w='50%'
-            store={comboBox}
-            onOptionSubmit={(value) => {
-                form.setFieldValue('role', value)
-                comboBox.closeDropdown();
-            }}
-        >
-            <Combobox.Target>
-                <InputBase
-                    component='button'
-                    type='button'
-                    pointer
-                    rightSection={<Combobox.Chevron />}
-                    rightSectionPointerEvents='none'
-                    onClick={() => comboBox.toggleDropdown()}
-                >
-                    {form?.values.role || <Input.Placeholder>Pick role</Input.Placeholder>}
-                </InputBase>
-            </Combobox.Target>
-
-            <Combobox.Dropdown>
-                <Combobox.Options>{options}</Combobox.Options>
-            </Combobox.Dropdown>
-        </Combobox>
-    </>)
+    return(
+        <CustomComboBox field={field} form={form} selection={roles} disabled={disabled}/>
+    )
 }
 
 RoleComboBox.propTypes = {
     form: PropTypes.object,
+    disabled: PropTypes.bool,
 }
 
 export default RoleComboBox
