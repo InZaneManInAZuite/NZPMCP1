@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import UserContext from "../../../../context/UserContext.js";
 import {authUser, createUser, updateUser} from "../../../../services/user.services.js";
 import RoleComboBox from "./RoleComboBox.jsx";
+import { v4 as uuidv4 } from 'uuid';
 
 const UserForm = ({user, close, injection: data}) => {
 
@@ -122,25 +123,18 @@ const UserForm = ({user, close, injection: data}) => {
     const handleCreate = () => {
         const newUser = {
             ...getNewUser(),
-            password: form.values.confirmPassword
-        }
+            password: form.values.confirmPassword,
+            id: uuidv4(),
+        };
         createUser(newUser)
             .then(() => {
-                authUser(newUser.email, newUser.password)
-                    .then(madeUser => {
-                        data.setUsers(data.users.concat({...newUser, id: madeUser.id}));
-                        clearFields();
-                    })
-                    .catch(e => console.log(e));
+                data.setUsers(data.users.concat(newUser));
             })
             .catch(e => console.log(e));
     }
 
     const handleUpdate = () => {
-        const newUser = {
-            ...getNewUser(),
-            id: user.id,
-        }
+        const newUser = getNewUser()
         updateUser(user?.id, newUser, jwtToken)
             .then(() => {
                 clearFields();

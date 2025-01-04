@@ -1,0 +1,11 @@
+.burger {
+    @media (min-width: 1250px) {
+        display: none;
+    }
+}
+
+.aside {
+    @media (min-width: 800px) {
+        display: none;
+    }
+}

@@ -16,6 +16,7 @@ import {createEvent, updateEvent} from '../../../../services/event.services.js'
 import '@mantine/dates/styles.css'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
 import PropTypes from "prop-types";
+import { v4 as uuidv4 } from 'uuid';
 
 const EventForm = ({event, close}) => {
 
@@ -158,7 +159,7 @@ const EventForm = ({event, close}) => {
 
 
     const handleCreate = () => {
-        const newEvent = {...getNewEvent(), date: new Date(form.values.date)}
+        const newEvent = {...getNewEvent(), date: new Date(form.values.date), id: uuidv4()}
         createEvent(newEvent, jwtToken)
             .then((eventMade) => {
                 setEvents(events.concat(eventMade));

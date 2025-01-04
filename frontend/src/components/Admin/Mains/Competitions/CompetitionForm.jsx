@@ -11,6 +11,7 @@ import '@mantine/dates/styles.css'
 import PropTypes from "prop-types";
 import UserContext from "../../../../context/UserContext.js";
 import {createCompetition, updateCompetition} from "../../../../services/competition.services.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const CompetitionForm = ({competition, close, injection: data}) => {
 
@@ -73,7 +74,7 @@ const CompetitionForm = ({competition, close, injection: data}) => {
 
 
     const handleCreate = () => {
-        const newCompete = getNewCompetition();
+        const newCompete = {...getNewCompetition(), id: uuidv4()};
         createCompetition(newCompete, jwtToken)
             .then(() => {
                 data.setCompetitions(data.competitions.concat(newCompete))

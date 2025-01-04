@@ -55,18 +55,10 @@ public class UserService {
     }
 
     // Create user
-    public UserView createUser(UserDto userDto) {
+    public UserView createUser(User user) {
         try {
-
-            // Build a new user with user builder
-            User user = new User.Builder()
-                    .addName(userDto.name())
-                    .addEmail(userDto.email())
-                    .addPassword(passwordEncoder.encode(userDto.password()))
-                    .build();
-
-            if (userDto.role() != null) {
-                user.setRole(userDto.role());
+            if (user.getRole() != null) {
+                user.setRole(user.getRole());
             } else {
                 user.setRole(UserRoles.USER);
             }

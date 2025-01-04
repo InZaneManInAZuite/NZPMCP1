@@ -13,6 +13,7 @@ import UserContext from "../../../../context/UserContext.js";
 import {createQuestion, updateQuestion} from "../../../../services/question.services.js";
 import {IconCheckbox, IconPlus, IconSquare, IconX} from "@tabler/icons-react";
 import DifficultyComboBox from "./DifficultyComboBox.jsx";
+import { v4 as uuidv4 } from 'uuid';
 
 const QuestionForm = ({question, close, injection: data}) => {
 
@@ -122,7 +123,7 @@ const QuestionForm = ({question, close, injection: data}) => {
 
 
     const handleCreate = () => {
-        const newQue = getNewQue()
+        const newQue = {...getNewQue(), id: uuidv4()}
         createQuestion(newQue, jwtToken)
             .then(() => {
                 data.setQuestions(data.questions.concat(newQue));

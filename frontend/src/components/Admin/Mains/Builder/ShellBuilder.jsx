@@ -1,60 +1,47 @@
-import {useContext, useState} from "react";
-import { useNavigate } from 'react-router-dom';
 import {
     Anchor,
     AppShell,
     Burger,
-    Card, Code,
+    Card,
+    Code,
     Divider,
     Group,
     LoadingOverlay,
-    NavLink,
     Paper,
     Stack,
-    Text, Title
+    Text,
+    Title
 } from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
-import classes from "./NavBar.module.css";
-import UserContext from "../../../context/UserContext.js";
+import classes from "./Builder.module.css";
+import LogoutButton from "../../../Misc/Navigation/LogoutButton.jsx";
+import {useContext, useEffect, useState} from "react";
+import UserContext from "../../../../context/UserContext.js";
+import {useNavigate} from "react-router-dom";
+import {useDisclosure, useMediaQuery} from "@mantine/hooks";
 import PropTypes from "prop-types";
-import LogoutButton from "./LogoutButton.jsx";
+import AsideBuilder from "./AsideBuilder.jsx";
 
 
 
+const ShellBuilder = ({children}) => {
 
-
-const NavBar = ({navData, children, pageActive,
-
-                    withAside = false,
-                    asideComp,
-
-                    withFooter = false,
-                    footerComp,
-
-                    authorized = true
-}) => {
-
-    const navigate = useNavigate();
     const { user } = useContext(UserContext);
     const [opened, { toggle }] = useDisclosure()
-    const [active, setActive] = useState(pageActive);
+    const [ authorized, setAuthorized ] = useState(false)
+    const navigate = useNavigate();
+    const matches = useMediaQuery('(min-width: 800px)')
+
+    useEffect (() => {
+        if (user?.role === "ADMIN") {
+            setAuthorized(true)
+        } else {
+            navigate('/');
+        }
+    }, [navigate]);
 
 
 
 
-
-    const links = navData.map((item) => (
-        <NavLink leftSection={<item.icon />}
-                 data-active={item.label === active || undefined}
-                 key={item.label}
-                 onClick={(event) => {
-                     event.preventDefault();
-                     setActive(item.label);
-                     navigate(`${item.link}`)
-                 }}
-                 label={item.label}
-        />
-    ))
 
 
 
@@ -71,11 +58,21 @@ const NavBar = ({navData, children, pageActive,
                 height: 60,
             }}
             navbar={{
-                width:300,
-                breakpoint: '750px',
+                width:'400px',
+                breakpoint: '1250px',
                 collapsed: { desktop: false, mobile: !opened }
             }}
+            aside={{
+                width:'400px',
+                breakpoint: '800px',
+                collapsed: { desktop: false, mobile: true }
+            }}
         >
+
+
+
+
+
             <AppShell.Header>
                 <Group justify='space-between' p='sm'>
                     <Paper>
@@ -94,11 +91,12 @@ const NavBar = ({navData, children, pageActive,
 
 
 
+
             {(authorized && user) ? (<>
-                <AppShell.Navbar p='lg'>
+                <AppShell.Navbar p='lg' zIndex={300}>
                     <Stack justify='space-between' h='100%'>
                         <Stack gap='xs' >
-                            {links}
+                            <p>navBar</p>
                         </Stack>
                         <Stack>
                             <Divider/>
@@ -117,47 +115,23 @@ const NavBar = ({navData, children, pageActive,
                 </AppShell.Navbar>
                 <AppShell.Main>
                     {children}
+                    {!matches && <AsideBuilder/>}
                 </AppShell.Main>
+
+
+
+                <AppShell.Aside>
+                    <AsideBuilder/>
+                </AppShell.Aside>
             </>) : (
                 <LoadingOverlay/>
             )}
-
-
-
-
-
-            {withAside && (
-                <AppShell.Aside>
-                    {asideComp}
-                </AppShell.Aside>
-            )}
-
-
-
-
-
-            {withFooter && (
-                <AppShell.Footer>
-                    {footerComp}
-                </AppShell.Footer>
-            )}
         </AppShell>
-    );
+    )
 }
 
-
-
-
-
-NavBar.propTypes = {
-    navData: PropTypes.array.isRequired,
+ShellBuilder.propTypes = {
     children: PropTypes.element,
-    pageActive: PropTypes.string,
-    withAside: PropTypes.bool,
-    asideComp: PropTypes.element,
-    withFooter: PropTypes.bool,
-    footerComp: PropTypes.element,
-    authorized: PropTypes.bool,
 }
 
-export default NavBar;
+export default ShellBuilder;

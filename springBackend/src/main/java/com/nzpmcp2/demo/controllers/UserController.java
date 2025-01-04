@@ -53,9 +53,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserView> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserView> createUser(@RequestBody User user) {
         try {
-            UserView newUser = userService.createUser(userDto);
+            UserView newUser = userService.createUser(user);
             return ResponseEntity.ok(newUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();

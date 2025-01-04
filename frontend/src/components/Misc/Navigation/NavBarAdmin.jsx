@@ -37,10 +37,10 @@ const NavBarAdmin = ({children, pageActive,
     const navigate = useNavigate()
 
     useEffect (() => {
-        if (user?.role !== "ADMIN") {
-            navigate('/');
-        } else {
+        if (user?.role === "ADMIN") {
             setAuthorized(true)
+        } else {
+            navigate('/');
         }
     }, [navigate]);
 
