@@ -1,16 +1,17 @@
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import {Card, Center, Paper} from "@mantine/core";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {getAllCompetitions} from "../../../../services/competition.services.js";
 import CompetitionCard from "./CompetitionCard.jsx";
 import CompetitionForm from "./CompetitionForm.jsx";
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
 
 const MainCompetitions = () => {
 
     const { jwtToken } = useContext(UserContext)
-    const [ competitions, setCompetitions ] = useState([])
+    const { competitions, setCompetitions } = useContext(CompetitionContext)
 
     const injection = {
         competitions, setCompetitions,

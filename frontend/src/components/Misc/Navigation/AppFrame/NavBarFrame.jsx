@@ -16,7 +16,7 @@ const NavBarFrame = ({children, withNavFooter = true, label, nav,}) => {
 }
 
 NavBarFrame.propTypes = {
-    children: PropTypes.element,
+    children: PropTypes.node,
     withNavFooter: PropTypes.bool,
     label: PropTypes.string,
     nav: PropTypes.string,

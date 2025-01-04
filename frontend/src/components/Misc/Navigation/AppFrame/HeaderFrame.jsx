@@ -21,8 +21,8 @@ const HeaderFrame = ({navMatcher, opened, toggle}) => {
 }
 
 HeaderFrame.propTypes = {
-    navMatcher: PropTypes.bool.isRequired,
-    opened: PropTypes.bool.isRequired,
+    navMatcher: PropTypes.bool,
+    opened: PropTypes.bool,
     toggle: PropTypes.func,
 }
 

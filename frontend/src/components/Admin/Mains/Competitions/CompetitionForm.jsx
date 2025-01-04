@@ -12,10 +12,12 @@ import PropTypes from "prop-types";
 import UserContext from "../../../../context/UserContext.js";
 import {createCompetition, updateCompetition} from "../../../../services/competition.services.js";
 import { v4 as uuidv4 } from 'uuid';
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
-const CompetitionForm = ({competition, close, injection: data}) => {
+const CompetitionForm = ({competition, close}) => {
 
     const { jwtToken } = useContext(UserContext);
+    const { competitions, setCompetitions } = useContext(CompetitionContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
 
     const handleTitleChange = (event) => form.setFieldValue('title', event.currentTarget.value);
@@ -30,7 +32,7 @@ const CompetitionForm = ({competition, close, injection: data}) => {
         },
         validate: {
             title: (value) => {
-                if (!value.length > 0) {
+                if (!value?.length > 0) {
                     return 'Name is required'
                 }
             }
@@ -77,7 +79,7 @@ const CompetitionForm = ({competition, close, injection: data}) => {
         const newCompete = {...getNewCompetition(), id: uuidv4()};
         createCompetition(newCompete, jwtToken)
             .then(() => {
-                data.setCompetitions(data.competitions.concat(newCompete))
+                setCompetitions(competitions.concat(newCompete))
                 clearFields()
             })
             .catch(e => console.log(e));
@@ -88,7 +90,7 @@ const CompetitionForm = ({competition, close, injection: data}) => {
         updateCompetition(newCompete, jwtToken)
             .then(() => {
                 clearFields();
-                data.setCompetitions(data.competitions.map(eachCompete => {
+                setCompetitions(competitions.map(eachCompete => {
                     if (eachCompete.id === competition.id) {
                         return newCompete
                     } else {

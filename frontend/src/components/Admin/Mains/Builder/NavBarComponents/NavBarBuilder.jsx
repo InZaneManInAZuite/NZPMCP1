@@ -1,18 +1,18 @@
-import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
+import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
 import {Card, Stack} from "@mantine/core";
 import {useContext, useEffect } from "react";
-import {getAllCompetitions} from "../../../../services/competition.services.js";
-import UserContext from "../../../../context/UserContext.js";
+import {getAllCompetitions} from "../../../../../services/competition.services.js";
+import UserContext from "../../../../../context/UserContext.js";
 import PropTypes from "prop-types";
-import BuilderContext from "./Context/BuilderContext.js";
-import CompetitionCard from "../Competitions/CompetitionCard.jsx";
-import CompetitionForm from "../Competitions/CompetitionForm.jsx";
+import CompetitionContext from "../../../../../context/CompetitionContext.js";
+import CompetitionForm from "../../Competitions/CompetitionForm.jsx";
+import CompetitionSelectionCard from "./CompetitionSelectionCard.jsx";
 
 
 const NavBarBuilder = ({h, w}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { competitions, setCompetitions } = useContext(BuilderContext)
+    const { competitions, setCompetitions } = useContext(CompetitionContext);
 
     useEffect(() => {
         getAllCompetitions(jwtToken)
@@ -30,6 +30,9 @@ const NavBarBuilder = ({h, w}) => {
         }
     }
 
+    const injection = {
+        competitions, setCompetitions
+    }
 
     return (
         <Stack h='100%'>
@@ -37,10 +40,11 @@ const NavBarBuilder = ({h, w}) => {
                 height={h}
                 width={w}
                 items={competitions || []}
-                Component={CompetitionCard}
+                Component={CompetitionSelectionCard}
                 search='title'
                 setChecker={setChecker}
                 checkBoxLabel='Include Used'
+                injection={injection}
             />
 
             <Card m='sm'>

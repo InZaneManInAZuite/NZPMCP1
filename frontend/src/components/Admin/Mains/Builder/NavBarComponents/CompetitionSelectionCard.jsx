@@ -1,27 +1,23 @@
-import {Card, Title, UnstyledButton, Modal, Anchor, Group, Code, Flex} from '@mantine/core';
-import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
+import {Anchor, Card, Code, Flex, Group, Modal, Text, UnstyledButton} from "@mantine/core";
+import CompetitionForm from "../../Competitions/CompetitionForm.jsx";
 import {IconEdit, IconTrash} from "@tabler/icons-react";
-import UserContext from "../../../../context/UserContext.js";
-import {removeCompetition} from "../../../../services/competition.services.js";
-import CompetitionForm from "./CompetitionForm.jsx";
-import {useNavigate} from "react-router-dom";
-import CompetitionContext from "../../../../context/CompetitionContext.js";
+import {useContext, useState} from "react";
+import UserContext from "../../../../../context/UserContext.js";
+import {removeCompetition} from "../../../../../services/competition.services.js";
+import PropTypes from "prop-types";
+import CompetitionContext from "../../../../../context/CompetitionContext.js";
 
-const CompetitionCard = ({ item: competition, injection: data }) => {
+
+const CompetitionSelectionCard = ({item: competition}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { setCompetitionEdit } = useContext(CompetitionContext);
+    const { competitions, setCompetitions, setCompetitionEdit } = useState(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
-    const navigate = useNavigate()
-
-
-
 
 
     const handleToBuild = () => {
+        console.log(competitions)
         setCompetitionEdit(competition);
-        navigate('/builder');
     }
 
     const handleDelete = () => {
@@ -29,32 +25,26 @@ const CompetitionCard = ({ item: competition, injection: data }) => {
         if (confirmed) {
             removeCompetition(competition.id, jwtToken)
                 .then(() => {
-                    data.setCompetitions(data.competitions.filter(eachCompete => eachCompete.id !== competition.id));
+                    setCompetitions(competitions.filter(eachCompete => eachCompete.id !== competition.id));
                 })
                 .catch(e => console.log(e));
         }
     }
 
 
-
-
-
-    return (
+    return(
         <Card w='100%' withBorder>
             {updateOpened && (
-                <Modal opened={updateOpened} onClose={() => setUpdateOpened(false)} size='800px'>
-                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)} injection={data}/>
+                <Modal opened={updateOpened} onClose={() => setUpdateOpened(false)} size='800px' zIndex={400}>
+                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)} injection={injection}/>
                 </Modal>
             )}
 
-
-
-
             <Flex direction={{base: 'column', sm: 'row'}} justify='flex-end'>
-                <Card p='sm' w='100%' h='100px'>
+                <Card p='sm' w='100%'>
                     <Group>
                         <Anchor c='white' onClick={() => handleToBuild()}>
-                            <Title lineClamp={1} align='left' order={2}>{competition.title}</Title>
+                            <Text lineClamp={1} align='left'>{competition.title}</Text>
                         </Anchor>
                         {competition.events?.length > 0 &&
                             <Code color='blue'>Used: {competition.events.length}</Code>
@@ -66,12 +56,12 @@ const CompetitionCard = ({ item: competition, injection: data }) => {
 
 
 
-                <Flex gap='sm'>
+                <Flex gap='xs'>
                     <UnstyledButton onClick={() => setUpdateOpened(true)}>
-                        <IconEdit size='35px'/>
+                        <IconEdit size='20px'/>
                     </UnstyledButton>
                     <UnstyledButton onClick={handleDelete}>
-                        <IconTrash size='35px'/>
+                        <IconTrash size='20px'/>
                     </UnstyledButton>
                 </Flex>
             </Flex>
@@ -79,13 +69,8 @@ const CompetitionCard = ({ item: competition, injection: data }) => {
     )
 }
 
-
-
-
-
-CompetitionCard.propTypes = {
+CompetitionSelectionCard.propTypes = {
     item: PropTypes.object.isRequired,
-    injection: PropTypes.object,
 }
 
-export default CompetitionCard;
+export default CompetitionSelectionCard

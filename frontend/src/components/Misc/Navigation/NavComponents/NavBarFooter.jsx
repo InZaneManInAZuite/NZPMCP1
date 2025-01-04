@@ -11,7 +11,7 @@ const NavBarFooter = ({nav, label}) => {
     const { user } = useContext(UserContext)
 
     return (
-        <Stack>
+        <Stack h='200px'>
             <Divider/>
             <Card>
                 <Group>

@@ -16,7 +16,7 @@ const LoginForm = () => {
 
 
     // Manage states and contexts
-    const { handleUser, emailIsValid, handleAdmin, ADMIN_ID, ADMIN_PW, setJwtToken } = useContext(UserContext)
+    const { handleUser, emailIsValid, setJwtToken } = useContext(UserContext)
     const [loginFail, toggleLoginFail] = useState(false);
 
     // Create a navigate function for redirecting the user
@@ -55,12 +55,6 @@ const LoginForm = () => {
         // Get the email and password from the form
         const email = form.values.email
         const password = form.values.password
-
-        // If the email is the admin email, set the isAdmin to true
-        if (email === ADMIN_ID && password === ADMIN_PW) {
-            handleAdmin(true)
-            return
-        }
         
         // Call the authUser function from user.services.js to authenticate the user
         authUser(email, password)
@@ -72,20 +66,18 @@ const LoginForm = () => {
                 // Store the user in the context
                 handleUser(user)
 
-                if (user.role === `ADMIN`) {
-                    handleAdmin(true)
-                }
-
                 // Set the email and password in the cookies
                 document.cookie = `email=${user.email}; path=/; SameSite=Strict; secure; HttpOnly`
                 document.cookie = `password=${password}; path=/; SameSite=Strict; secure; HttpOnly`
 
                 setJwtToken(user.token)
 
-                // TODO: ADD REFRESH TOKEN LATER
-
                 // Redirect the user to the landing page
-                navigate('/')
+                if (user.role !== 'USER') {
+                    navigate(`/ADMIN`)
+                } else {
+                    navigate('/')
+                }
             })
             .catch((err) => { 
                 toggleLoginFail(true) 

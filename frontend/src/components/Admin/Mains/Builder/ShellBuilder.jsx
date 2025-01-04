@@ -8,7 +8,7 @@ import AsideBuilder from "./AsideBuilder.jsx";
 import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
-import NavBarBuilder from "./NavBarBuilder.jsx";
+import NavBarBuilder from "./NavBarComponents/NavBarBuilder.jsx";
 import CompetitionForm from "../Competitions/CompetitionForm.jsx";
 
 const nav = '/admin';
@@ -62,9 +62,9 @@ const ShellBuilder = ({children}) => {
                             pl='xs' pr='xs' pt='xs'
                             scrollbarSize={4}
                             w={navMatches ? (navW) : '100%'}
-                            h={navMatches ? (appH - footH - headH) : (appH - 225 - headH )}
+                            h={navMatches ? (appH - footH - headH) : (appH - 200 - headH )}
                             type='always'>
-                            <NavBarBuilder w='100%' h={navMatches ? '400px' : '200px'} />
+                            <NavBarBuilder w='100%' h={navMatches ? '450px' : '325px'} />
                         </ScrollArea>
                     </NavBarFrame>
                 </AppShell.Navbar>
