@@ -1,4 +1,4 @@
-import {AppShell, Card, LoadingOverlay, ScrollArea} from "@mantine/core";
+import {AppShell, LoadingOverlay, ScrollArea} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
@@ -9,7 +9,6 @@ import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
 import NavBarBuilder from "./NavBarComponents/NavBarBuilder.jsx";
-import CompetitionForm from "../Competitions/CompetitionForm.jsx";
 
 const nav = '/admin';
 const label = 'Exit Builder';
@@ -30,6 +29,8 @@ const ShellBuilder = ({children}) => {
     const navMatches = useMediaQuery(`(min-width: ${navW + asideW + mainW}px)`);
     const {height: appH, width: appW} = useViewportSize();
 
+    const navStackCollapsed = (appH - 200 - headH);
+    const navStackOpened = (appH - footH - headH);
 
     useEffect (() => {
         if (user?.role === "ADMIN") {
@@ -58,14 +59,7 @@ const ShellBuilder = ({children}) => {
             {(authorized && user) ? (<>
                 <AppShell.Navbar zIndex={300}>
                     <NavBarFrame nav={nav} withNavFooter={!navMatches} label={label}>
-                        <ScrollArea
-                            pl='xs' pr='xs' pt='xs'
-                            scrollbarSize={4}
-                            w={navMatches ? (navW) : '100%'}
-                            h={navMatches ? (appH - footH - headH) : (appH - 200 - headH )}
-                            type='always'>
-                            <NavBarBuilder w='100%' h={navMatches ? '450px' : '325px'} />
-                        </ScrollArea>
+                        <NavBarBuilder w='100%' h={navMatches ? navStackOpened : navStackCollapsed} />
                     </NavBarFrame>
                 </AppShell.Navbar>
 

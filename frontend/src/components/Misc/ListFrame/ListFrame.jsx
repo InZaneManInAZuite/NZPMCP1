@@ -1,9 +1,9 @@
 import {
-    ActionIcon,
+    ActionIcon, Button,
     Card, Center,
-    Checkbox,
+    Checkbox, Divider,
     Group,
-    LoadingOverlay,
+    LoadingOverlay, Modal,
     MultiSelect,
     rem,
     ScrollArea,
@@ -16,7 +16,7 @@ import PropTypes from "prop-types";
 import {
     IconSearch,
     IconArrowsSort,
-    IconFilter
+    IconFilter, IconPlus
 } from "@tabler/icons-react";
 import {useToggle} from "@mantine/hooks";
 
@@ -24,12 +24,19 @@ import {useToggle} from "@mantine/hooks";
 const ListFrame = ({ items,
                        injection,
                        Component,
+                       NewForm,
+                       withForm = false,
+
                        search = ['title'],
+
                        sort = search,
                        withSorter = false,
+
                        filter,
+
                        checkBoxLabel,
                        setChecker,
+
                        width,
                        height = '670px',
                    }) => {
@@ -41,6 +48,13 @@ const ListFrame = ({ items,
     // MARK: Initialize
     const [ filtered, setFiltered ] = useState([]);
     const [ hasBeenFiltered, setHasBeenFiltered ] = useState(false)
+
+
+
+
+
+    // MARK: Create New
+    const [ createOpened, setCreateOpened ] = useState(false)
 
 
 
@@ -174,7 +188,8 @@ const ListFrame = ({ items,
     // MARK: ListFrame Header
     // React components detailing the header of the frame list
     const listFrameHeader = (
-        <Card.Section withBorder p='sm'>
+        <Card p='sm'>
+
             <Group justify='flex-end'>
                 <TextInput
                     size='xs'
@@ -226,7 +241,19 @@ const ListFrame = ({ items,
                     )}
                 </Group>
             </Group>
-        </Card.Section>
+
+            {withForm && (<>
+                <Divider m='xs'/>
+                <Button
+                    variant='default'
+                    w='100%'
+                    onClick={() => setCreateOpened(true)}
+                    h={50}
+                >
+                    <IconPlus/>
+                </Button>
+            </>)}
+        </Card>
     )
 
 
@@ -235,15 +262,21 @@ const ListFrame = ({ items,
 
     // MARK: Return components
     return (
-        <Card w={width} h={height} className={classes.layout} m='auto' radius='md'>
+        <Card w={width} h={height} className={classes.layout} m='auto' radius='sm' p={0}>
+            {withForm && (
+                <Modal opened={createOpened} onClose={() => setCreateOpened(false)} size='800px' zIndex={400}>
+                    <NewForm close={() => setCreateOpened(false)}/>
+                </Modal>
+            )}
 
             {listFrameHeader}
+            <Divider/>
 
-            <Card.Section h='100%' withBorder>
+            <Card h='100%' p={0}>
                 { (hasBeenFiltered) ? (
 
                     (filtered?.length > 0) ? (
-                        <ScrollArea scrollbars='y' type='always' h='100%' p='md' scrollbarSize={4}>
+                        <ScrollArea scrollbars='y' type='always' h='100%' p='xs' scrollbarSize={4}>
                             {filtered?.map(item => <Component
                                 key={item.id || item[toSearch[0]]}
                                 item={item}
@@ -259,7 +292,7 @@ const ListFrame = ({ items,
                 ) : <LoadingOverlay visible={true} />
                 }
 
-            </Card.Section>
+            </Card>
         </Card>
     )
 }
@@ -274,6 +307,8 @@ ListFrame.propTypes = {
     items: PropTypes.array,
     injection: PropTypes.object,
     Component: PropTypes.elementType.isRequired,
+    NewForm: PropTypes.element,
+    withForm: PropTypes.bool,
 
     search: PropTypes.oneOfType([
         PropTypes.string,
@@ -294,8 +329,14 @@ ListFrame.propTypes = {
     checkBoxLabel: PropTypes.string,
     setChecker: PropTypes.func,
 
-    width: PropTypes.string,
-    height: PropTypes.string,
+    width: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    height: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
 }
 
 export default ListFrame;

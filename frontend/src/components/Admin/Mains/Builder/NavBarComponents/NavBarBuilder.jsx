@@ -1,5 +1,5 @@
 import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
-import {Card, Stack} from "@mantine/core";
+import {Card, ScrollArea, Stack} from "@mantine/core";
 import {useContext, useEffect } from "react";
 import {getAllCompetitions} from "../../../../../services/competition.services.js";
 import UserContext from "../../../../../context/UserContext.js";
@@ -35,28 +35,39 @@ const NavBarBuilder = ({h, w}) => {
     }
 
     return (
-        <Stack h='100%'>
-            <ListFrame
-                height={h}
-                width={w}
-                items={competitions || []}
-                Component={CompetitionSelectionCard}
-                search='title'
-                setChecker={setChecker}
-                checkBoxLabel='Include Used'
-                injection={injection}
-            />
-
-            <Card m='sm'>
-                <CompetitionForm/>
-            </Card>
-        </Stack>
+        <ScrollArea
+            pl='xs' pr='xs' pt='xs'
+            scrollbarSize={4}
+            w={w}
+            h={h}
+            type='always'>
+            <Stack h='100%'>
+                <ListFrame
+                    height={h - 25}
+                    width='100%'
+                    items={competitions || []}
+                    Component={CompetitionSelectionCard}
+                    search='title'
+                    setChecker={setChecker}
+                    checkBoxLabel='Include Used'
+                    injection={injection}
+                    NewForm={CompetitionForm}
+                    withForm
+                />
+            </Stack>
+        </ScrollArea>
     )
 }
 
 NavBarBuilder.propTypes = {
-    h: PropTypes.string,
-    w: PropTypes.string,
+    h: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    w: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
 }
 
 export default NavBarBuilder

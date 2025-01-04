@@ -81,6 +81,9 @@ const CompetitionForm = ({competition, close}) => {
             .then(() => {
                 setCompetitions(competitions.concat(newCompete))
                 clearFields()
+                if (close !== undefined) {
+                    close();
+                }
             })
             .catch(e => console.log(e));
     }

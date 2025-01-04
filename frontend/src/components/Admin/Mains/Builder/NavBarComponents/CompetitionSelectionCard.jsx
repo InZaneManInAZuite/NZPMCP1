@@ -11,20 +11,22 @@ import CompetitionContext from "../../../../../context/CompetitionContext.js";
 const CompetitionSelectionCard = ({item: competition}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { competitions, setCompetitions, setCompetitionEdit } = useState(CompetitionContext);
+    const { competitions, setCompetitions, competitionEdit, setCompetitionEdit } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
 
 
-    const handleToBuild = () => {
-        console.log(competitions)
+    const handleClick = () => {
         setCompetitionEdit(competition);
     }
 
     const handleDelete = () => {
-        const confirmed = confirm(`Warning you are removing ${competition.title}`)
+        const confirmed = confirm(`Warning you are removing "${competition.title}"`)
         if (confirmed) {
             removeCompetition(competition.id, jwtToken)
                 .then(() => {
+                    if (competitionEdit?.id === competition?.id) {
+                        setCompetitionEdit(undefined)
+                    }
                     setCompetitions(competitions.filter(eachCompete => eachCompete.id !== competition.id));
                 })
                 .catch(e => console.log(e));
@@ -33,18 +35,21 @@ const CompetitionSelectionCard = ({item: competition}) => {
 
 
     return(
-        <Card w='100%' withBorder>
+        <Card w='100%' withBorder >
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={() => setUpdateOpened(false)} size='800px' zIndex={400}>
-                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)} injection={injection}/>
+                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)}/>
                 </Modal>
             )}
 
             <Flex direction={{base: 'column', sm: 'row'}} justify='flex-end'>
-                <Card p='sm' w='100%'>
+                <Card p='xs' w='100%'>
                     <Group>
-                        <Anchor c='white' onClick={() => handleToBuild()}>
-                            <Text lineClamp={1} align='left'>{competition.title}</Text>
+                        <Anchor
+                            c={competition?.id === competitionEdit?.id ? 'blue' : 'white'}
+                            onClick={() => handleClick()}
+                        >
+                            <Text align='left'>{competition.title}</Text>
                         </Anchor>
                         {competition.events?.length > 0 &&
                             <Code color='blue'>Used: {competition.events.length}</Code>
@@ -56,14 +61,16 @@ const CompetitionSelectionCard = ({item: competition}) => {
 
 
 
-                <Flex gap='xs'>
-                    <UnstyledButton onClick={() => setUpdateOpened(true)}>
-                        <IconEdit size='20px'/>
-                    </UnstyledButton>
-                    <UnstyledButton onClick={handleDelete}>
-                        <IconTrash size='20px'/>
-                    </UnstyledButton>
-                </Flex>
+                {!competition.events?.length > 0 && (
+                    <Flex gap='xs'>
+                        <UnstyledButton onClick={() => setUpdateOpened(true)}>
+                            <IconEdit size='20px'/>
+                        </UnstyledButton>
+                        <UnstyledButton onClick={handleDelete}>
+                            <IconTrash size='20px'/>
+                        </UnstyledButton>
+                    </Flex>
+                )}
             </Flex>
         </Card>
     )

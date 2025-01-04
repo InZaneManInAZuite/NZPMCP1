@@ -1,4 +1,4 @@
-import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Flex} from '@mantine/core';
+import {Card, Button, Title, Text, UnstyledButton, Modal, Anchor, Group, Flex} from '@mantine/core';
 import PropTypes from 'prop-types';
 import UserContext from '../../../../context/UserContext.js';
 import { useContext, useState, useEffect } from 'react';
@@ -10,7 +10,7 @@ import EventInfo from "./EventInfo.jsx";
 
 const EventCard = ({ item: event }) => {
 
-    const { isLogged, user, setUser, isAdmin, jwtToken, setEvents, events } = useContext(UserContext);
+    const { user, setUser, jwtToken, setEvents, events } = useContext(UserContext);
     const [isJoined, setIsJoined] = useState(false);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened] = useState(false)
@@ -80,7 +80,7 @@ const EventCard = ({ item: event }) => {
         if (user?.events) {
             setIsJoined(user.events?.includes(event.id) || false);
         }
-    }, [])
+    }, [event])
 
 
 
@@ -118,14 +118,14 @@ const EventCard = ({ item: event }) => {
 
 
 
-                {(isLogged) && (
+                {(!!user) && (
                     <Flex
                         h='100%'
                         direction={{base: 'row',sm: 'column'}}
                         justify='flex-end'
                         gap='md'
                     >
-                        {(isAdmin) && (
+                        {(user.role === 'ADMIN') && (
                             <Group gap='md' justify='center'>
                                 <UnstyledButton onClick={handleUpdateOpen}>
                                     <IconEdit size='35px'/>

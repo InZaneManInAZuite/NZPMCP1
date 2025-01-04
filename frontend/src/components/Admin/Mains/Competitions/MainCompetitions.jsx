@@ -42,11 +42,13 @@ const MainCompetitions = () => {
                 setChecker={setChecker}
                 checkBoxLabel='Include Used Competitions'
                 injection={injection}
+                withForm
+                NewForm={CompetitionForm}
             />
 
             <Center>
                 <Card p='xl' radius='xl' mt='xl'  w='700px'>
-                    <CompetitionForm close={close} injection={injection}/>
+                    <CompetitionForm injection={injection}/>
                 </Card>
             </Center>
 

@@ -1,4 +1,4 @@
-import {Card, Title, Text, UnstyledButton, Modal, Anchor, Stack, Group, Code, Flex} from '@mantine/core';
+import {Card, Title, Text, UnstyledButton, Modal, Anchor, Group, Code, Flex} from '@mantine/core';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import {IconEdit, IconTrash} from "@tabler/icons-react";
@@ -9,7 +9,7 @@ import UserInfo from "./UserInfo.jsx";
 
 const UserCard = ({ item: user, injection: data }) => {
 
-    const { isLogged, jwtToken } = useContext(UserContext);
+    const { jwtToken } = useContext(UserContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened] = useState(false)
 
@@ -84,15 +84,15 @@ const UserCard = ({ item: user, injection: data }) => {
 
 
 
-                {(isLogged) && (
-                            <Flex gap='sm'>
-                                <UnstyledButton onClick={handleUpdateOpen}>
-                                    <IconEdit size='35px'/>
-                                </UnstyledButton>
-                                <UnstyledButton onClick={handleDelete}>
-                                    <IconTrash size='35px'/>
-                                </UnstyledButton>
-                            </Flex>
+                {(user) && (
+                    <Flex gap='sm'>
+                        <UnstyledButton onClick={handleUpdateOpen}>
+                            <IconEdit size='35px'/>
+                        </UnstyledButton>
+                        <UnstyledButton onClick={handleDelete}>
+                            <IconTrash size='35px'/>
+                        </UnstyledButton>
+                    </Flex>
                 )}
             </Flex>
         </Card>
