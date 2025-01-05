@@ -14,10 +14,12 @@ import {createQuestion, updateQuestion} from "../../../../services/question.serv
 import {IconCheckbox, IconPlus, IconSquare, IconX} from "@tabler/icons-react";
 import DifficultyComboBox from "./DifficultyComboBox.jsx";
 import { v4 as uuidv4 } from 'uuid';
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
-const QuestionForm = ({question, close, injection: data}) => {
+const QuestionForm = ({question, close}) => {
 
     const { jwtToken } = useContext(UserContext);
+    const { questions, setQuestions } = useContext(CompetitionContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
 
     const [ diffCheck, setDiffCheck ] = useState(question?.difficulty || false);
@@ -132,11 +134,13 @@ const QuestionForm = ({question, close, injection: data}) => {
     }
 
     const clearFields = () => {
-        form.setFieldValue('title', undefined);
-        form.setFieldValue('options', undefined);
-        form.setFieldValue('answer', undefined);
-        form.setFieldValue('topics', []);
-        form.setFieldValue('difficulty', undefined)
+        form.setFieldValue('title', question?.title);
+        form.setFieldValue('options', question?.options || ['']);
+        form.setFieldValue('answer', question?.correctChoiceIndex);
+        form.setFieldValue('topics', question?.topics || []);
+        form.setFieldValue('difficulty', question?.difficulty);
+        setTopicCheck(question?.difficulty || false);
+        setDiffCheck(question?.topics.length > 0 || false);
     }
 
 
@@ -157,7 +161,10 @@ const QuestionForm = ({question, close, injection: data}) => {
         const newQue = {...getNewQue(), id: uuidv4()}
         createQuestion(newQue, jwtToken)
             .then(() => {
-                data.setQuestions(data.questions.concat(newQue));
+                if (close !== undefined) {
+                    close()
+                }
+                setQuestions(questions.concat(newQue));
                 clearFields();
             })
             .catch(e => console.log(e));
@@ -168,7 +175,7 @@ const QuestionForm = ({question, close, injection: data}) => {
         updateQuestion(newQue, jwtToken)
             .then(() => {
                 clearFields();
-                data.setQuestions(data.questions?.map(eachQue => {
+                setQuestions(questions?.map(eachQue => {
                     if (eachQue.id === question.id) {
                         return newQue
                     } else {

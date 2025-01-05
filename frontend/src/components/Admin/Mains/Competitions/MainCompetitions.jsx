@@ -13,10 +13,6 @@ const MainCompetitions = () => {
     const { jwtToken } = useContext(UserContext)
     const { competitions, setCompetitions } = useContext(CompetitionContext)
 
-    const injection = {
-        competitions, setCompetitions,
-    }
-
     useEffect(() => {
         getAllCompetitions(jwtToken)
             .then(allCompetes => {
@@ -41,14 +37,11 @@ const MainCompetitions = () => {
                 search='title'
                 setChecker={setChecker}
                 checkBoxLabel='Include Used Competitions'
-                injection={injection}
-                withForm
-                NewForm={CompetitionForm}
             />
 
             <Center>
                 <Card p='xl' radius='xl' mt='xl'  w='700px'>
-                    <CompetitionForm injection={injection}/>
+                    <CompetitionForm/>
                 </Card>
             </Center>
 

@@ -8,10 +8,10 @@ import CompetitionForm from "./CompetitionForm.jsx";
 import {useNavigate} from "react-router-dom";
 import CompetitionContext from "../../../../context/CompetitionContext.js";
 
-const CompetitionCard = ({ item: competition, injection: data }) => {
+const CompetitionCard = ({ item: competition }) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { setCompetitionEdit } = useContext(CompetitionContext);
+    const { competitions, setCompetitions, setCompetitionEdit } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const navigate = useNavigate()
 
@@ -29,7 +29,7 @@ const CompetitionCard = ({ item: competition, injection: data }) => {
         if (confirmed) {
             removeCompetition(competition.id, jwtToken)
                 .then(() => {
-                    data.setCompetitions(data.competitions.filter(eachCompete => eachCompete.id !== competition.id));
+                    setCompetitions(competitions.filter(eachCompete => eachCompete.id !== competition.id));
                 })
                 .catch(e => console.log(e));
         }
@@ -43,7 +43,7 @@ const CompetitionCard = ({ item: competition, injection: data }) => {
         <Card w='100%' withBorder>
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={() => setUpdateOpened(false)} size='800px'>
-                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)} injection={data}/>
+                    <CompetitionForm competition={competition} close={() => setUpdateOpened(false)}/>
                 </Modal>
             )}
 

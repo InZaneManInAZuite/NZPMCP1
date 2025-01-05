@@ -9,18 +9,16 @@ const CompetitionContextProvider = ({ children }) => {
     const [competitionEdit, setCompetitionEdit] = useState(null)
     const [eventsEdit, setEventsEdit] = useState([])
     const [questionsEdit, setQuestionsEdit] = useState([])
+    const [questions, setQuestions] = useState([])
 
 
     // Store object to be passed to UserContext.Provider
     const store = {
-        competitions: competitions,
-        setCompetitions: setCompetitions,
-        competitionEdit: competitionEdit,
-        setCompetitionEdit: setCompetitionEdit,
-        eventsEdit: eventsEdit,
-        setEventsEdit: setEventsEdit,
-        questionsEdit: questionsEdit,
-        setQuestionsEdit: setQuestionsEdit,
+        competitions, setCompetitions,
+        competitionEdit, setCompetitionEdit,
+        eventsEdit, setEventsEdit,
+        questionsEdit, setQuestionsEdit,
+        questions, setQuestions,
     }
 
     // Return UserContext.Provider with store as value

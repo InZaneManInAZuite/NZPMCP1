@@ -223,7 +223,7 @@ const ListFrame = ({ items,
                             clearable
                             checkIconPosition='right'
                             size='xs'
-                            w='200px'
+                            w='150px'
                             leftSection={<IconFilter style={{width: rem(16), height: rem(16)}}/>}
                             value={selectedFilters}
                             onChange={setSelectedFilters}
@@ -264,7 +264,7 @@ const ListFrame = ({ items,
     return (
         <Card w={width} h={height} className={classes.layout} m='auto' radius='sm' p={0}>
             {withForm && (
-                <Modal opened={createOpened} onClose={() => setCreateOpened(false)} size='800px' zIndex={400}>
+                <Modal opened={createOpened} onClose={() => setCreateOpened(false)} size='800px' zIndex={275}>
                     <NewForm close={() => setCreateOpened(false)}/>
                 </Modal>
             )}

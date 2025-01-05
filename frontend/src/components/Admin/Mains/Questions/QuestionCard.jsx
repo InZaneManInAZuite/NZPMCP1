@@ -5,10 +5,12 @@ import {IconEdit, IconTrash} from "@tabler/icons-react";
 import UserContext from "../../../../context/UserContext.js";
 import {removeQuestion} from "../../../../services/question.services.js";
 import QuestionForm from "./QuestionForm.jsx";
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
-const QuestionCard = ({ item: question, injection: data }) => {
+const QuestionCard = ({ item: question,  }) => {
 
     const { jwtToken } = useContext(UserContext);
+    const { questions, setQuestions } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
 
 
@@ -20,7 +22,7 @@ const QuestionCard = ({ item: question, injection: data }) => {
         if (confirmed) {
             removeQuestion(question.id, jwtToken)
                 .then(() => {
-                    data.setQuestions(data.questions.filter(eachQue => eachQue.id !== question.id));
+                    setQuestions(questions.filter(eachQue => eachQue.id !== question.id));
                 })
                 .catch(e => console.log(e));
         }
@@ -34,7 +36,7 @@ const QuestionCard = ({ item: question, injection: data }) => {
         <Card w='100%' p='lg' withBorder>
             {updateOpened && (
                 <Modal opened={updateOpened} onClose={() => setUpdateOpened(false)} size='800px'>
-                    <QuestionForm question={question} close={() => setUpdateOpened(false)} injection={data}/>
+                    <QuestionForm question={question} close={() => setUpdateOpened(false)}/>
                 </Modal>
             )}
 

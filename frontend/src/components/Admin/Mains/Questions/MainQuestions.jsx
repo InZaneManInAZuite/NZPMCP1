@@ -5,16 +5,13 @@ import UserContext from "../../../../context/UserContext.js";
 import {getAllQuestions} from "../../../../services/question.services.js";
 import QuestionCard from "./QuestionCard.jsx";
 import QuestionForm from "./QuestionForm.jsx";
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
 
 const MainQuestions = () => {
 
-    const { jwtToken } = useContext(UserContext)
-    const [ questions, setQuestions ] = useState([])
-
-    const injection = {
-        questions, setQuestions,
-    }
+    const { jwtToken } = useContext(UserContext);
+    const { questions, setQuestions } = useContext(CompetitionContext);
 
     useEffect(() => {
         getAllQuestions(jwtToken)
@@ -30,7 +27,6 @@ const MainQuestions = () => {
                 items={questions || []}
                 Component={QuestionCard}
                 search='title'
-                injection={injection}
                 filter={{
                     difficulty: ['Easy', 'Medium', 'Hard'],
                     topics: ['Mechanics', 'Waves', 'Algebra','Geometry']
@@ -39,7 +35,7 @@ const MainQuestions = () => {
 
             <Center>
                 <Card p='xl' radius='xl' mt='xl'  w='700px'>
-                    <QuestionForm close={close} injection={injection}/>
+                    <QuestionForm/>
                 </Card>
             </Center>
 

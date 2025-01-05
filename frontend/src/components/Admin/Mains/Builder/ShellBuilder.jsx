@@ -4,7 +4,7 @@ import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
 import {useDisclosure, useMediaQuery, useViewportSize} from "@mantine/hooks";
 import PropTypes from "prop-types";
-import AsideBuilder from "./AsideBuilder.jsx";
+import AsideBuilder from "./AsideComponents/AsideBuilder.jsx";
 import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
@@ -46,7 +46,7 @@ const ShellBuilder = ({children}) => {
     return (
         <AppShell
             header={{height: headH,}}
-            navbar={{width: navW, breakpoint: navW + mainW + asideW, collapsed: { desktop: false, mobile: !opened }}}
+            navbar={{width: navW, breakpoint: navW + mainW + asideW, collapsed: { mobile: !opened }}}
             aside={{width: asideW, breakpoint: mainW + asideW, collapsed: { desktop: false, mobile: true }}}
             footer={{height: footH, collapsed: !navMatches}}
         >
@@ -57,11 +57,13 @@ const ShellBuilder = ({children}) => {
 
 
             {(authorized && user) ? (<>
-                <AppShell.Navbar zIndex={300}>
+                <AppShell.Navbar zIndex={225}>
                     <NavBarFrame nav={nav} withNavFooter={!navMatches} label={label}>
                         <NavBarBuilder w='100%' h={navMatches ? navStackOpened : navStackCollapsed} />
                     </NavBarFrame>
                 </AppShell.Navbar>
+
+
 
 
                 <AppShell.Main p='lg'>
@@ -70,12 +72,12 @@ const ShellBuilder = ({children}) => {
                 </AppShell.Main>
 
 
-                <AppShell.Aside p='lg'>
-                    <AsideBuilder/>
+                <AppShell.Aside>
+                    <AsideBuilder w={asideW} h={navStackOpened}/>
                 </AppShell.Aside>
 
 
-                <AppShell.Footer p='md' zIndex={400}>
+                <AppShell.Footer p='md' zIndex={250}>
                     <FooterFrame nav={nav} label={label}/>
                 </AppShell.Footer>
             </>) : (
