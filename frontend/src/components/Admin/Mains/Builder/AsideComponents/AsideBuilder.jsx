@@ -6,6 +6,7 @@ import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
 import {getAllQuestions} from "../../../../../services/question.services.js";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
 import QuestionSelectionCard from "./QuestionSelectionCard.jsx";
+import PropTypes from "prop-types";
 
 
 const AsideBuilder = ({w, h}) => {
@@ -44,6 +45,17 @@ const AsideBuilder = ({w, h}) => {
             </Stack>
         </ScrollArea>
     )
+}
+
+AsideBuilder.propTypes = {
+    w: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    h: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
 }
 
 export default AsideBuilder

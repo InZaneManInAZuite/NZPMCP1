@@ -30,7 +30,7 @@ const QuestionForm = ({question, close}) => {
         const index = event.currentTarget.getAttribute('indexer');
         const origOptions = form.values.options;
         origOptions[parseInt(index)] = event.currentTarget.value;
-        return origOptions;
+        return origOptions.map(option => option);
     });
     const handleAnswerChange = (event) => form.setFieldValue('answer', () => {
         const index = event.currentTarget.getAttribute('indexer');
@@ -39,7 +39,7 @@ const QuestionForm = ({question, close}) => {
     const handleRemoveOption = (event) => form.setFieldValue('options', () => {
         const origOptions = form.values.options;
         if (origOptions?.length <= 1) {
-            return origOptions
+            return origOptions.map(o => o)
         }
         const index = event.currentTarget.getAttribute('indexer');
         return origOptions.filter((val, i) => parseInt(index) !== i);
@@ -65,7 +65,7 @@ const QuestionForm = ({question, close}) => {
     const form = useForm({
         initialValues: {
             title: question?.title,
-            options: question?.options || [''],
+            options: question?.options.map(o => o) || [''],
             answer: question?.correctChoiceIndex,
             difficulty: question?.difficulty,
             topics: question?.topics,
@@ -126,7 +126,7 @@ const QuestionForm = ({question, close}) => {
         return {
             id: question?.id,
             title: question?.title,
-            options: question?.options,
+            options: question?.options.map(o => o),
             correctChoiceIndex: question?.correctChoiceIndex,
             topics: question?.topics,
             difficulty: question?.difficulty,
@@ -135,7 +135,7 @@ const QuestionForm = ({question, close}) => {
 
     const clearFields = () => {
         form.setFieldValue('title', question?.title);
-        form.setFieldValue('options', question?.options || ['']);
+        form.setFieldValue('options', question?.options.map(o => o) || ['']);
         form.setFieldValue('answer', question?.correctChoiceIndex);
         form.setFieldValue('topics', question?.topics || []);
         form.setFieldValue('difficulty', question?.difficulty);
@@ -250,9 +250,11 @@ const QuestionForm = ({question, close}) => {
                 <Text fw={500} size='sm' mb='2px'>Options</Text>
                 {form.values.options?.map((option, index) => {
                     return (
-                        <TextInput
+                        <Textarea
                             error={form.errors.options || form.errors.answer}
-                            key={`TI_${question?.id}${index}`}
+                            minRows={1}
+                            autosize
+                            key={`TA_${question?.id}${index}`}
                             indexer={index}
                             w='100%'
                             value={form.values.options[index]}
@@ -283,7 +285,7 @@ const QuestionForm = ({question, close}) => {
                     fullWidth
                     leftSection={<IconPlus />}
                     onClick={() => form.setFieldValue('options', () => {
-                        return form.values.options?.concat(['']) || [''];
+                        return form.values.options?.map(o => o).concat(['']) || [''];
                     })}
                 >
                     Add Option
