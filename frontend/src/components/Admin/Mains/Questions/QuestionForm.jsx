@@ -189,11 +189,20 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
                 clearFields();
                 setQuestions(questions?.map(eachQue => {
                     if (eachQue.id === question.id) {
-                        return newQue
+                        return newQue;
                     } else {
-                        return eachQue
+                        return eachQue;
                     }
                 }));
+                if (questionsEdit?.map(que => que.id).includes(question?.id)) {
+                    setQuestionsEdit(questionsEdit.map(eachQue => {
+                        if (eachQue.id === question.id) {
+                            return newQue;
+                        } else {
+                            return eachQue
+                        }
+                    }))
+                }
                 close();
             })
             .catch(e => console.log(e))

@@ -5,7 +5,7 @@ import UserContext from "../../../../context/UserContext.js";
 import NavigatorButton from "../NavComponents/NavigatorButton.jsx";
 import PropTypes from "prop-types";
 
-const FooterFrame = ({nav, label}) => {
+const FooterFrame = ({nav, label, linkFunc}) => {
 
     const { user } = useContext(UserContext);
 
@@ -24,7 +24,7 @@ const FooterFrame = ({nav, label}) => {
 
 
             <Group gap='sm'>
-                {nav && <NavigatorButton label={label} nav={nav} w='150px' />}
+                {nav && <NavigatorButton label={label} nav={nav} w='150px' linkFunc={linkFunc} />}
                 <LogoutButton w='150px'/>
             </Group>
         </Group>
@@ -34,6 +34,7 @@ const FooterFrame = ({nav, label}) => {
 FooterFrame.propTypes = {
     nav: PropTypes.string,
     label: PropTypes.string,
+    linkFunc: PropTypes.func,
 }
 
 export default FooterFrame

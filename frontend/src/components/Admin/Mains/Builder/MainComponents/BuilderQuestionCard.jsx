@@ -1,31 +1,60 @@
 import PropTypes from "prop-types";
-import {Card, Divider, Group, Stack, Text, Title, UnstyledButton} from "@mantine/core";
+import {Card, Code, Divider, Flex, Group, Stack, Text, Title, UnstyledButton} from "@mantine/core";
 import {useContext} from "react";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import {updateCompetition} from "../../../../../services/competition.services.js";
 import UserContext from "../../../../../context/UserContext.js";
-import {IconMinus} from "@tabler/icons-react";
+import {IconChevronDown, IconChevronUp, IconMinus} from "@tabler/icons-react";
 import {useMediaQuery} from "@mantine/hooks";
 
 
-const BuilderQuestionCard = ({question,  index: qNum}) => {
+const BuilderQuestionCard = ({question,  index: qIndex}) => {
 
     const { jwtToken } = useContext(UserContext);
     const { questionsEdit, setQuestionsEdit, competitionEdit } = useContext(CompetitionContext);
     const matches = useMediaQuery('(min-width: 1600px)');
 
-    const handleRemove = () => {
-        const newQues = questionsEdit.filter(que => que.id !== question.id);
+
+
+    const updateQuestionsEdit = (newQues) => {
         const newCompete = {
             ...competitionEdit,
             questionIds: newQues.map(que => que.id),
-        };
+        }
         updateCompetition(newCompete, jwtToken)
             .then(() => {
                 setQuestionsEdit(newQues)
             })
-            .catch(e => console.log(e))
+            .catch(e => console.log(e));
     }
+
+    const handleRemove = () => {
+        const newQues = questionsEdit.filter(que => que.id !== question.id);
+        updateQuestionsEdit(newQues);
+    }
+    const handleUp = () => {
+        if (0 !== qIndex) {
+            const newQues = questionsEdit.map(o => o);
+            const temp = newQues[qIndex];
+            newQues[qIndex] = newQues[qIndex-1];
+            newQues[qIndex-1] = temp;
+            updateQuestionsEdit(newQues);
+        }
+    }
+
+    const handleDown = () => {
+        if (questionsEdit.length-1 !== qIndex) {
+            const newQues = questionsEdit.map(o => o);
+            const temp = newQues[qIndex];
+            newQues[qIndex] = newQues[qIndex+1];
+            newQues[qIndex+1] = temp;
+            updateQuestionsEdit(newQues);
+        }
+    }
+
+
+
+
 
     const splitText = (textToSplit) => {
         return textToSplit?.split('\n');
@@ -35,14 +64,37 @@ const BuilderQuestionCard = ({question,  index: qNum}) => {
         return question.correctChoiceIndex === index;
     }
 
+
+
+
+
     return (
         <Card w={matches ? '750px' : '100%'} mt='sm'>
             <Stack gap='xs' p='sm'>
                 {splitText(question.title)?.map((portion, index) => (
                     <Title ta='left' order={4} mb='sm' key={`QIT_${question.id}_${index}`} >
-                        {qNum !== undefined && index === 0 ? `${qNum + 1}) ${portion}`: portion}
+                        {qIndex !== undefined && index === 0 ? `${qIndex+1}) ${portion}`: portion}
                     </Title>
                 ))}
+                <Group>
+                    {(question.difficulty) &&
+                        <Code color={(question.difficulty) === 'Easy' ? 'green' :
+                            ((question.difficulty) === 'Medium' ? 'yellow' : 'red')}
+                        >
+                            {question.difficulty}
+                        </Code>
+                    }
+                    {question.topics && (
+                        question.topics.map((topic, index) =>
+                            <Code
+                                key={`BUILDER_TOPIC_${question.id}_${index}`}
+                                color='blue'
+                            >
+                                {topic}
+                            </Code>
+                        ))
+                    }
+                </Group>
                 <Divider mb='sm' variant='dotted' />
 
 
@@ -76,12 +128,29 @@ const BuilderQuestionCard = ({question,  index: qNum}) => {
 
 
 
-            <UnstyledButton onClick={handleRemove}>
-                <IconMinus/>
-            </UnstyledButton>
+            <Flex justify='flex-end' gap='xs'>
+                {0 !== qIndex && (
+                    <UnstyledButton onClick={handleUp}>
+                        <IconChevronUp/>
+                    </UnstyledButton>
+                )}
+                <UnstyledButton onClick={handleRemove}>
+                    <IconMinus/>
+                </UnstyledButton>
+                {questionsEdit?.length-1 !== qIndex && (
+                    <UnstyledButton onClick={handleDown}>
+                        <IconChevronDown/>
+                    </UnstyledButton>
+                )}
+            </Flex>
+
         </Card>
     )
 }
+
+
+
+
 
 BuilderQuestionCard.propTypes = {
     question: PropTypes.object.isRequired,

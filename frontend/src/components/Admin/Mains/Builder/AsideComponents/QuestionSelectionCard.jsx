@@ -1,13 +1,14 @@
 import {Anchor, Card, Code, Flex, Group, Modal, Stack, Text, UnstyledButton} from "@mantine/core";
-import {IconEdit, IconMinus, IconPlus, IconTrash} from "@tabler/icons-react";
+import {IconCopy, IconEdit, IconMinus, IconPlus, IconTrash} from "@tabler/icons-react";
 import {useContext, useState} from "react";
 import UserContext from "../../../../../context/UserContext.js";
 import PropTypes from "prop-types";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
-import {removeQuestion} from "../../../../../services/question.services.js";
+import {createQuestion, removeQuestion} from "../../../../../services/question.services.js";
 import QuestionInfo from "./QuestionInfo.jsx";
 import {updateCompetition} from "../../../../../services/competition.services.js";
+import { v4 as uuidv4 } from 'uuid';
 
 
 const QuestionSelectionCard = ({item: question}) => {
@@ -60,6 +61,18 @@ const QuestionSelectionCard = ({item: question}) => {
                 setQuestionsEdit(newQues)
             })
             .catch(e => console.log(e))
+    }
+
+    const handleCopy = () => {
+        const newQue = {
+            ...question,
+            id: uuidv4(),
+        };
+        createQuestion(newQue, jwtToken)
+            .then(() => {
+                setQuestions(questions.concat(newQue));
+            })
+            .catch(e => console.log(e));
     }
 
 
@@ -131,6 +144,9 @@ const QuestionSelectionCard = ({item: question}) => {
                             <IconPlus size='20px'/>
                         </UnstyledButton>
                     )}
+                    <UnstyledButton onClick={handleCopy}>
+                        <IconCopy size='20px' />
+                    </UnstyledButton>
                     <UnstyledButton onClick={() => setUpdateOpened(true)}>
                         <IconEdit size='20px'/>
                     </UnstyledButton>

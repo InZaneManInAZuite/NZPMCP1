@@ -1,18 +1,15 @@
-import {AppShell, LoadingOverlay, Paper, ScrollArea} from "@mantine/core";
+import {AppShell, LoadingOverlay} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
 import {useDisclosure, useMediaQuery, useViewportSize} from "@mantine/hooks";
-import PropTypes from "prop-types";
 import AsideBuilder from "./AsideComponents/AsideBuilder.jsx";
 import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
 import NavBarBuilder from "./NavBarComponents/NavBarBuilder.jsx";
 import MainBuilder from "./MainComponents/MainBuilder.jsx";
-import QuestionSelectionCard from "./AsideComponents/QuestionSelectionCard.jsx";
-import QuestionForm from "../Questions/QuestionForm.jsx";
-import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
+import CompetitionContext from "../../../../context/CompetitionContext.js";
 
 const nav = '/admin';
 const label = 'Exit Builder';
@@ -25,11 +22,11 @@ const footH = 100;
 const ShellBuilder = () => {
 
     const { user } = useContext(UserContext);
+    const { clearEdit } = useContext(CompetitionContext);
     const [opened, { toggle }] = useDisclosure();
     const [ authorized, setAuthorized ] = useState(false);
     const navigate = useNavigate();
 
-    const sideMatches = useMediaQuery(`(min-width: ${asideW + mainW}px)`);
     const navMatches = useMediaQuery(`(min-width: ${navW + asideW + mainW}px)`);
     const {height: appH, width: appW} = useViewportSize();
 
@@ -85,7 +82,7 @@ const ShellBuilder = () => {
 
 
                 <AppShell.Footer p='md' zIndex={250}>
-                    <FooterFrame nav={nav} label={label}/>
+                    <FooterFrame nav={nav} label={label} linkFunc={clearEdit}/>
                 </AppShell.Footer>
             </>) : (
                 <LoadingOverlay/>
