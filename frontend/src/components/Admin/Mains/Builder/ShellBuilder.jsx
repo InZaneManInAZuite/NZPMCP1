@@ -1,4 +1,4 @@
-import {AppShell, LoadingOverlay, ScrollArea} from "@mantine/core";
+import {AppShell, LoadingOverlay, Paper, ScrollArea} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import UserContext from "../../../../context/UserContext.js";
 import {useNavigate} from "react-router-dom";
@@ -9,6 +9,10 @@ import FooterFrame from "../../../Misc/Navigation/AppFrame/FooterFrame.jsx";
 import NavBarFrame from "../../../Misc/Navigation/AppFrame/NavBarFrame.jsx";
 import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
 import NavBarBuilder from "./NavBarComponents/NavBarBuilder.jsx";
+import MainBuilder from "./MainComponents/MainBuilder.jsx";
+import QuestionSelectionCard from "./AsideComponents/QuestionSelectionCard.jsx";
+import QuestionForm from "../Questions/QuestionForm.jsx";
+import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 
 const nav = '/admin';
 const label = 'Exit Builder';
@@ -18,7 +22,7 @@ const mainW = 400;
 const headH = 60;
 const footH = 100;
 
-const ShellBuilder = ({children}) => {
+const ShellBuilder = () => {
 
     const { user } = useContext(UserContext);
     const [opened, { toggle }] = useDisclosure();
@@ -31,6 +35,10 @@ const ShellBuilder = ({children}) => {
 
     const navStackCollapsed = (appH - 200 - headH);
     const navStackOpened = (appH - footH - headH);
+
+    const injectW = {
+        navW, asideW, mainW, appW,
+    }
 
     useEffect (() => {
         if (user?.role === "ADMIN") {
@@ -66,9 +74,8 @@ const ShellBuilder = ({children}) => {
 
 
 
-                <AppShell.Main p='lg'>
-                    {children}
-                    {!sideMatches && <AsideBuilder/>}
+                <AppShell.Main>
+                    <MainBuilder injectW={injectW}/>
                 </AppShell.Main>
 
 
@@ -85,10 +92,6 @@ const ShellBuilder = ({children}) => {
             )}
         </AppShell>
     )
-}
-
-ShellBuilder.propTypes = {
-    children: PropTypes.element,
 }
 
 export default ShellBuilder;

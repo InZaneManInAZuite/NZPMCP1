@@ -1,7 +1,6 @@
 import {
     Title,
     Divider,
-    TextInput,
     Button,
     Group, Text, UnstyledButton, Textarea, MultiSelect, Checkbox,
 } from '@mantine/core'
@@ -15,11 +14,12 @@ import {IconCheckbox, IconPlus, IconSquare, IconX} from "@tabler/icons-react";
 import DifficultyComboBox from "./DifficultyComboBox.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import CompetitionContext from "../../../../context/CompetitionContext.js";
+import {updateCompetition} from "../../../../services/competition.services.js";
 
-const QuestionForm = ({question, close}) => {
+const QuestionForm = ({question, close, toAddEdit=false}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { questions, setQuestions } = useContext(CompetitionContext);
+    const { questions, setQuestions, questionsEdit, setQuestionsEdit, competitionEdit } = useContext(CompetitionContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
 
     const [ diffCheck, setDiffCheck ] = useState(question?.difficulty || false);
@@ -165,6 +165,18 @@ const QuestionForm = ({question, close}) => {
                     close()
                 }
                 setQuestions(questions.concat(newQue));
+
+                if (toAddEdit && competitionEdit) {
+                    const newQuesEdits = questionsEdit.concat(newQue);
+                    const newCompete = {
+                        ...competitionEdit,
+                        questionIds: newQuesEdits.map(que => que.id),
+                    };
+                    updateCompetition(newCompete, jwtToken)
+                        .then(() => {
+                            setQuestionsEdit(newQuesEdits)
+                        })
+                }
                 clearFields();
             })
             .catch(e => console.log(e));
@@ -332,6 +344,7 @@ QuestionForm.propTypes = {
     question: PropTypes.object,
     close: PropTypes.func,
     injection: PropTypes.object,
+    toAddEdit: PropTypes.bool,
 }
 
 export default QuestionForm

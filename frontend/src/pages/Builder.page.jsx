@@ -1,5 +1,5 @@
 import ShellBuilder from "../components/Admin/Mains/Builder/ShellBuilder.jsx";
-import MainBuilder from "../components/Admin/Mains/Builder/MainBuilder.jsx";
+import MainBuilder from "../components/Admin/Mains/Builder/MainComponents/MainBuilder.jsx";
 
 
 const BuilderPage = () => {

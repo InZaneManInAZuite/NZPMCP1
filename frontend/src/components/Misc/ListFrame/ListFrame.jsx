@@ -307,7 +307,7 @@ ListFrame.propTypes = {
     items: PropTypes.array,
     injection: PropTypes.object,
     Component: PropTypes.elementType.isRequired,
-    NewForm: PropTypes.element,
+    NewForm: PropTypes.func,
     withForm: PropTypes.bool,
 
     search: PropTypes.oneOfType([
