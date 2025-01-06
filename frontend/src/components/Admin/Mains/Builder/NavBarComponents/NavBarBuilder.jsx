@@ -1,73 +1,35 @@
-import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
-import {Card, ScrollArea, Stack} from "@mantine/core";
-import {useContext, useEffect } from "react";
-import {getAllCompetitions} from "../../../../../services/competition.services.js";
-import UserContext from "../../../../../context/UserContext.js";
-import PropTypes from "prop-types";
-import CompetitionContext from "../../../../../context/CompetitionContext.js";
-import CompetitionForm from "../../Competitions/CompetitionForm.jsx";
-import CompetitionSelectionCard from "./CompetitionSelectionCard.jsx";
+import {Tabs} from "@mantine/core";
+import {useContext} from "react";
+import {IconCalendarEvent, IconTournament} from "@tabler/icons-react";
+import AppShellContext from "../../../../../context/AppShellContext.js";
+import CompetitionsBuilderTab from "./CompetitionsBuilderTab.jsx";
 
+const NavBarBuilder = () => {
 
-const NavBarBuilder = ({h, w}) => {
+    const { appH, headH, footH, tabH, navPresentQ } = useContext(AppShellContext);
 
-    const { jwtToken } = useContext(UserContext);
-    const { competitions, setCompetitions } = useContext(CompetitionContext);
+    const stackH = () => (navPresentQ ? (appH - footH - headH - tabH) : (appH - 220 - headH - tabH));
 
-    useEffect(() => {
-        getAllCompetitions(jwtToken)
-            .then(allCompetes => {
-                setCompetitions(allCompetes)
-            })
-            .catch(e => console.log(e))
-    }, [jwtToken, setCompetitions])
+    return (
+        <Tabs defaultValue='competitions'>
+            <Tabs.List grow h={tabH}>
+                <Tabs.Tab value='competitions' leftSection={<IconTournament size={18} />}>
+                    Competitions
+                </Tabs.Tab>
+                <Tabs.Tab value='events' leftSection={<IconCalendarEvent size={18} />}>
+                    Events
+                </Tabs.Tab>
+            </Tabs.List>
 
-    const setChecker = (item, checked) => {
-        if (checked) {
-            return true;
-        } else {
-            return !item.events?.length > 0;
-        }
-    }
+            <Tabs.Panel value='competitions'>
+                <CompetitionsBuilderTab h={stackH()}/>
+            </Tabs.Panel>
 
-    const injection = {
-        competitions, setCompetitions
-    }
-
-    return (<>
-        <ScrollArea
-            pl='xs' pr='xs' pt='xs'
-            scrollbarSize={4}
-            w={w}
-            h={h}
-            type='always'>
-            <Stack h='100%'>
-                <ListFrame
-                    height={h - 25}
-                    width='100%'
-                    items={competitions || []}
-                    Component={CompetitionSelectionCard}
-                    search='title'
-                    setChecker={setChecker}
-                    checkBoxLabel='Include Used'
-                    injection={injection}
-                    NewForm={CompetitionForm}
-                    withForm
-                />
-            </Stack>
-        </ScrollArea>
-    </>)
-}
-
-NavBarBuilder.propTypes = {
-    h: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
-    w: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
+            <Tabs.Panel value='events'>
+                <p>Placeholder</p>
+            </Tabs.Panel>
+        </Tabs>
+    )
 }
 
 export default NavBarBuilder

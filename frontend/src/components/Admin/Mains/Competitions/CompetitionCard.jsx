@@ -11,7 +11,7 @@ import CompetitionContext from "../../../../context/CompetitionContext.js";
 const CompetitionCard = ({ item: competition }) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { competitions, setCompetitions, setCompetitionEdit } = useContext(CompetitionContext);
+    const { competitions, setCompetitions, setCompetitionEdit, questions, setQuestionsEdit } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const navigate = useNavigate()
 
@@ -21,6 +21,7 @@ const CompetitionCard = ({ item: competition }) => {
 
     const handleToBuild = () => {
         setCompetitionEdit(competition);
+        setQuestionsEdit(competition.questionIds?.map(qId => questions[questions.map(q => q.id).indexOf(qId)]));
         navigate('/builder');
     }
 

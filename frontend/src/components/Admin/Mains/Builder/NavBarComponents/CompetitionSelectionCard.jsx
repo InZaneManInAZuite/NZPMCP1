@@ -17,7 +17,7 @@ const CompetitionSelectionCard = ({item: competition}) => {
 
     const handleClick = () => {
         setCompetitionEdit(competition);
-        setQuestionsEdit(questions.filter(que => competition.questionIds?.includes(que.id)))
+        setQuestionsEdit(competition.questionIds?.map(qId => questions.find(q => q.id === qId)));
     }
 
     const handleDelete = () => {

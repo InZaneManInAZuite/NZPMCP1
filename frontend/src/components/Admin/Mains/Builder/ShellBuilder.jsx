@@ -10,32 +10,20 @@ import HeaderFrame from "../../../Misc/Navigation/AppFrame/HeaderFrame.jsx";
 import NavBarBuilder from "./NavBarComponents/NavBarBuilder.jsx";
 import MainBuilder from "./MainComponents/MainBuilder.jsx";
 import CompetitionContext from "../../../../context/CompetitionContext.js";
+import AppShellContext from "../../../../context/AppShellContext.js";
 
 const nav = '/admin';
 const label = 'Exit Builder';
-const navW = 400;
-const asideW = 400;
-const mainW = 400;
-const headH = 60;
-const footH = 100;
 
 const ShellBuilder = () => {
 
     const { user } = useContext(UserContext);
     const { clearEdit } = useContext(CompetitionContext);
+    const { appH, appW, headH, navW, asideW, footH, minMainW,
+        navBreak, sideBreak, navPresentQ  } = useContext(AppShellContext);
     const [opened, { toggle }] = useDisclosure();
     const [ authorized, setAuthorized ] = useState(false);
     const navigate = useNavigate();
-
-    const navMatches = useMediaQuery(`(min-width: ${navW + asideW + mainW}px)`);
-    const {height: appH, width: appW} = useViewportSize();
-
-    const navStackCollapsed = (appH - 200 - headH);
-    const navStackOpened = (appH - footH - headH);
-
-    const injectW = {
-        navW, asideW, mainW, appW, footH
-    }
 
     useEffect (() => {
         if (user?.role === "ADMIN") {
@@ -51,20 +39,20 @@ const ShellBuilder = () => {
     return (
         <AppShell
             header={{height: headH,}}
-            navbar={{width: navW, breakpoint: navW + mainW + asideW, collapsed: { mobile: !opened }}}
-            aside={{width: asideW, breakpoint: mainW + asideW, collapsed: { desktop: false, mobile: true }}}
-            footer={{height: footH, collapsed: !navMatches}}
+            navbar={{width: navW, breakpoint: navBreak(), collapsed: { mobile: !opened }}}
+            aside={{width: asideW, breakpoint: sideBreak(), collapsed: { desktop: false, mobile: true }}}
+            footer={{height: footH, collapsed: !navPresentQ}}
         >
 
             <AppShell.Header>
-                <HeaderFrame navMatcher={navMatches} opened={opened} toggle={toggle}/>
+                <HeaderFrame opened={opened} toggle={toggle}/>
             </AppShell.Header>
 
 
             {(authorized && user) ? (<>
                 <AppShell.Navbar zIndex={225}>
-                    <NavBarFrame nav={nav} withNavFooter={!navMatches} label={label}>
-                        <NavBarBuilder w='100%' h={navMatches ? navStackOpened : navStackCollapsed} />
+                    <NavBarFrame nav={nav} withNavFooter={!navPresentQ} label={label}>
+                        <NavBarBuilder w='100%' />
                     </NavBarFrame>
                 </AppShell.Navbar>
 
@@ -72,12 +60,12 @@ const ShellBuilder = () => {
 
 
                 <AppShell.Main>
-                    <MainBuilder injectW={injectW}/>
+                    <MainBuilder/>
                 </AppShell.Main>
 
 
                 <AppShell.Aside>
-                    <AsideBuilder w={asideW} h={navStackOpened}/>
+                    <AsideBuilder/>
                 </AppShell.Aside>
 
 

@@ -6,12 +6,16 @@ import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
 import {getAllQuestions} from "../../../../../services/question.services.js";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
 import QuestionSelectionCard from "./QuestionSelectionCard.jsx";
-import PropTypes from "prop-types";
+import AppShellContext from "../../../../../context/AppShellContext.js";
 
 
-const AsideBuilder = ({w, h}) => {
+const AsideBuilder = () => {
+
     const { jwtToken } = useContext(UserContext);
     const { questions, setQuestions } = useContext(CompetitionContext);
+    const { appH, headH, footH, margin } = useContext(AppShellContext);
+
+    const asideH = () => (appH - headH - footH);
 
     useEffect(() => {
         getAllQuestions(jwtToken)
@@ -25,12 +29,12 @@ const AsideBuilder = ({w, h}) => {
         <ScrollArea
             pl='xs' pr='xs' pt='xs'
             scrollbarSize={4}
-            w={w}
-            h={h}
+            w='100%'
+            h={asideH()}
             type='always'>
             <Stack h='100%'>
                 <ListFrame
-                    height={h - 25}
+                    height={asideH() - margin}
                     width='100%'
                     items={questions || []}
                     Component={QuestionSelectionCard}
@@ -45,17 +49,6 @@ const AsideBuilder = ({w, h}) => {
             </Stack>
         </ScrollArea>
     )
-}
-
-AsideBuilder.propTypes = {
-    w: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
-    h: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
 }
 
 export default AsideBuilder

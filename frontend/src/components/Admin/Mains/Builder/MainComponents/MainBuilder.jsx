@@ -1,4 +1,4 @@
-import {Card, Center, Divider, Paper, Stack, Title} from "@mantine/core";
+import {Card, Divider, Paper, ScrollArea, Stack, Title} from "@mantine/core";
 import {useContext} from "react";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import BuilderQuestionCard from "./BuilderQuestionCard.jsx";
@@ -6,23 +6,28 @@ import PropTypes from "prop-types";
 import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
 import QuestionSelectionCard from "../AsideComponents/QuestionSelectionCard.jsx";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
-import {useMediaQuery, useViewportSize} from "@mantine/hooks";
+import {useMediaQuery} from "@mantine/hooks";
+import AppShellContext from "../../../../../context/AppShellContext.js";
 
 
-const MainBuilder = ({w, injectW: data}) => {
+const MainBuilder = () => {
 
     const { competitionEdit, questionsEdit, questions } = useContext(CompetitionContext);
-    const sideMatches = useMediaQuery(`(min-width: ${data?.asideW + data?.mainW}px)`);
-    const matches = useMediaQuery('(min-width: 1450px)');
-    const {height: appH} = useViewportSize()
+    const {appH, headH, mainH, footH, margin, sidePresentQ, navPresentQ} = useContext(AppShellContext);
+    const matches = useMediaQuery('(min-width: 1400px)');
 
 
     return (
-        <Paper w={w} p='lg'>
+        <ScrollArea p='sm' h={navPresentQ ? mainH() : mainH() + footH} scrollbarSize={4}>
             <Stack align='center'>
-                <Title order={2}>{competitionEdit ? competitionEdit?.title : `Select Competition`}</Title>
+                <Title order={2} mt='xl'>{competitionEdit ? competitionEdit?.title : `Select Competition`}</Title>
+                <Divider w='80%' m='xl'/>
 
-                {questionsEdit.map((que, index) =>
+                {!questionsEdit?.length > 0 && (
+                    <Title m='xl' order={4}>[ Please Add Questions ]</Title>
+                )}
+
+                {questionsEdit?.map((que, index) =>
                     <BuilderQuestionCard
                         question={que}
                         key={`MB_${competitionEdit.id}_BQC_${que.id}`}
@@ -42,10 +47,10 @@ const MainBuilder = ({w, injectW: data}) => {
 
 
 
-                {!sideMatches && (<>
+                {!sidePresentQ && (<>
                     <Divider w='80%' m='xl'/>
                     <ListFrame
-                        height={appH - data?.footH || appH}
+                        height={appH - headH - margin}
                         width='100%'
                         items={questions || []}
                         Component={QuestionSelectionCard}
@@ -59,7 +64,7 @@ const MainBuilder = ({w, injectW: data}) => {
                     />
                 </>)}
             </Stack>
-        </Paper>
+        </ScrollArea>
     )
 }
 
