@@ -39,7 +39,7 @@ public class BuilderMiddleware {
             competeMid.checkCompetitionExists(competitionId);
             Event event = eventMid.checkEventExists(eventId);
 
-            if (event.getCompetitionId().isEmpty()) {
+            if (event.getCompetitionId() == null) {
                 event.setCompetitionId(competitionId);
                 eventRepo.save(event);
             } else {
@@ -56,7 +56,7 @@ public class BuilderMiddleware {
             Competition competition = competeMid.checkCompetitionExists(competitionId);
             eventMid.checkEventExists(eventId);
 
-            if (competition.getEvents().isEmpty()) {
+            if (competition.getEvents() == null || competition.getEvents().isEmpty()) {
                 List<String> newEvents = new ArrayList<>();
                 newEvents.add(eventId);
                 competition.setEvents(newEvents);
@@ -80,7 +80,7 @@ public class BuilderMiddleware {
             Competition competition = competeMid.checkCompetitionExists(competitionId);
             eventMid.checkEventExists(eventId);
 
-            if (competition.getEvents().isEmpty()) {
+            if (competition.getEvents() == null || competition.getEvents().isEmpty()) {
                 return;
             }
             List<String> newEvents = competition.getEvents().stream().filter(id -> !id.equals(eventId)).toList();
@@ -98,7 +98,9 @@ public class BuilderMiddleware {
             competeMid.checkCompetitionExists(competitionId);
             Event event = eventMid.checkEventExists(eventId);
 
-            if (!event.getCompetitionId().isEmpty() && event.getCompetitionId().equals(competitionId)) {
+            if (event.getCompetitionId() != null &&
+                    !event.getCompetitionId().isEmpty() &&
+                    event.getCompetitionId().equals(competitionId)) {
                 event.setCompetitionId(null);
                 eventRepo.save(event);
             } else {
@@ -115,7 +117,9 @@ public class BuilderMiddleware {
             competeMid.checkCompetitionExists(competeId);
 
             eventRepo.findAll().forEach(event -> {
-                if (!event.getCompetitionId().isEmpty() && event.getCompetitionId().equals(competeId)) {
+                if (event.getCompetitionId() != null &&
+                        !event.getCompetitionId().isEmpty() &&
+                        event.getCompetitionId().equals(competeId)) {
                     event.setCompetitionId(null);
                     eventRepo.save(event);
                 }
@@ -130,7 +134,7 @@ public class BuilderMiddleware {
             eventMid.checkEventExists(eventId);
 
             competeRepo.findAll().forEach(competition -> {
-                if (!competition.getEvents().isEmpty()) {
+                if (competition.getEvents() != null && !competition.getEvents().isEmpty()) {
                     List<String> newEvents = competition.getEvents().stream().filter(id -> !id.equals(eventId)).toList();
                     competition.setEvents(newEvents);
                     competeRepo.save(competition);

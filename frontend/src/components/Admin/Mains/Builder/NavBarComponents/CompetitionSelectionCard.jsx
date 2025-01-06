@@ -10,14 +10,15 @@ import CompetitionContext from "../../../../../context/CompetitionContext.js";
 
 const CompetitionSelectionCard = ({item: competition}) => {
 
-    const { jwtToken } = useContext(UserContext);
-    const { competitions, setCompetitions, competitionEdit, setCompetitionEdit, questions, setQuestionsEdit } = useContext(CompetitionContext);
+    const { jwtToken, events } = useContext(UserContext);
+    const { competitions, setCompetitions, competitionEdit, setCompetitionEdit, questions, setQuestionsEdit, setEventsEdit } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
 
 
     const handleClick = () => {
         setCompetitionEdit(competition);
         setQuestionsEdit(competition.questionIds?.map(qId => questions.find(q => q.id === qId)));
+        setEventsEdit(competition.events?.map(eId => events.find(e => e.id === eId)));
     }
 
     const handleDelete = () => {

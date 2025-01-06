@@ -1,15 +1,17 @@
 import PropTypes from "prop-types";
-import {Card, Divider, Modal, Stack, Text, Title} from "@mantine/core";
+import {Button, Card, Divider, Modal, Stack, Text, Title} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import {getAllAttendeesForEvent} from "../../../../services/attendee.services.js";
 import UserContext from "../../../../context/UserContext.js";
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import AttendeeCard from "./AttendeeCard.jsx";
+import {getCompetition} from "../../../../services/competition.services.js";
 
 const EventInfo = ({event, opened, setOpened}) => {
 
     const { jwtToken, user } = useContext(UserContext);
     const [ attendees, setAttendees ] = useState();
+    const [ competition, setCompetition ] = useState(undefined);
 
 
 
@@ -29,9 +31,15 @@ const EventInfo = ({event, opened, setOpened}) => {
             getAllAttendeesForEvent(event.id, jwtToken)
                 .then(allAttendees => {
                     allAttendees !== undefined &&
-                    setAttendees(allAttendees)
+                    setAttendees(allAttendees);
                 })
-                .catch(e => console.log(e.message))
+                .catch(e => console.log(e))
+
+            if (event.competitionId !== undefined && event.competitionId !== null) {
+                getCompetition(event.competitionId, jwtToken)
+                    .then(c => setCompetition(c))
+                    .catch(e => console.log(e))
+            }
         }
     }, [event, user, jwtToken]);
     const handleClose = () => {
@@ -99,6 +107,15 @@ const EventInfo = ({event, opened, setOpened}) => {
                     </>)}
                 </Card>
                 <Divider mb='sm' variant='dotted' />
+
+
+                {competition !== undefined && (<>
+                    <Text mb='sm'>Competition:</Text>
+                    <Card>
+                        <Text>{competition?.title}</Text>
+                        <Button mt='xl'>Enter</Button>
+                    </Card>
+                    </>)}
             </Stack>
 
 

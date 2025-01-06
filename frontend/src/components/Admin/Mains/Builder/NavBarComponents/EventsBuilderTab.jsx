@@ -1,22 +1,18 @@
 import {ScrollArea, Stack} from "@mantine/core";
 import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
-import CompetitionSelectionCard from "./CompetitionSelectionCard.jsx";
-import CompetitionForm from "../../Competitions/CompetitionForm.jsx";
 import {useContext, useEffect} from "react";
 import UserContext from "../../../../../context/UserContext.js";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import AppShellContext from "../../../../../context/AppShellContext.js";
-import {getAllCompetitions} from "../../../../../services/competition.services.js";
 import PropTypes from "prop-types";
 import {getAllEvents} from "../../../../../services/event.services.js";
-import EventCard from "../../Events/EventCard.jsx";
 import EventSelectionCard from "./EventSelectionCard.jsx";
+import EventForm from "../../Events/EventForm.jsx";
 
 
 const EventsBuilderTab = ({h}) => {
 
     const { jwtToken, events, setEvents, } = useContext(UserContext);
-    const { competitionEdit } = useContext(CompetitionContext);
     const { margin } = useContext(AppShellContext);
 
     useEffect(() => {
@@ -31,12 +27,8 @@ const EventsBuilderTab = ({h}) => {
         if (checked) {
             return true;
         } else {
-            return item.competitionId === competitionEdit?.id;
+            return Date.parse(item.date) > Date.now();
         }
-    }
-
-    const injection = {
-        events, setEvents
     }
 
     return (
@@ -53,10 +45,10 @@ const EventsBuilderTab = ({h}) => {
                     items={events || []}
                     Component={EventSelectionCard}
                     search={['name', 'description']}
+                    sort='date'
                     setChecker={setChecker}
-                    checkBoxLabel='Include Used'
-                    injection={injection}
-                    NewForm={CompetitionForm}
+                    checkBoxLabel='Include Previous'
+                    NewForm={EventForm}
                     withForm
                 />
             </Stack>

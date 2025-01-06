@@ -32,10 +32,6 @@ const CompetitionsBuilderTab = ({h}) => {
         }
     }
 
-    const injection = {
-        competitions, setCompetitions
-    }
-
     return (
         <ScrollArea
             pl='xs' pr='xs' pt='xs'
@@ -52,7 +48,6 @@ const CompetitionsBuilderTab = ({h}) => {
                     search='title'
                     setChecker={setChecker}
                     checkBoxLabel='Include Used'
-                    injection={injection}
                     NewForm={CompetitionForm}
                     withForm
                 />

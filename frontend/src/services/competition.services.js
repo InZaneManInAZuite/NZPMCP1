@@ -12,9 +12,8 @@ const getAllCompetitions = (jwtToken) => {
 }
 
 const getCompetition = (id, jwtToken) => {
-    const request = axios.get(`${COMPETE_URL}/title`, JSON.stringify({id}), {
+    const request = axios.get(`${COMPETE_URL}/${id}`, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })

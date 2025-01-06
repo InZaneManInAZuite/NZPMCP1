@@ -8,10 +8,12 @@ import {
     removeQuestionBuilder
 } from "../services/builder.services.js";
 import UserContext from "./UserContext.js";
+import {removeCompetition} from "../services/competition.services.js";
+import {removeEvent} from "../services/event.services.js";
 
 const CompetitionContextProvider = ({ children }) => {
 
-    const { jwtToken } = useContext(UserContext);
+    const { jwtToken, events, setEvents } = useContext(UserContext);
 
     // State variables to be stored
     const [competitions, setCompetitions] = useState([])
@@ -19,6 +21,9 @@ const CompetitionContextProvider = ({ children }) => {
     const [eventsEdit, setEventsEdit] = useState([])
     const [questionsEdit, setQuestionsEdit] = useState([])
     const [questions, setQuestions] = useState([])
+
+
+
 
 
     const clearEdit = () => {
@@ -56,32 +61,63 @@ const CompetitionContextProvider = ({ children }) => {
     }
 
     const addCompetitionToEvent = (competition, event) => {
-        const newEvents = eventsEdit?.concat(event) || [event];
+        const newEventsEdit = eventsEdit?.concat(event) || [event];
         const newCompete = {
             ...competition,
-            events: newEvents?.map(e => e.id),
+            events: newEventsEdit?.map(e => e.id),
+        }
+        const newEvent = {
+            ...event,
+            competitionId: competition.id,
         }
         addCompetitionBuilder(competition.id, event.id, jwtToken)
             .then(() => {
-                setEventsEdit(newEvents);
+                setEventsEdit(newEventsEdit);
+                setEvents(events.map(e => e.id === event.id ? newEvent : e))
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c))
             })
             .catch(e => console.log(e))
     }
 
     const removeCompetitionFromEvent = (competition, event) => {
-        const newEvents = eventsEdit?.filter(e => e.id !== event.id) || [event];
+        const newEventsEdit = eventsEdit?.filter(e => e.id !== event.id) || [event];
         const newCompete = {
             ...competition,
-            events: newEvents?.map(e => e.id),
+            events: newEventsEdit?.map(e => e.id),
+        }
+        const newEvent = {
+            ...event,
+            competitionId: (event.competitionId === competition.id) ? undefined : event.competitionId,
         }
         removeCompetitionBuilder(competition.id, event.id, jwtToken)
             .then(() => {
-                setEventsEdit(newEvents);
+                setEventsEdit(newEventsEdit);
+                setEvents(events.map(e => e.id === event.id ? newEvent : e))
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c));
             })
             .catch(e => console.log(e))
     }
+
+    const deleteCompetition = (competitionId) => {
+        removeCompetition(competitionId, jwtToken)
+            .then(() => {
+                setCompetitions(competitions?.filter(c => c.id !== competitionId));
+                if (competitionEdit.id === competitionId) {
+                    setCompetitionEdit(undefined);
+                    setQuestionsEdit(undefined);
+                    setEventsEdit(undefined);
+                }
+            })
+    }
+
+    const deleteQuestion = (questionId) => {
+        removeQuestion(questionId, jwtToken)
+            .then(() => {
+                setQuestions(questions?.filter(q => q.id !== questionId));
+                setQuestionsEdit(questionsEdit?.filter(q => q.id !== questionId));
+            })
+    }
+
 
 
 
@@ -101,6 +137,10 @@ const CompetitionContextProvider = ({ children }) => {
         removeCompetitionFromEvent,
     }
 
+
+
+
+
     // Return UserContext.Provider with store as value
     return (
         <CompetitionContext.Provider value={ store }>
@@ -108,6 +148,10 @@ const CompetitionContextProvider = ({ children }) => {
         </CompetitionContext.Provider>
     );
 }
+
+
+
+
 
 // PropTypes for UserContextProvider
 CompetitionContextProvider.propTypes = {

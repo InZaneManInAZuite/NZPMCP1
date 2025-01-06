@@ -6,16 +6,14 @@ import PropTypes from "prop-types";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
 import {createQuestion, removeQuestion} from "../../../../../services/question.services.js";
-import {addQuestionBuilder} from "../../../../../services/builder.services.js";
 import QuestionInfo from "./QuestionInfo.jsx";
-import {updateCompetition} from "../../../../../services/competition.services.js";
 import { v4 as uuidv4 } from 'uuid';
 
 
 const QuestionSelectionCard = ({item: question}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { questions, setQuestions, questionsEdit, setQuestionsEdit,competitionEdit,
+    const { questions, setQuestions, questionsEdit, competitionEdit,
          addQuestionToCompetition, removeQuestionFromCompetition} = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened ] = useState(false);
