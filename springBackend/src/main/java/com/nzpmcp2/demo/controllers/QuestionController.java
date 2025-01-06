@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.controllers;
 
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import java.util.List;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final BuilderMiddleware buildMid;
 
     @Autowired
-    public QuestionController(QuestionService questionService) {
+    public QuestionController(QuestionService questionService,
+                              BuilderMiddleware buildMid) {
         this.questionService = questionService;
+        this.buildMid = buildMid;
     }
 
     @GetMapping
@@ -53,6 +57,7 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuestionById(@PathVariable String id) {
         try {
+            buildMid.removeQuestionFromAllCompetitions(id);
             questionService.deleteQuestion(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {

@@ -18,15 +18,22 @@ public class Event {
     private Date date;
     private String description;
     private List<String> attendees;
+    private String competitionId;
 
 
     // Constructors
-    public Event(String id, String name, Date date, String description, List<String> attendees) {
+    public Event(String id,
+                 String name,
+                 Date date,
+                 String description,
+                 List<String> attendees,
+                 String competitionId) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.description = description;
         this.attendees = attendees;
+        this.competitionId = competitionId;
     }
 
 
@@ -51,6 +58,10 @@ public class Event {
         return attendees;
     }
 
+    public String getCompetitionId() {
+        return competitionId;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -67,6 +78,10 @@ public class Event {
         this.attendees = attendees;
     }
 
+    public void setCompetitionId(String competitionId) {
+        this.competitionId = competitionId;
+    }
+
 
 
     // Methods
@@ -74,7 +89,7 @@ public class Event {
     // Copy the event
     public Event copy() {
         List<String> attendeesCopy = List.copyOf(attendees);
-        return new Event(id, name, date, description, attendeesCopy);
+        return new Event(id, name, date, description, attendeesCopy, competitionId);
     }
 
     // Add an attendee to the event
@@ -97,6 +112,7 @@ public class Event {
         date = event.getDate() == null ? date : event.getDate();
         description = event.getDescription() == null ? description : event.getDescription();
         attendees = event.getAttendees() == null ? attendees : event.getAttendees();
+        competitionId = event.getCompetitionId() == null ? competitionId : event.getCompetitionId();
     }
 
     // Override the toString method
@@ -107,7 +123,8 @@ public class Event {
                 ", name='" + name + '\'' +
                 ", date='" + date + '\'' +
                 ", description='" + description + '\'' +
-                ", attendees=" + attendees +
+                ", attendees=" + attendees + '\'' +
+                ", competitionId='" + competitionId +
                 '}';
     }
 }

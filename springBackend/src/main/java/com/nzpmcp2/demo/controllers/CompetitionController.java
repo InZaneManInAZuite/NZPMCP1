@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.controllers;
 
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.services.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import java.util.List;
 public class CompetitionController {
 
     private final CompetitionService competeService;
+    private final BuilderMiddleware buildMid;
 
     @Autowired
-    public CompetitionController(CompetitionService competeService) {
+    public CompetitionController(CompetitionService competeService,
+                                 BuilderMiddleware buildMid) {
         this.competeService = competeService;
+        this.buildMid = buildMid;
     }
 
     @GetMapping
@@ -53,6 +57,7 @@ public class CompetitionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCompetition(@PathVariable String id) {
         try {
+            buildMid.removeCompetitionFromAllEvents(id);
             competeService.deleteCompetition(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -69,6 +74,4 @@ public class CompetitionController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    // TODO: Add new controllers for its interactions with events
 }
