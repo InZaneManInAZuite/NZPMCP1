@@ -47,7 +47,7 @@ const CompetitionSelectionCard = ({item: competition}) => {
                 <Card p='xs' w='100%'>
                     <Group>
                         <Anchor
-                            c={competition?.id === competitionEdit?.id ? 'blue' : 'white'}
+                            c={competition?.id === competitionEdit?.id ? 'green' : 'white'}
                             onClick={() => handleClick()}
                         >
                             <Text align='left'>{competition.title}</Text>

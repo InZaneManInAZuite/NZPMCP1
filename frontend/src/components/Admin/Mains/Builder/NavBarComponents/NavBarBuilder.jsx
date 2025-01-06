@@ -3,6 +3,7 @@ import {useContext} from "react";
 import {IconCalendarEvent, IconTournament} from "@tabler/icons-react";
 import AppShellContext from "../../../../../context/AppShellContext.js";
 import CompetitionsBuilderTab from "./CompetitionsBuilderTab.jsx";
+import EventsBuilderTab from "./EventsBuilderTab.jsx";
 
 const NavBarBuilder = () => {
 
@@ -26,7 +27,7 @@ const NavBarBuilder = () => {
             </Tabs.Panel>
 
             <Tabs.Panel value='events'>
-                <p>Placeholder</p>
+                <EventsBuilderTab h={stackH()}/>
             </Tabs.Panel>
         </Tabs>
     )

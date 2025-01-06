@@ -66,7 +66,7 @@ const EventInfo = ({event, opened, setOpened}) => {
 
 
     return(
-        <Modal opened={opened} onClose={handleClose} size='800px'>
+        <Modal opened={opened} onClose={handleClose} size='800px' zIndex={275}>
             <Title order={2}>{event.name}</Title>
             <Divider mt='lg'/>
 
