@@ -128,22 +128,23 @@ const BuilderQuestionCard = ({question,  index: qIndex}) => {
 
 
 
-            <Flex justify='flex-end' gap='xs'>
-                {0 !== qIndex && (
-                    <UnstyledButton onClick={handleUp}>
-                        <IconChevronUp/>
+            {(competitionEdit?.events?.length === 0) && (
+                <Flex justify='flex-end' gap='xs'>
+                    {0 !== qIndex && (
+                        <UnstyledButton onClick={handleUp}>
+                            <IconChevronUp/>
+                        </UnstyledButton>
+                    )}
+                    <UnstyledButton onClick={handleRemove}>
+                        <IconMinus/>
                     </UnstyledButton>
-                )}
-                <UnstyledButton onClick={handleRemove}>
-                    <IconMinus/>
-                </UnstyledButton>
-                {questionsEdit?.length-1 !== qIndex && (
-                    <UnstyledButton onClick={handleDown}>
-                        <IconChevronDown/>
-                    </UnstyledButton>
-                )}
-            </Flex>
-
+                    {questionsEdit?.length-1 !== qIndex && (
+                        <UnstyledButton onClick={handleDown}>
+                            <IconChevronDown/>
+                        </UnstyledButton>
+                    )}
+                </Flex>
+            )}
         </Card>
     )
 }

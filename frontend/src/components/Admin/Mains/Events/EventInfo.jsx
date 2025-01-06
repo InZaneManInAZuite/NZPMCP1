@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
-import {Button, Card, Divider, Modal, Stack, Text, Title} from "@mantine/core";
+import {Button, Card, Divider, Group, Modal, Stack, Text, Title} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import {getAllAttendeesForEvent} from "../../../../services/attendee.services.js";
 import UserContext from "../../../../context/UserContext.js";
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import AttendeeCard from "./AttendeeCard.jsx";
 import {getCompetition} from "../../../../services/competition.services.js";
+import {IconX} from "@tabler/icons-react";
 
 const EventInfo = ({event, opened, setOpened}) => {
 
@@ -42,8 +43,13 @@ const EventInfo = ({event, opened, setOpened}) => {
             }
         }
     }, [event, user, jwtToken]);
-    const handleClose = () => {
-        setOpened(false)
+
+    const handleRemoveCompetition = () => {
+
+    }
+
+    const handleEnterCompetition = () => {
+
     }
 
 
@@ -74,7 +80,7 @@ const EventInfo = ({event, opened, setOpened}) => {
 
 
     return(
-        <Modal opened={opened} onClose={handleClose} size='800px' zIndex={275}>
+        <Modal opened={opened} onClose={() => setOpened(false)} size='800px' zIndex={275}>
             <Title order={2}>{event.name}</Title>
             <Divider mt='lg'/>
 
@@ -113,7 +119,25 @@ const EventInfo = ({event, opened, setOpened}) => {
                     <Text mb='sm'>Competition:</Text>
                     <Card>
                         <Text>{competition?.title}</Text>
-                        <Button mt='xl'>Enter</Button>
+                        <Group grow mt='xl' >
+                            <Button
+                                color='yellow'
+                                onClick={handleEnterCompetition}
+                                disabled={Date.parse(event.date) !== Date.now()}
+                            >
+                                Enter
+                            </Button>
+                            {user?.role === 'ADMIN' && (
+                                <Button
+                                    color='red'
+                                    rightSection={<IconX size={16}/>}
+                                    onClick={handleRemoveCompetition}
+                                >
+                                    Remove
+                                </Button>
+                            )}
+                        </Group>
+
                     </Card>
                     </>)}
             </Stack>

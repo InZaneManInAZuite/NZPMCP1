@@ -94,20 +94,22 @@ const QuestionInfo = ({question, opened, setOpened}) => {
 
 
 
-            {(questionsEdit?.map(que => que.id).includes(question.id)) ? (
-                <Button
-                    w='100%'
-                    onClick={handleRemove}
-                >
-                    Remove
-                </Button>
-            ) : (
-                <Button
-                    w='100%'
-                    onClick={handleAdd}
-                >
-                    Add
-                </Button>
+            {(competitionEdit?.events?.length === 0) && (
+                ((questionsEdit?.map(que => que.id).includes(question.id)) ? (
+                    <Button
+                        w='100%'
+                        onClick={handleRemove}
+                    >
+                        Remove
+                    </Button>
+                ) : (
+                    <Button
+                        w='100%'
+                        onClick={handleAdd}
+                    >
+                        Add
+                    </Button>
+                ))
             )}
         </Modal>
     )

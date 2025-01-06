@@ -117,14 +117,16 @@ const QuestionSelectionCard = ({item: question}) => {
 
 
                 <Flex gap='xs' justify='flex-end'>
-                    {(questionsEdit?.map(que => que.id).includes(question.id)) ? (
-                        <UnstyledButton onClick={handleRemove}>
-                            <IconMinus size='20px'/>
-                        </UnstyledButton>
-                    ) : (
-                        <UnstyledButton onClick={handleAdd}>
-                            <IconPlus size='20px'/>
-                        </UnstyledButton>
+                    {(competitionEdit?.events?.length === 0) && (
+                        ((questionsEdit?.map(que => que.id).includes(question.id)) ? (
+                            <UnstyledButton onClick={handleRemove}>
+                                <IconMinus size='20px'/>
+                            </UnstyledButton>
+                        ) : (
+                            <UnstyledButton onClick={handleAdd}>
+                                <IconPlus size='20px'/>
+                            </UnstyledButton>
+                        ))
                     )}
                     <UnstyledButton onClick={handleCopy}>
                         <IconCopy size='20px' />

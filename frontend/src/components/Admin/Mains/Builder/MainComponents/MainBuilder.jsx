@@ -37,8 +37,7 @@ const MainBuilder = () => {
 
                 <Divider w='80%' m='xl'/>
 
-                {competitionEdit && (<>
-
+                {((competitionEdit?.events?.length === 0)) && (<>
                     <Card p='xl' radius='xl' mt='xl'  w={matches ? '600px' : '100%'}>
                         <QuestionForm toAddEdit/>
                     </Card>

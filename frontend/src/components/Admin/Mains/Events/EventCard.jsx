@@ -149,6 +149,15 @@ const EventCard = ({ item: event }) => {
                             {isJoined ? 'Joined' : 'Join'}
                         </Button>
 
+                        {(!!event.competitionId && isJoined) && (
+                            <Button
+                                color='yellow'
+                            >
+                                Enter
+                            </Button>
+                        )}
+
+
                     </Flex>
                 )}
             </Flex>
