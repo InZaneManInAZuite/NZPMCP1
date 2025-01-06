@@ -1,6 +1,7 @@
 package com.nzpmcp2.demo.controllers;
 
 import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
+import com.nzpmcp2.demo.models.BuilderInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +17,10 @@ public class BuilderController {
     }
 
     @PutMapping("/add/competition")
-    public ResponseEntity<Void> placeCompeteToEvent(@RequestParam String competitionId,
-                                                    @RequestParam String eventId) {
+    public ResponseEntity<Void> placeCompeteToEvent(@RequestBody BuilderInput input) {
         try {
-            buildMid.addCompetitionToEvent(competitionId, eventId);
-            buildMid.addEventToCompetition(eventId, competitionId);
+            buildMid.addCompetitionToEvent(input.competitionId(), input.eventId());
+            buildMid.addEventToCompetition(input.eventId(), input.competitionId());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -28,11 +28,10 @@ public class BuilderController {
     }
 
     @PutMapping("/remove/competition")
-    public ResponseEntity<Void> removeCompeteFromEvent(@RequestParam String competitionId,
-                                                       @RequestParam String eventId) {
+    public ResponseEntity<Void> removeCompeteFromEvent(@RequestBody BuilderInput input) {
         try{
-            buildMid.removeCompetitionFromEvent(competitionId, eventId);
-            buildMid.removeEventFromCompetition(eventId, competitionId);
+            buildMid.removeCompetitionFromEvent(input.competitionId(), input.eventId());
+            buildMid.removeEventFromCompetition(input.eventId(), input.competitionId());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -40,10 +39,9 @@ public class BuilderController {
     }
 
     @PutMapping("/add/question")
-    public ResponseEntity<Void> placeQuestionToCompetition(@RequestParam String competitionId,
-                                                           @RequestParam String questionId) {
+    public ResponseEntity<Void> placeQuestionToCompetition(@RequestBody BuilderInput input) {
         try {
-            buildMid.addQuestionToCompetition(questionId, competitionId);
+            buildMid.addQuestionToCompetition(input.questionId(), input.competitionId());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -51,10 +49,9 @@ public class BuilderController {
     }
 
     @PutMapping("/remove/question")
-    public ResponseEntity<Void> removeQuestionFromCompetition(@RequestParam String competitionId,
-                                                              @RequestParam String questionId) {
+    public ResponseEntity<Void> removeQuestionFromCompetition(@RequestBody BuilderInput input) {
         try {
-            buildMid.removeQuestionFromCompetition(questionId, competitionId);
+            buildMid.removeQuestionFromCompetition(input.questionId(), input.competitionId());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

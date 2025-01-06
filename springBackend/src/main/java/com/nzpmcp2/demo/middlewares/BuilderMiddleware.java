@@ -80,6 +80,9 @@ public class BuilderMiddleware {
             Competition competition = competeMid.checkCompetitionExists(competitionId);
             eventMid.checkEventExists(eventId);
 
+            if (competition.getEvents().isEmpty()) {
+                return;
+            }
             List<String> newEvents = competition.getEvents().stream().filter(id -> !id.equals(eventId)).toList();
 
             competition.setEvents(newEvents);
@@ -95,7 +98,7 @@ public class BuilderMiddleware {
             competeMid.checkCompetitionExists(competitionId);
             Event event = eventMid.checkEventExists(eventId);
 
-            if (event.getCompetitionId().equals(competitionId)) {
+            if (!event.getCompetitionId().isEmpty() && event.getCompetitionId().equals(competitionId)) {
                 event.setCompetitionId(null);
                 eventRepo.save(event);
             } else {
@@ -109,7 +112,7 @@ public class BuilderMiddleware {
 
     public void removeCompetitionFromAllEvents(String competeId) {
         try {
-            Competition competition = competeMid.checkCompetitionExists(competeId);
+            competeMid.checkCompetitionExists(competeId);
 
             eventRepo.findAll().forEach(event -> {
                 if (!event.getCompetitionId().isEmpty() && event.getCompetitionId().equals(competeId)) {
@@ -145,11 +148,18 @@ public class BuilderMiddleware {
             questionMid.checkQuestionExists(questionId);
             Competition competition = competeMid.checkCompetitionExists(competitionId);
 
-            List<String> questionIds = Arrays.asList(competition.getQuestionIds());
-            questionIds.add(questionId);
+            List<String> questionIds = new ArrayList<>();
+            if (competition.getQuestionIds() != null && competition.getQuestionIds().length > 0) {
+                questionIds.addAll(Arrays.asList(competition.getQuestionIds()));
+                questionIds.add(questionId);
+                competition.setQuestionIds(questionIds.toArray(new String[0]));
+                competeRepo.save(competition);
+            } else {
+                questionIds.add(questionId);
+                competition.setQuestionIds(questionIds.toArray(new String[0]));
+                competeRepo.save(competition);
+            }
 
-            competition.setQuestionIds(questionIds.toArray(new String[0]));
-            competeRepo.save(competition);
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
@@ -161,11 +171,11 @@ public class BuilderMiddleware {
             questionMid.checkQuestionExists(questionId);
             Competition competition = competeMid.checkCompetitionExists(competitionId);
 
-            if (competition.getQuestionIds().length > 0) {
-                List<String> questionIds = Arrays.asList(competition.getQuestionIds());
-                questionIds = questionIds.stream().filter(id -> !id.equals(questionId)).toList();
+            if (competition.getQuestionIds() != null && competition.getQuestionIds().length > 0) {
+                List<String> questionIds = new ArrayList<>(Arrays.asList(competition.getQuestionIds()));
+                List<String> filteredList = questionIds.stream().filter(id -> !id.equals(questionId)).toList();
 
-                competition.setQuestionIds(questionIds.toArray(new String[0]));
+                competition.setQuestionIds(filteredList.toArray(new String[0]));
                 competeRepo.save(competition);
             }
 
@@ -176,14 +186,16 @@ public class BuilderMiddleware {
 
     public void removeQuestionFromAllCompetitions(String questionId) {
         try {
-            Question question = questionMid.checkQuestionExists(questionId);
+            questionMid.checkQuestionExists(questionId);
 
             try {
                 competeRepo.findAll().forEach(competition -> {
-                    List<String> questionIds = Arrays.asList(competition.getQuestionIds());
-                    if (questionIds.contains(questionId)) {
-                        List<String> newQues = questionIds.stream().filter(id -> !id.equals(questionId)).toList();
-                        competition.setQuestionIds(newQues.toArray(new String[0]));
+                    if (competition.getQuestionIds().length > 0) {
+                        List<String> questionIds = new ArrayList<>(Arrays.asList(competition.getQuestionIds()));
+                        if (questionIds.contains(questionId)) {
+                            List<String> newQues = questionIds.stream().filter(id -> !id.equals(questionId)).toList();
+                            competition.setQuestionIds(newQues.toArray(new String[0]));
+                        }
                     }
                 });
             } catch (IllegalStateException e) {

@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
 import {createQuestion, removeQuestion} from "../../../../../services/question.services.js";
+import {addQuestionBuilder} from "../../../../../services/builder.services.js";
 import QuestionInfo from "./QuestionInfo.jsx";
 import {updateCompetition} from "../../../../../services/competition.services.js";
 import { v4 as uuidv4 } from 'uuid';
@@ -14,7 +15,8 @@ import { v4 as uuidv4 } from 'uuid';
 const QuestionSelectionCard = ({item: question}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { questions, setQuestions, questionsEdit, setQuestionsEdit, competitionEdit} = useContext(CompetitionContext);
+    const { questions, setQuestions, questionsEdit, setQuestionsEdit,competitionEdit,
+         addQuestionToCompetition, removeQuestionFromCompetition} = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened ] = useState(false);
 
@@ -38,29 +40,11 @@ const QuestionSelectionCard = ({item: question}) => {
     }
 
     const handleAdd = () => {
-        const newQues = questionsEdit?.concat(question) || [question];
-        const newCompete = {
-            ...competitionEdit,
-            questionIds: newQues.map(que => que.id),
-        };
-        updateCompetition(newCompete, jwtToken)
-            .then(() => {
-                setQuestionsEdit(questionsEdit.concat(question));
-            })
-            .catch(e => console.log(e));
+        addQuestionToCompetition(question, competitionEdit);
     }
 
     const handleRemove = () => {
-        const newQues = questionsEdit.filter(que => que.id !== question.id);
-        const newCompete = {
-            ...competitionEdit,
-            questionIds: newQues.map(que => que.id),
-        };
-        updateCompetition(newCompete, jwtToken)
-            .then(() => {
-                setQuestionsEdit(newQues)
-            })
-            .catch(e => console.log(e))
+        removeQuestionFromCompetition(question, competitionEdit);
     }
 
     const handleCopy = () => {

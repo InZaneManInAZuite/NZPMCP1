@@ -44,3 +44,4 @@ const removeQuestionBuilder = (competitionId, questionId, jwtToken) => {
     return request.then(response => response.data);
 }
 
+export { addQuestionBuilder, addCompetitionBuilder, removeCompetitionBuilder, removeQuestionBuilder };
