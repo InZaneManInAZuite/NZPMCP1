@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import ListFrame from "../../../../Misc/ListFrame/ListFrame.jsx";
 import QuestionSelectionCard from "../AsideComponents/QuestionSelectionCard.jsx";
 import QuestionForm from "../../Questions/QuestionForm.jsx";
-import {useMediaQuery} from "@mantine/hooks";
+import {useMediaQuery, useViewportSize} from "@mantine/hooks";
 
 
 const MainBuilder = ({w, injectW: data}) => {
@@ -14,6 +14,7 @@ const MainBuilder = ({w, injectW: data}) => {
     const { competitionEdit, questionsEdit, questions } = useContext(CompetitionContext);
     const sideMatches = useMediaQuery(`(min-width: ${data?.asideW + data?.mainW}px)`);
     const matches = useMediaQuery('(min-width: 1450px)');
+    const {height: appH} = useViewportSize()
 
 
     return (
@@ -29,7 +30,7 @@ const MainBuilder = ({w, injectW: data}) => {
                     />
                 )}
 
-                <Divider w='80%' m='lg'/>
+                <Divider w='80%' m='xl'/>
 
                 {competitionEdit && (<>
 
@@ -42,9 +43,9 @@ const MainBuilder = ({w, injectW: data}) => {
 
 
                 {!sideMatches && (<>
-                    <Divider m='lg'/>
+                    <Divider w='80%' m='xl'/>
                     <ListFrame
-                        height='600px'
+                        height={appH - data?.footH || appH}
                         width='100%'
                         items={questions || []}
                         Component={QuestionSelectionCard}

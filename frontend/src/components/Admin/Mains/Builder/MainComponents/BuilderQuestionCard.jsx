@@ -104,7 +104,7 @@ const BuilderQuestionCard = ({question,  index: qIndex}) => {
                 <Text>Options:</Text>
                 <Card>
                     {question.options?.map((option, opIndex) =>
-                        <Group key={`QIO_${question.id}_${opIndex}`}>
+                        <Flex key={`QIO_${question.id}_${opIndex}`} gap='sm' >
                             <Text fw={isCorrect(opIndex) ? 700 : 300}>
                                 {String.fromCharCode(97 + opIndex)}
                             </Text>
@@ -118,7 +118,7 @@ const BuilderQuestionCard = ({question,  index: qIndex}) => {
                                     </Text>
                                 )}
                             </Stack>
-                        </Group>
+                        </Flex>
                     )}
                 </Card>
                 <Divider mb='sm' variant='dotted' />

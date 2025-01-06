@@ -34,7 +34,7 @@ const NavBarBuilder = ({h, w}) => {
         competitions, setCompetitions
     }
 
-    return (
+    return (<>
         <ScrollArea
             pl='xs' pr='xs' pt='xs'
             scrollbarSize={4}
@@ -56,7 +56,7 @@ const NavBarBuilder = ({h, w}) => {
                 />
             </Stack>
         </ScrollArea>
-    )
+    </>)
 }
 
 NavBarBuilder.propTypes = {

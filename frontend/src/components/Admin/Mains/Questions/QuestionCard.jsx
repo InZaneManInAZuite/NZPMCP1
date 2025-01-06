@@ -1,4 +1,4 @@
-import {Card, Title, UnstyledButton, Modal, Group, Code, Flex, Text} from '@mantine/core';
+import {Card, Title, UnstyledButton, Modal, Group, Code, Flex, Text, Stack} from '@mantine/core';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import {IconEdit, IconTrash} from "@tabler/icons-react";
@@ -12,6 +12,18 @@ const QuestionCard = ({ item: question,  }) => {
     const { jwtToken } = useContext(UserContext);
     const { questions, setQuestions } = useContext(CompetitionContext);
     const [ updateOpened, setUpdateOpened] = useState(false);
+
+
+
+
+
+    const splitText = (textToSplit) => {
+        return textToSplit?.split('\n');
+    }
+
+    const isCorrect = (index) => {
+        return question.correctChoiceIndex === index;
+    }
 
 
 
@@ -43,26 +55,32 @@ const QuestionCard = ({ item: question,  }) => {
             <Card.Section p='lg'>
                 <Flex direction={{base: 'column', sm: 'row'}} justify='flex-end'>
                     <Card p='sm' w='100%'>
-                        <Group>
-                            <Title align='left' order={4}>{question.title}</Title>
-                            {(question.difficulty) &&
-                                <Code color={(question.difficulty) === 'Easy' ? 'green' :
-                                    ((question.difficulty) === 'Medium' ? 'yellow' : 'red')}
-                                >
-                                    {question.difficulty}
-                                </Code>
-                            }
-                            {question.topics && (
-                                question.topics.map((topic, index) =>
-                                    <Code
-                                        key={`TOPIC_${question.id}_${index}`}
-                                        color='blue'
+                        <Stack>
+                            {splitText(question.title)?.map((portion, index) => (
+                                <Title ta='left' order={4} mb='sm' key={`MQCP_${question.id}_${index}`} >
+                                    {portion}
+                                </Title>
+                            ))}
+                            <Group>
+                                {(question.difficulty) &&
+                                    <Code color={(question.difficulty) === 'Easy' ? 'green' :
+                                        ((question.difficulty) === 'Medium' ? 'yellow' : 'red')}
                                     >
-                                        {topic}
+                                        {question.difficulty}
                                     </Code>
-                                ))
-                            }
-                        </Group>
+                                }
+                                {question.topics && (
+                                    question.topics.map((topic, index) =>
+                                        <Code
+                                            key={`TOPIC_${question.id}_${index}`}
+                                            color='blue'
+                                        >
+                                            {topic}
+                                        </Code>
+                                    ))
+                                }
+                            </Group>
+                        </Stack>
                     </Card>
 
 
@@ -82,19 +100,23 @@ const QuestionCard = ({ item: question,  }) => {
 
 
             <Card.Section p='lg'>
-                {question.options.map((option, index) => {
-                    let fw = 300;
-                    if (index === question.correctChoiceIndex) {
-                        fw = 700;
-                    }
-                    return (
-                        <Group key={`QCO_${question.id}_${index}`}>
-                            <Text  fw={fw}>
-                                {String.fromCharCode(97 + index)} - {option}
-                            </Text>
-                        </Group>
-                    )
-                })}
+                {question.options.map((option, opIndex) =>
+                    <Flex key={`AQCPO_${question.id}_${opIndex}`} gap='sm' >
+                        <Text fw={isCorrect(opIndex) ? 700 : 300}>
+                            {String.fromCharCode(97 + opIndex)}
+                        </Text>
+                        <Stack h='fit-content' gap={0}>
+                            {splitText(option)?.map((portion, index) =>
+                                <Text
+                                    fw={isCorrect(opIndex) ? 700 : 300}
+                                    key={`AQCPOP_${question.id}_${opIndex}_${index}`}
+                                >
+                                    {portion}
+                                </Text>
+                            )}
+                        </Stack>
+                    </Flex>
+                )}
             </Card.Section>
         </Card>
     )

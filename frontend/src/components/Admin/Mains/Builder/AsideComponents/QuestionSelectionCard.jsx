@@ -91,7 +91,7 @@ const QuestionSelectionCard = ({item: question}) => {
                 <Card p='xs' w='100%'>
                     <Group>
                         <Anchor
-                            c={questionsEdit?.includes(question.id) ? 'blue' : 'white'}
+                            c={questionsEdit?.map(que => que.id).includes(question.id) ? 'green' : 'white'}
                             onClick={() => setInfoOpened(true)}
                         >
                             {splitText(question.title).map((portion, index) =>

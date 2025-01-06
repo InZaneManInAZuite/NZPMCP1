@@ -34,7 +34,7 @@ const ShellBuilder = () => {
     const navStackOpened = (appH - footH - headH);
 
     const injectW = {
-        navW, asideW, mainW, appW,
+        navW, asideW, mainW, appW, footH
     }
 
     useEffect (() => {
