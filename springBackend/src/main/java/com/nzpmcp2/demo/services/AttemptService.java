@@ -8,6 +8,7 @@ import com.nzpmcp2.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +36,10 @@ public class AttemptService {
     public List<Attempt> getAttemptsByStudent(String userId) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);
+            List<Attempt> attempts = attemptRepo.findAll();
+
             if (userOptional.isPresent()) {
                 String email = userOptional.get().getEmail();
-
-                List<Attempt> attempts = attemptRepo.findAll();
 
                 return attempts.stream()
                         .filter(attempt -> attempt.getStudentEmail().equals(email))

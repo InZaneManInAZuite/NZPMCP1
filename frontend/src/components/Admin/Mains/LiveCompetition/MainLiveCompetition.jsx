@@ -1,15 +1,13 @@
-import {Button, Flex, LoadingOverlay, Paper, Stack, Title} from "@mantine/core";
+import {Button, Flex, LoadingOverlay, Stack, Title} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
-import UserContext from "../../../../context/UserContext.js";
 import {getEvent} from "../../../../services/event.services.js";
 import AttemptContext from "../../../../context/AttemptContext.js";
-import BuilderQuestionCard from "../Builder/MainComponents/BuilderQuestionCard.jsx";
 import {useMediaQuery} from "@mantine/hooks";
 import {useNavigate} from "react-router-dom";
+import LiveQuestionCard from "./LiveQuestionCard.jsx";
 
 const MainLiveCompetition = () => {
 
-    const { user } = useContext(UserContext);
     const { initiateLive, liveQuestions, liveEvent, liveCompetition } = useContext(AttemptContext);
     const matches = useMediaQuery(`(min-width: 650px)`);
     const navigate = useNavigate();
@@ -43,9 +41,10 @@ const MainLiveCompetition = () => {
 
                 <Stack w={(matches) ? (650) : ('100%')}>
                     {liveQuestions?.map((question, qIndex) =>
-                        <BuilderQuestionCard
+                        <LiveQuestionCard
                             key={`MLC_${liveEvent.id}_QC_${question.id}_${qIndex}`}
                             question={question}
+                            index={qIndex}
                         />
                     )}
                 </Stack>

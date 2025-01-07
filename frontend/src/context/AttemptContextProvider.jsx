@@ -7,7 +7,6 @@ import {
     getQuestionsForCompetition,
     updateAttempt
 } from "../services/attempt.services.js";
-import {getEvent} from "../services/event.services.js";
 import AttemptContext from "./AttemptContext.js";
 import {v4 as uuidv4} from 'uuid';
 
@@ -35,6 +34,29 @@ const AttemptContextProvider = ({ children }) => {
                     .then(questions => {
                         setLiveQuestions(questions);
 
+                        getAttemptsByUser(user.id, jwtToken)
+                            .then(attempts => {
+                                const attempt = attempts.find(a => a.eventId === liveEvent.id);
+                                if (attempt) {
+                                    setLiveAttempt(attempt);
+                                    setLiveAnswers(attempt.attempts)
+                                } else {
+
+                                    const newAttempt = {
+                                        id: uuidv4(),
+                                        studentEmail: user.email,
+                                        eventId: liveEvent.id,
+                                        competitionId: competition.id,
+                                    }
+                                    createAttempt(newAttempt, jwtToken)
+                                        .then(() => {
+                                            setLiveAttempt(newAttempt);
+                                            setLiveAnswers(new Map());
+                                        })
+                                        .catch(() => navigate('/'))
+                                }
+                            })
+                            .catch(() => navigate)
                     })
                     .catch(() => navigate('/'));
             })
@@ -55,18 +77,27 @@ const AttemptContextProvider = ({ children }) => {
     }
 
     const editAnswer = (questionId, answerIndex) => {
-        const answersCopy = new Map(liveAttempt?.attempts);
-        answersCopy.set(questionId, answerIndex);
+
+        let answersCopy = new Map();
+        if (liveAnswers && JSON.stringify(liveAnswers) !== '{}') {
+            answersCopy = new Map(liveAnswers);
+        }
+        answersCopy.set(questionId, parseInt(answerIndex));
         const newAttempt = {
             ...liveAttempt,
-            attempts: answersCopy,
+            attempts: mapToObjArray(answersCopy),
         };
+        console.log(JSON.stringify(newAttempt));
         updateAttempt(newAttempt, jwtToken)
             .then(() => {
                 setLiveAttempt(newAttempt);
                 setLiveAnswers(answersCopy);
-
             })
+    }
+
+    const mapToObjArray = (map) => {
+
+        return Array.from(map, ([key, value]) => ({key, value}))
     }
 
 

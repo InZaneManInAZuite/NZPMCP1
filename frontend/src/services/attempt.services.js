@@ -63,9 +63,8 @@ const removeAttempt = (attemptId, jwtToken) => {
 }
 
 const updateAttempt = (attemptInput, jwtToken) => {
-    const request = axios.put(ATTEMPT_URL, JSON.stringify(attemptInput),{
+    const request = axios.put(ATTEMPT_URL, attemptInput,{
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });
