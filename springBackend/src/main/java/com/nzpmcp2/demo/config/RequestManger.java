@@ -45,8 +45,10 @@ public class RequestManger {
 
 
                                     /////////// Competitions APIs ///////////
-                                    .requestMatchers("/api/competitions").hasRole(ADMIN)
-                                    .requestMatchers("/api/competitions/*").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.GET, "/api/competitions/*").authenticated()
+                                    .requestMatchers(HttpMethod.POST,"/api/competitions").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.DELETE,"/api/competitions/*").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.PUT,"/api/competitions").hasRole(ADMIN)
 
 
                                     /////////// Questions APIs ///////////

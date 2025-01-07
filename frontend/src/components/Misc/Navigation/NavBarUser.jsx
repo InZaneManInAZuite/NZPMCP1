@@ -2,14 +2,12 @@ import LinkedNavBar from "./LinkedNavBar.jsx";
 import {
     IconCalendarEvent,
     IconSettings,
-    IconTournament,
     IconTriangle,
 } from "@tabler/icons-react";
 import PropTypes from "prop-types";
 
 const navUser = [
     {link: `/events`, label: `Events`, icon: IconCalendarEvent},
-    {link: `/competitions`, label: `Competitions`, icon: IconTournament},
     {link: `/attempts`, label: `Attempts`, icon: IconTriangle},
     {link: `/settings`, label: `Settings`, icon: IconSettings},
 ]

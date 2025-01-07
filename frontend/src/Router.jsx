@@ -7,6 +7,8 @@ import AdminUsersPage from "./pages/AdminUsers.page.jsx";
 import AdminCompetitionsPage from "./pages/AdminCompetitions.page.jsx";
 import AdminQuestionsPage from "./pages/AdminQuestions.page.jsx";
 import BuilderPage from "./pages/Builder.page.jsx";
+import UserEventsPage from "./pages/UserEvents.page.jsx";
+import LiveCompetitionPage from "./pages/LiveCompetition.page.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,16 +43,16 @@ const router = createBrowserRouter([
     element: <BuilderPage />
   }, {
     path: '/events',
-    element: <AdminEventsPage />
-  }, {
-    path: '/competitions',
-    element: <AdminEventsPage />
+    element: <UserEventsPage />
   }, {
     path: '/attempts',
-    element: <AdminEventsPage />
+    element: <UserEventsPage />
   }, {
     path: '/settings',
-    element: <AdminEventsPage />
+    element: <UserEventsPage />
+  }, {
+    path: '/competition/live/*',
+    element: <LiveCompetitionPage />
   }, {
     path: '/',
     element: <LandingPage />,

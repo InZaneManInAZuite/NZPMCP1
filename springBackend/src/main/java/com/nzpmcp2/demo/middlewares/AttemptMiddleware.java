@@ -33,9 +33,9 @@ public class AttemptMiddleware {
     public void checkAttemptFields(Attempt attempt) {
         String studentEmail = attempt.getStudentEmail();
         String competitionId = attempt.getCompetitionId();
-        Map<String, Integer> attempts = attempt.getAttempts();
+        String eventId = attempt.getEventId();
 
-        if (studentEmail == null || competitionId == null || attempts == null) {
+        if (studentEmail == null || competitionId == null || eventId == null) {
             throw new IllegalStateException("Attempt missing fields");
         }
     }

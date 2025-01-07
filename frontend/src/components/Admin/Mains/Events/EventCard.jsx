@@ -7,13 +7,18 @@ import {IconEdit, IconTrash, IconX} from "@tabler/icons-react";
 import {removeEvent} from "../../../../services/event.services.js";
 import EventForm from "./EventForm.jsx";
 import EventInfo from "./EventInfo.jsx";
+import {useNavigate} from "react-router-dom";
+import AttemptContext from "../../../../context/AttemptContext.js";
 
 const EventCard = ({ item: event }) => {
 
     const { user, setUser, jwtToken, setEvents, events } = useContext(UserContext);
+    const { setLiveEvent } = useContext(AttemptContext);
     const [isJoined, setIsJoined] = useState(false);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened] = useState(false)
+
+    const navigate = useNavigate();
 
 
 
@@ -70,6 +75,11 @@ const EventCard = ({ item: event }) => {
                 })
                 .catch((err) => console.log(err));
         }
+    }
+
+    const handleEnter = () => {
+        setLiveEvent(event);
+        navigate(`/competition/live/${event.id}`)
     }
 
 
@@ -151,6 +161,7 @@ const EventCard = ({ item: event }) => {
 
                         {(!!event.competitionId && isJoined) && (
                             <Button
+                                onClick={handleEnter}
                                 color='yellow'
                             >
                                 Enter

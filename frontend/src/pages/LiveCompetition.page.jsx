@@ -3,9 +3,9 @@ import UserContext from '../context/UserContext';
 import {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import UserEventsPage from "./UserEvents.page.jsx";
+import MainLiveCompetition from "../components/Admin/Mains/LiveCompetition/MainLiveCompetition.jsx";
 
-const LandingPage = () => {
+const LiveCompetitionPage = () => {
 
     const navigate = useNavigate();
 
@@ -13,18 +13,16 @@ const LandingPage = () => {
     const [ authorized, setAuthorized ] = useState(false)
 
     useEffect(() => {
-        if (user?.role === 'ADMIN') {
-            navigate('/admin');
-        } else if (user) {
+        if (user) {
             setAuthorized(true);
         }
     }, [navigate, user]);
 
     return (authorized) ? (
-        <UserEventsPage />
+        <MainLiveCompetition/>
     ) : (
         <LoggedOutLanding />
     );
 }
 
-export default LandingPage;
+export default LiveCompetitionPage;

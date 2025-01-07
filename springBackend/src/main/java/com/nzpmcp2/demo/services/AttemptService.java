@@ -2,23 +2,28 @@ package com.nzpmcp2.demo.services;
 
 import com.nzpmcp2.demo.middlewares.AttemptMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
+import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
+import com.nzpmcp2.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AttemptService {
 
     private final AttemptRepository attemptRepo;
     private final AttemptMiddleware attemptMid;
+    private final UserRepository userRepository;
 
     @Autowired
     public AttemptService(AttemptRepository attemptRepo,
-                          AttemptMiddleware attemptMid) {
+                          AttemptMiddleware attemptMid, UserRepository userRepository) {
         this.attemptRepo = attemptRepo;
         this.attemptMid = attemptMid;
+        this.userRepository = userRepository;
     }
 
     // Get all attempts
@@ -26,12 +31,22 @@ public class AttemptService {
         return attemptRepo.findAll();
     }
 
-    // Get all attempts by student email
-    public List<Attempt> getAttemptsByStudent(String studentEmail) {
+    // Get all attempts by student id
+    public List<Attempt> getAttemptsByStudent(String userId) {
         try {
-            return attemptRepo.findAll().stream()
-                    .filter(attempt -> attempt.getStudentEmail().equals(studentEmail))
-                    .toList();
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                String email = userOptional.get().getEmail();
+
+                List<Attempt> attempts = attemptRepo.findAll();
+
+                return attempts.stream()
+                        .filter(attempt -> attempt.getStudentEmail().equals(email))
+                        .toList();
+            } else {
+                throw new IllegalStateException("User not found");
+            }
+
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }

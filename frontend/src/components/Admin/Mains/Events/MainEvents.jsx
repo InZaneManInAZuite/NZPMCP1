@@ -7,9 +7,9 @@ import { useContext, useEffect } from "react";
 import UserContext from "../../../../context/UserContext.js";
 
 
-const AdminMainEvents = () => {
+const MainEvents = () => {
 
-    const { jwtToken, events, setEvents } = useContext(UserContext)
+    const { jwtToken, events, setEvents, user } = useContext(UserContext)
 
     useEffect(() => {
         getAllEvents(jwtToken)
@@ -38,14 +38,15 @@ const AdminMainEvents = () => {
                 checkBoxLabel='Include Previous Events'
             />
 
-            <Center>
-                <Card p='xl' radius='xl' mt='xl'  w='700px'>
-                    <EventForm/>
-                </Card>
-            </Center>
-
+            {(user?.role === 'ADMIN') && (
+                <Center>
+                    <Card p='xl' radius='xl' mt='xl'  w='700px'>
+                        <EventForm/>
+                    </Card>
+                </Center>
+            )}
         </Paper>
     )
 }
 
-export default AdminMainEvents
+export default MainEvents

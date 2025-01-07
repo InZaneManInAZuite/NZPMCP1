@@ -7,13 +7,9 @@ const getAllAttempts = () => {
     return request.then(response => response.data)
 }
 
-const getAttemptsByStudentEmail = (email, jwtToken) => {
-    const attemptInput = {
-        studentEmail: email
-    }
-    const request = axios.get(`${ATTEMPT_URL}/student`, JSON.stringify(attemptInput), {
+const getAttemptsByUser = (userId, jwtToken) => {
+    const request = axios.get(`${ATTEMPT_URL}/student/${userId}`, {
         headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     })
@@ -34,10 +30,7 @@ const getAttemptsByCompetition = (competitionId, jwtToken) => {
 }
 
 const getAttempt = (attemptId, jwtToken) => {
-    const attemptInput = {
-        id: attemptId
-    }
-    const request = axios.get(`${ATTEMPT_URL}/id`, JSON.stringify(attemptInput), {
+    const request = axios.get(`${ATTEMPT_URL}/id/${attemptId}`, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
@@ -79,14 +72,24 @@ const updateAttempt = (attemptInput, jwtToken) => {
     return request.then(response => response.data)
 }
 
+const getQuestionsForCompetition = (competitionId, jwtToken) => {
+    const request = axios.get(`${ATTEMPT_URL}/questions/${competitionId}`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
+    return request.then(response => response.data)
+}
+
 
 
 export {
     getAllAttempts,
     getAttemptsByCompetition,
-    getAttemptsByStudentEmail,
+    getAttemptsByUser,
     getAttempt,
     removeAttempt,
     updateAttempt,
     createAttempt,
+    getQuestionsForCompetition,
 }

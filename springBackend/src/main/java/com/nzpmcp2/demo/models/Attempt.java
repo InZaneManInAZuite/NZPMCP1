@@ -13,12 +13,14 @@ public class Attempt {
     private String id;
     private String studentEmail;
     private String competitionId;
+    private String eventId;
     private Map<String, Integer> attempts;
 
     ///  Constructor ///
-    public Attempt(String id, String email, String competitionId, Map<String, Integer> attempts) {
+    public Attempt(String id, String email, String competitionId, String eventId, Map<String, Integer> attempts) {
         this.id = id;
         this.studentEmail = email;
+        this.eventId = eventId;
         this.competitionId = competitionId;
         this.attempts = attempts;
     }
@@ -34,6 +36,10 @@ public class Attempt {
 
     public String getCompetitionId() {
         return competitionId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public Map<String, Integer> getAttempts() {
@@ -52,18 +58,23 @@ public class Attempt {
         this.competitionId = competitionId;
     }
 
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     public void setAttempts(Map<String, Integer> attempts) {
         this.attempts = attempts;
     }
 
     /// Methods ///
     public Attempt copy() {
-        return new Attempt(id, studentEmail, competitionId, attempts);
+        return new Attempt(id, studentEmail, competitionId, eventId, attempts);
     }
 
     public void update(Attempt attempt) {
         this.studentEmail = attempt.getStudentEmail() == null ? studentEmail : attempt.getStudentEmail();
         this.competitionId = attempt.getCompetitionId() == null ? competitionId : attempt.getCompetitionId();
+        this.eventId = attempt.getEventId() == null ? eventId : attempt.getEventId();
         this.attempts = attempt.getAttempts() == null ? attempts : attempt.getAttempts();
     }
 
@@ -73,6 +84,7 @@ public class Attempt {
                 "id='" + id + '\'' +
                 ", studentEmail='" + studentEmail + '\'' +
                 ", competitionId='" + competitionId + '\'' +
+                ", eventId='" + eventId + '\'' +
                 ", attempts=" + attempts +
                 '}';
     }
