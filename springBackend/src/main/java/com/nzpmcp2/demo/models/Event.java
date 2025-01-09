@@ -2,7 +2,6 @@ package com.nzpmcp2.demo.models;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +18,10 @@ public class Event {
     private String description;
     private List<String> attendees;
     private String competitionId;
+    private Date startTime;
+    private Date endTime;
+    private String location;
+
 
 
     // Constructors
@@ -27,13 +30,19 @@ public class Event {
                  Date date,
                  String description,
                  List<String> attendees,
-                 String competitionId) {
+                 String competitionId,
+                 Date startTime,
+                 Date endTime,
+                 String location) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.description = description;
         this.attendees = attendees;
         this.competitionId = competitionId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
     }
 
 
@@ -62,6 +71,18 @@ public class Event {
         return competitionId;
     }
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -82,6 +103,18 @@ public class Event {
         this.competitionId = competitionId;
     }
 
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
 
 
     // Methods
@@ -89,7 +122,7 @@ public class Event {
     // Copy the event
     public Event copy() {
         List<String> attendeesCopy = List.copyOf(attendees);
-        return new Event(id, name, date, description, attendeesCopy, competitionId);
+        return new Event(id, name, date, description, attendeesCopy, competitionId, startTime, endTime, location);
     }
 
     // Add an attendee to the event
@@ -124,7 +157,10 @@ public class Event {
                 ", date='" + date + '\'' +
                 ", description='" + description + '\'' +
                 ", attendees=" + attendees + '\'' +
-                ", competitionId='" + competitionId +
+                ", competitionId='" + competitionId + '\'' +
+                ", startTime=" + startTime + '\'' +
+                ", endTime=" + endTime + '\'' +
+                ", location='" + location +
                 '}';
     }
 }

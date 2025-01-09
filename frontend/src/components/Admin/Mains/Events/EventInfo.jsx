@@ -102,9 +102,9 @@ const EventInfo = ({event, opened, setOpened}) => {
                 <Text>Setting:</Text>
                 <Card>
                     <Text fw={700}>Date: {new Date(event.date).toDateString()}</Text>
-                    {event.start && (
+                    {event.startTime && (
                         <Text size='sm'>
-                            {event.start}{event.end && (` - ${event.end}`)}
+                            {event.startTime}{event.endTime && (` - ${event.endTime}`)}
                         </Text>
                     )}
                     {event.location && (<>

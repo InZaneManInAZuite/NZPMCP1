@@ -127,8 +127,8 @@ const EventForm = ({event, close}) => {
             date: converted,
             description: form.values.description,
             location: form.values.location,
-            start: form.values.start?.toString(),
-            end: form.values.end?.toString(),
+            startTime: form.values.start?.toString(),
+            endTime: form.values.end?.toString(),
         }
     }
 
@@ -139,8 +139,8 @@ const EventForm = ({event, close}) => {
             date: event?.date,
             description: event?.description,
             location: event?.location,
-            start: event?.start,
-            end: event?.end,
+            startTime: event?.start,
+            endTime: event?.end,
         }
     }
 

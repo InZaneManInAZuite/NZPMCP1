@@ -1,6 +1,7 @@
 package com.nzpmcp2.demo.services;
 
 import com.nzpmcp2.demo.middlewares.AttemptMiddleware;
+import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
@@ -15,14 +16,16 @@ public class AttemptService {
     private final AttemptRepository attemptRepo;
     private final AttemptMiddleware attemptMid;
     private final UserMiddleware userMiddleware;
+    private final EventMiddleware eventMiddleware;
 
     @Autowired
     public AttemptService(AttemptRepository attemptRepo,
                           AttemptMiddleware attemptMid,
-                          UserMiddleware userMiddleware) {
+                          UserMiddleware userMiddleware, EventMiddleware eventMiddleware) {
         this.attemptRepo = attemptRepo;
         this.attemptMid = attemptMid;
         this.userMiddleware = userMiddleware;
+        this.eventMiddleware = eventMiddleware;
     }
 
     // Get all attempts
@@ -45,6 +48,17 @@ public class AttemptService {
         try {
             attemptMid.checkAttemptExists(competitionId);
             return attemptRepo.findByCompetitionId(competitionId);
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException("Attempt not found");
+        }
+    }
+
+    public List<Attempt> getAttemptsByUserAndEvent(String userId, String eventId) {
+        try {
+            userMiddleware.checkUserExists(userId);
+            eventMiddleware.checkEventExists(eventId);
+
+            return attemptRepo.findByEventIdAndUserId(eventId, userId);
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }

@@ -9,6 +9,7 @@ import EventForm from "./EventForm.jsx";
 import EventInfo from "./EventInfo.jsx";
 import {useNavigate} from "react-router-dom";
 import AttemptContext from "../../../../context/AttemptContext.js";
+import {getAttemptsByUserAndEvent} from "../../../../services/attempt.services.js";
 
 const EventCard = ({ item: event }) => {
 
@@ -16,7 +17,8 @@ const EventCard = ({ item: event }) => {
     const { setLiveEvent } = useContext(AttemptContext);
     const [isJoined, setIsJoined] = useState(false);
     const [ updateOpened, setUpdateOpened] = useState(false);
-    const [ infoOpened, setInfoOpened] = useState(false)
+    const [ infoOpened, setInfoOpened] = useState(false);
+    const [ attempts, setAttempts ] = useState(undefined);
 
     const navigate = useNavigate();
 
@@ -82,6 +84,23 @@ const EventCard = ({ item: event }) => {
         navigate(`/competition/live/${event.id}`)
     }
 
+    const isLive = () => {
+        const isToday = (((new Date(event.date)).toDateString()) === ((new Date(Date.now())).toDateString()))
+
+        if (!isToday) {
+            return false
+        } else if (event.startTime) {
+            if (event.endTime) {
+                return ((Date.parse(event.startTime) > Date.now()) && (Date.parse(event.endTime) > Date.now()))
+            } else {
+                return (Date.parse(event.startTime) > Date.now())
+            }
+        } else {
+            return true
+        }
+
+    }
+
 
 
 
@@ -89,6 +108,14 @@ const EventCard = ({ item: event }) => {
     useEffect(() => {
         if (user?.events) {
             setIsJoined(user.events?.includes(event.id) || false);
+
+            if (event.competitionId && user.events?.includes(event.id)) {
+                getAttemptsByUserAndEvent(user.id, event.id, jwtToken)
+                    .then((relevantAttempts) => {
+                        setAttempts(relevantAttempts);
+                    })
+                    .catch();
+            }
         }
     }, [event])
 
@@ -159,12 +186,12 @@ const EventCard = ({ item: event }) => {
                             {isJoined ? 'Joined' : 'Join'}
                         </Button>
 
-                        {(!!event.competitionId && isJoined) && (
+                        {(!!event.competitionId && isJoined && isLive()) && (
                             <Button
                                 onClick={handleEnter}
                                 color='yellow'
                             >
-                                Enter
+                                {attempts?.map(a => a.endTime).includes(undefined) ? 'Continue' : 'Enter'}
                             </Button>
                         )}
 

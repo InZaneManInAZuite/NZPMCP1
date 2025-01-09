@@ -6,13 +6,10 @@ import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.QuestionRepository;
 import com.nzpmcp2.demo.services.AttemptService;
-import com.nzpmcp2.demo.services.CompetitionService;
-import com.nzpmcp2.demo.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class AttemptController {
         }
     }
 
-    @GetMapping("/student/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<Attempt>> getStudentAttempts(@PathVariable String userId) {
         try {
             List<Attempt> attempts = attemptService.getAttemptsByStudent(userId);
@@ -73,6 +70,21 @@ public class AttemptController {
         try {
             List<Attempt> attempts = attemptService.getAttemptsByCompetition(competitionId);
             return ResponseEntity.ok(attempts);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/user-event/{userId}/{eventId}")
+    public ResponseEntity<List<Attempt>> getUserAttempts(@PathVariable String userId, @PathVariable String eventId) {
+        try {
+            List<Attempt> attempts = attemptService.getAttemptsByUserAndEvent(userId, eventId);
+            if (attempts != null && !attempts.isEmpty()) {
+                return ResponseEntity.ok(attempts);
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -111,7 +123,7 @@ public class AttemptController {
     @PutMapping
     public ResponseEntity<Void> updateAttemptById(@RequestBody Attempt attemptUpdate) {
         try {
-            Attempt attempt = attemptService.updateAttempt(attemptUpdate.getId(), attemptUpdate);
+            attemptService.updateAttempt(attemptUpdate.getId(), attemptUpdate);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

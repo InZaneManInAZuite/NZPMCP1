@@ -8,7 +8,7 @@ const getAllAttempts = () => {
 }
 
 const getAttemptsByUser = (userId, jwtToken) => {
-    const request = axios.get(`${ATTEMPT_URL}/student/${userId}`, {
+    const request = axios.get(`${ATTEMPT_URL}/user/${userId}`, {
         headers: {
             Authorization: `Bearer ${jwtToken}`
         }
@@ -23,6 +23,15 @@ const getAttemptsByCompetition = (competitionId, jwtToken) => {
     const request = axios.get(`${ATTEMPT_URL}/competition`, JSON.stringify(attemptInput), {
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`
+        }
+    })
+    return request.then(response => response.data)
+}
+
+const getAttemptsByUserAndEvent = (userId, eventId, jwtToken) => {
+    const request = axios.get(`${ATTEMPT_URL}/user-event/${userId}/${eventId}`, {
+        headers: {
             Authorization: `Bearer ${jwtToken}`
         }
     })
@@ -86,6 +95,7 @@ export {
     getAllAttempts,
     getAttemptsByCompetition,
     getAttemptsByUser,
+    getAttemptsByUserAndEvent,
     getAttempt,
     removeAttempt,
     updateAttempt,

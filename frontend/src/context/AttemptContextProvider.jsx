@@ -1,14 +1,15 @@
-import {useContext, useState} from "react";
+import {useContext, useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import UserContext from "./UserContext.js";
 import {getCompetition} from "../services/competition.services.js";
 import {
-    createAttempt, getAttemptsByUser,
+    createAttempt,
     getQuestionsForCompetition,
     updateAttempt
 } from "../services/attempt.services.js";
 import AttemptContext from "./AttemptContext.js";
 import {v4 as uuidv4} from 'uuid';
+import {getAllEventsOfUser} from "../services/attendee.services.js";
 
 const AttemptContextProvider = ({ children }) => {
 
@@ -24,6 +25,17 @@ const AttemptContextProvider = ({ children }) => {
     const [attempts, setAttempts] = useState([])
 
 
+    useEffect(() => {
+        if (user) {
+            getAllEventsOfUser(user.id, jwtToken)
+                .then((allUserAttempts) => {
+                    setAttempts(allUserAttempts)
+                })
+                .catch(e => console.log(e));
+        }
+    }, [user, jwtToken]);
+
+
 
     const initiateLive = (navigate) => {
         getCompetition(liveEvent?.competitionId, jwtToken)
@@ -34,31 +46,28 @@ const AttemptContextProvider = ({ children }) => {
                     .then(questions => {
                         setLiveQuestions(questions);
 
-                        getAttemptsByUser(user.id, jwtToken)
-                            .then(attempts => {
-                                const attempt = attempts.find(a => a.eventId === liveEvent.id);
-                                if (attempt) {
-                                    setLiveAttempt(attempt);
-                                    setLiveAnswers(attempt.answers);
-                                } else {
+                        const attempt = attempts.find(a => (a.eventId === liveEvent.id && a.endTime === undefined));
+                        if (attempt) {
+                            setLiveAttempt(attempt);
+                            setLiveAnswers(attempt.answers);
+                        } else {
 
-                                    const newAttempt = {
-                                        id: uuidv4(),
-                                        userId: user.id,
-                                        eventId: liveEvent.id,
-                                        competitionId: competition.id,
-                                        answers: [],
-                                        startTime: Date.now(),
-                                    }
-                                    createAttempt(newAttempt, jwtToken)
-                                        .then(() => {
-                                            setLiveAttempt(newAttempt);
-                                            setLiveAnswers([]);
-                                        })
-                                        .catch(() => navigate('/'))
-                                }
-                            })
-                            .catch(() => navigate)
+                            const newAttempt = {
+                                id: uuidv4(),
+                                userId: user.id,
+                                eventId: liveEvent.id,
+                                competitionId: competition.id,
+                                answers: [],
+                                startTime: Date.now(),
+                            }
+                            createAttempt(newAttempt, jwtToken)
+                                .then(() => {
+                                    setLiveAttempt(newAttempt);
+                                    setLiveAnswers([]);
+                                })
+                                .catch(() => navigate('/'))
+                        }
+
                     })
                     .catch(() => navigate('/'));
             })
