@@ -5,10 +5,13 @@ import AttemptContext from "../../../../context/AttemptContext.js";
 import {useMediaQuery} from "@mantine/hooks";
 import {useNavigate} from "react-router-dom";
 import LiveQuestionCard from "./LiveQuestionCard.jsx";
+import {updateAttempt} from "../../../../services/attempt.services.js";
+import UserContext from "../../../../context/UserContext.js";
 
 const MainLiveCompetition = () => {
 
-    const { initiateLive, liveQuestions, liveEvent, liveCompetition } = useContext(AttemptContext);
+    const { jwtToken } = useContext(UserContext);
+    const { initiateLive, liveQuestions, liveEvent, liveCompetition, liveAttempt, clearLiveAttempt } = useContext(AttemptContext);
     const matches = useMediaQuery(`(min-width: 650px)`);
     const navigate = useNavigate();
     const [authorized, setAuthorized] = useState(false)
@@ -27,6 +30,25 @@ const MainLiveCompetition = () => {
             .catch(e => console.log(e));
 
     }, []);
+
+
+
+
+
+    const handleSubmit = () => {
+        const newAttempt = {
+            ...liveAttempt,
+            endTime: Date.now()
+        }
+        updateAttempt(newAttempt, jwtToken)
+            .then(() => {
+                clearLiveAttempt();
+                navigate('/');
+            })
+            .catch(e => console.log(e));
+    }
+
+
 
 
 
@@ -52,6 +74,7 @@ const MainLiveCompetition = () => {
 
                 <Button
                     m='xl'
+                    onClick={handleSubmit}
                 >
                     Submit
                 </Button>

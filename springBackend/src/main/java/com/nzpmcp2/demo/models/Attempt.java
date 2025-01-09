@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Document(collection = "attempts")
 public class Attempt {
@@ -13,21 +12,22 @@ public class Attempt {
     ///  Fields ///
     @Id
     private String id;
-    private String studentEmail;
+    private String userId;
     private String competitionId;
     private String eventId;
-    private List<String> questionIds;
-    private List<String> answerIds;
+    private List<Answer> answers;
     private Date startTime;
+    private Date endTime;
 
     ///  Constructor ///
-    public Attempt(String id, String studentEmail, String competitionId, String eventId, List<String> questionIds, List<String> answerIds) {
+    public Attempt(String id, String userId, String competitionId, String eventId, List<Answer> answers, Date startTime, Date endTime) {
         this.id = id;
-        this.studentEmail = studentEmail;
-        this.eventId = eventId;
+        this.userId = userId;
         this.competitionId = competitionId;
-        this.questionIds = questionIds;
-        this.answerIds = answerIds;
+        this.eventId = eventId;
+        this.answers = answers;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     /// Getters and Setters ///
@@ -35,8 +35,8 @@ public class Attempt {
         return id;
     }
 
-    public String getStudentEmail() {
-        return studentEmail;
+    public String getUserId() {
+        return userId;
     }
 
     public String getCompetitionId() {
@@ -47,20 +47,24 @@ public class Attempt {
         return eventId;
     }
 
-    public List<String> getQuestionIds() {
-        return questionIds;
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
-    public List<String> getAnswerIds() {
-        return answerIds;
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public void setStudentEmail(String studentEmail) {
-        this.studentEmail = studentEmail;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setCompetitionId(String competitionId) {
@@ -71,36 +75,43 @@ public class Attempt {
         this.eventId = eventId;
     }
 
-    public void setQuestionIds(List<String> questionIds) {
-        this.questionIds = questionIds;
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
-    public void setAnswerIds(List<String> answerIds) {
-        this.answerIds = answerIds;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     /// Methods ///
     public Attempt copy() {
-        return new Attempt(id, studentEmail, competitionId, eventId, questionIds, answerIds);
+        List<Answer> answersCopy = List.copyOf(answers);
+        return new Attempt(id, userId, competitionId, eventId, answersCopy, startTime, endTime);
     }
 
     public void update(Attempt attempt) {
-        this.studentEmail = attempt.getStudentEmail() == null ? studentEmail : attempt.getStudentEmail();
+        this.userId = attempt.getUserId() == null ? userId : attempt.getUserId();
         this.competitionId = attempt.getCompetitionId() == null ? competitionId : attempt.getCompetitionId();
         this.eventId = attempt.getEventId() == null ? eventId : attempt.getEventId();
-        this.questionIds = attempt.getQuestionIds() == null ? questionIds : attempt.getQuestionIds();
-        this.answerIds = attempt.getAnswerIds() == null ? answerIds : attempt.getAnswerIds();
+        this.answers = attempt.getAnswers() == null ? answers : attempt.getAnswers();
+        this.startTime = attempt.getStartTime() == null ? startTime : attempt.getStartTime();
+        this.endTime = attempt.getEndTime() == null ? endTime : attempt.getEndTime();
     }
 
     @Override
     public String toString() {
         return "Question{" +
                 "id='" + id + '\'' +
-                ", studentEmail='" + studentEmail + '\'' +
+                ", userId='" + userId + '\'' +
                 ", competitionId='" + competitionId + '\'' +
                 ", eventId='" + eventId + '\'' +
-                ", questionIds=" + questionIds + '\'' +
-                ", answerIds=" + answerIds +
+                ", answers=" + answers + '\'' +
+                ", startTime=" + startTime + '\'' +
+                ", endTime=" + endTime + '\'' +
                 '}';
     }
 }

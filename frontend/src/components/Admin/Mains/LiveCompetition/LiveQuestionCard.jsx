@@ -10,17 +10,25 @@ const LiveQuestionCard = ({question,  index: qIndex}) => {
     const { editAnswer, liveAnswers } = useContext(AttemptContext);
     const matches = useMediaQuery('(min-width: 1600px)');
 
-    const [ optionIndex, setOptionIndex ] = useState(liveAnswers[question.id])
+    const getCurrentIndex = () => {
+        const qstIndex = liveAnswers?.map(ans => ans.questionId).indexOf(question.id);
+        if (qstIndex === -1) {
+            return undefined;
+        } else {
+            return liveAnswers[qstIndex]?.answerIndex;
+        }
+    }
+
+    const [ optionIndex, setOptionIndex ] = useState(getCurrentIndex);
+
+
+
 
 
     const handleChoose = (opIndex) => {
         setOptionIndex(opIndex);
         editAnswer(question.id, opIndex);
     }
-
-
-
-
 
     const splitText = (textToSplit) => {
         return textToSplit?.split('\n');

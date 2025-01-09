@@ -1,8 +1,10 @@
 package com.nzpmcp2.demo.controllers;
 
+import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
 import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
+import com.nzpmcp2.demo.repositories.QuestionRepository;
 import com.nzpmcp2.demo.services.AttemptService;
 import com.nzpmcp2.demo.services.CompetitionService;
 import com.nzpmcp2.demo.services.QuestionService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @CrossOrigin
@@ -19,14 +22,14 @@ import java.util.List;
 public class AttemptController {
 
     private final AttemptService attemptService;
-    private final CompetitionService competitionService;
-    private final QuestionService questionService;
+    private final QuestionRepository questionRepository;
+    private final CompetitionMiddleware competitionMiddleware;
 
     @Autowired
-    public AttemptController(AttemptService attemptService, CompetitionService competitionService, QuestionService questionService) {
+    public AttemptController(AttemptService attemptService, QuestionRepository questionRepository, CompetitionMiddleware competitionMiddleware) {
         this.attemptService = attemptService;
-        this.competitionService = competitionService;
-        this.questionService = questionService;
+        this.questionRepository = questionRepository;
+        this.competitionMiddleware = competitionMiddleware;
     }
 
     @GetMapping
@@ -52,22 +55,14 @@ public class AttemptController {
     @GetMapping("/questions/{competitionId}")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable String competitionId) {
         try {
-            List<Question> questionsList = new ArrayList<Question>();
-            Competition competition = competitionService.getCompetitionById(competitionId);
-
-            if (competition != null && competition.getQuestionIds() != null) {
-                for (String questionId : competition.getQuestionIds()) {
-                    try {
-                        Question question = questionService.getQuestionById(questionId);
-                        if (question != null) {
-                            questionsList.add(question);
-                        }
-                    } catch (IllegalStateException e) {
-                        // Do nothing
-                    }
-                }
+            Competition competition = competitionMiddleware.checkCompetitionExists(competitionId);
+            List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
+            if (competition.getQuestionIds() != null) {
+                List<Question> questionsList = questionRepository.findQuestionsByListOfIds(idList);
+                return ResponseEntity.ok(questionsList);
+            } else {
+                return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.ok(questionsList);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

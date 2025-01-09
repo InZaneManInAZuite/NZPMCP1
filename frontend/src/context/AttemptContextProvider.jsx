@@ -15,10 +15,10 @@ const AttemptContextProvider = ({ children }) => {
     const { jwtToken, user } = useContext(UserContext);
 
     // State variables to be stored
-    const [liveEvent, setLiveEvent] = useState();
-    const [liveCompetition, setLiveCompetition] = useState();
-    const [liveAttempt, setLiveAttempt] = useState();
-    const [liveAnswers, setLiveAnswers] = useState(new Map());
+    const [liveEvent, setLiveEvent] = useState(undefined);
+    const [liveCompetition, setLiveCompetition] = useState(undefined);
+    const [liveAttempt, setLiveAttempt] = useState(undefined);
+    const [liveAnswers, setLiveAnswers] = useState([]);
     const [liveQuestions, setLiveQuestions] = useState([])
 
     const [attempts, setAttempts] = useState([])
@@ -39,19 +39,21 @@ const AttemptContextProvider = ({ children }) => {
                                 const attempt = attempts.find(a => a.eventId === liveEvent.id);
                                 if (attempt) {
                                     setLiveAttempt(attempt);
-                                    setLiveAnswers(attempt.attempts)
+                                    setLiveAnswers(attempt.answers);
                                 } else {
 
                                     const newAttempt = {
                                         id: uuidv4(),
-                                        studentEmail: user.email,
+                                        userId: user.id,
                                         eventId: liveEvent.id,
                                         competitionId: competition.id,
+                                        answers: [],
+                                        startTime: Date.now(),
                                     }
                                     createAttempt(newAttempt, jwtToken)
                                         .then(() => {
                                             setLiveAttempt(newAttempt);
-                                            setLiveAnswers(new Map());
+                                            setLiveAnswers([]);
                                         })
                                         .catch(() => navigate('/'))
                                 }
@@ -78,26 +80,24 @@ const AttemptContextProvider = ({ children }) => {
 
     const editAnswer = (questionId, answerIndex) => {
 
-        let answersCopy = new Map();
-        if (liveAnswers && JSON.stringify(liveAnswers) !== '{}') {
-            answersCopy = new Map(liveAnswers);
+        const answersCopy = liveAnswers.map(o => o);
+        const index = answersCopy.map(ans => ans.questionId).indexOf(questionId);
+        if (index !== -1) {
+            answersCopy[index] = { questionId, answerIndex: parseInt(answerIndex) };
+        } else {
+            answersCopy.push( { questionId, answerIndex: parseInt(answerIndex) } );
         }
-        answersCopy.set(questionId, parseInt(answerIndex));
+
         const newAttempt = {
             ...liveAttempt,
-            attempts: mapToObjArray(answersCopy),
+            answers: answersCopy,
         };
-        console.log(JSON.stringify(newAttempt));
+
         updateAttempt(newAttempt, jwtToken)
             .then(() => {
                 setLiveAttempt(newAttempt);
                 setLiveAnswers(answersCopy);
             })
-    }
-
-    const mapToObjArray = (map) => {
-
-        return Array.from(map, ([key, value]) => ({key, value}))
     }
 
 
