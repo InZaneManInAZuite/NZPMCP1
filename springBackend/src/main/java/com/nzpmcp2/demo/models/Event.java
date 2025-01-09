@@ -21,6 +21,7 @@ public class Event {
     private Date startTime;
     private Date endTime;
     private String location;
+    private Integer attemptLimit;
 
 
 
@@ -33,7 +34,8 @@ public class Event {
                  String competitionId,
                  Date startTime,
                  Date endTime,
-                 String location) {
+                 String location,
+                 Integer attemptLimit) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -43,6 +45,7 @@ public class Event {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
+        this.attemptLimit = attemptLimit;
     }
 
 
@@ -83,6 +86,10 @@ public class Event {
         return location;
     }
 
+    public Integer getAttemptLimit() {
+        return attemptLimit;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -115,6 +122,10 @@ public class Event {
         this.location = location;
     }
 
+    public void setAttemptLimit(Integer attemptLimit) {
+        this.attemptLimit = attemptLimit;
+    }
+
 
 
     // Methods
@@ -122,7 +133,7 @@ public class Event {
     // Copy the event
     public Event copy() {
         List<String> attendeesCopy = List.copyOf(attendees);
-        return new Event(id, name, date, description, attendeesCopy, competitionId, startTime, endTime, location);
+        return new Event(id, name, date, description, attendeesCopy, competitionId, startTime, endTime, location, attemptLimit);
     }
 
     // Add an attendee to the event
@@ -146,6 +157,10 @@ public class Event {
         description = event.getDescription() == null ? description : event.getDescription();
         attendees = event.getAttendees() == null ? attendees : event.getAttendees();
         competitionId = event.getCompetitionId() == null ? competitionId : event.getCompetitionId();
+        startTime = event.getStartTime() == null ? startTime : event.getStartTime();
+        endTime = event.getEndTime() == null ? endTime : event.getEndTime();
+        location = event.getLocation() == null ? location : event.getLocation();
+        attemptLimit = event.getAttemptLimit() == null ? attemptLimit : event.getAttemptLimit();
     }
 
     // Override the toString method
@@ -160,7 +175,8 @@ public class Event {
                 ", competitionId='" + competitionId + '\'' +
                 ", startTime=" + startTime + '\'' +
                 ", endTime=" + endTime + '\'' +
-                ", location='" + location +
+                ", location='" + location + '\'' +
+                ", attemptLimit=" + attemptLimit +
                 '}';
     }
 }
