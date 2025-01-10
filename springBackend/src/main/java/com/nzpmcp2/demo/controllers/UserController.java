@@ -4,7 +4,6 @@ package com.nzpmcp2.demo.controllers;
 import java.util.List;
 
 // import api dependencies
-import com.nzpmcp2.demo.models.UserDto;
 import com.nzpmcp2.demo.models.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

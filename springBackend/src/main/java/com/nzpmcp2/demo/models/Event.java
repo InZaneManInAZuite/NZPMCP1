@@ -3,12 +3,16 @@ package com.nzpmcp2.demo.models;
 import java.util.Date;
 import java.util.List;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Getter @Setter @Builder
+@AllArgsConstructor
+@ToString(exclude = {"attendees"})
+
 @Document(collection = "events")
 public class Event {
-    
 
     // Fields
     @Id
@@ -22,113 +26,6 @@ public class Event {
     private Date endTime;
     private String location;
     private Integer attemptLimit;
-
-
-
-    // Constructors
-    public Event(String id,
-                 String name,
-                 Date date,
-                 String description,
-                 List<String> attendees,
-                 String competitionId,
-                 Date startTime,
-                 Date endTime,
-                 String location,
-                 Integer attemptLimit) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.description = description;
-        this.attendees = attendees;
-        this.competitionId = competitionId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.location = location;
-        this.attemptLimit = attemptLimit;
-    }
-
-
-    // Getters and Setters
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getAttendees() {
-        return attendees;
-    }
-
-    public String getCompetitionId() {
-        return competitionId;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public Integer getAttemptLimit() {
-        return attemptLimit;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setAttendees(List<String> attendees) {
-        this.attendees = attendees;
-    }
-
-    public void setCompetitionId(String competitionId) {
-        this.competitionId = competitionId;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setAttemptLimit(Integer attemptLimit) {
-        this.attemptLimit = attemptLimit;
-    }
-
-
-
-    // Methods
 
     // Copy the event
     public Event copy() {
@@ -161,22 +58,5 @@ public class Event {
         endTime = event.getEndTime() == null ? endTime : event.getEndTime();
         location = event.getLocation() == null ? location : event.getLocation();
         attemptLimit = event.getAttemptLimit() == null ? attemptLimit : event.getAttemptLimit();
-    }
-
-    // Override the toString method
-    @Override
-    public String toString() {
-        return "Event{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", date='" + date + '\'' +
-                ", description='" + description + '\'' +
-                ", attendees=" + attendees + '\'' +
-                ", competitionId='" + competitionId + '\'' +
-                ", startTime=" + startTime + '\'' +
-                ", endTime=" + endTime + '\'' +
-                ", location='" + location + '\'' +
-                ", attemptLimit=" + attemptLimit +
-                '}';
     }
 }
