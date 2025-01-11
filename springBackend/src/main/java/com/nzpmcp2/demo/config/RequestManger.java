@@ -67,7 +67,7 @@ public class RequestManger {
 
 
                                     /////////// Default ///////////
-                                    .anyRequest().authenticated());
+                                    .anyRequest().permitAll());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
