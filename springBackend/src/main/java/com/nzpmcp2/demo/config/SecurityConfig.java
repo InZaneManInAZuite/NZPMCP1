@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .headers(header ->
                         header.httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .oauth2ResourceServer(oath2ResourceServer ->
                         oath2ResourceServer.jwt(Customizer.withDefaults()));
 

@@ -91,9 +91,9 @@ const EventCard = ({ item: event }) => {
             return false
         } else if (event.startTime) {
             if (event.endTime) {
-                return ((Date.parse(event.startTime) > Date.now()) && (Date.parse(event.endTime) > Date.now()))
+                return ((Date.parse(event.startTime) < Date.now()) && (Date.parse(event.endTime) > Date.now()))
             } else {
-                return (Date.parse(event.startTime) > Date.now())
+                return (Date.parse(event.startTime) < Date.now())
             }
         } else {
             return true
@@ -112,7 +112,9 @@ const EventCard = ({ item: event }) => {
             if (event.competitionId && user.events?.includes(event.id)) {
                 getAttemptsByUserAndEvent(user.id, event.id, jwtToken)
                     .then((relevantAttempts) => {
-                        setAttempts(relevantAttempts);
+                        if (relevantAttempts) {
+                            setAttempts(relevantAttempts);
+                        }
                     })
                     .catch();
             }
@@ -191,7 +193,7 @@ const EventCard = ({ item: event }) => {
                                 onClick={handleEnter}
                                 color='yellow'
                             >
-                                {attempts?.map(a => a.endTime).includes(undefined) ? 'Continue' : 'Enter'}
+                                {attempts?.find(a => !a.endTime) ? 'Continue' : 'Enter'}
                             </Button>
                         )}
 

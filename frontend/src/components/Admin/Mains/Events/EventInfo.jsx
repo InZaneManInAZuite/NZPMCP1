@@ -7,6 +7,7 @@ import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import AttendeeCard from "./AttendeeCard.jsx";
 import {getCompetition} from "../../../../services/competition.services.js";
 import {IconX} from "@tabler/icons-react";
+import {getTime} from "./EventTimeMisc.js";
 
 const EventInfo = ({event, opened, setOpened}) => {
 
@@ -104,7 +105,7 @@ const EventInfo = ({event, opened, setOpened}) => {
                     <Text fw={700}>Date: {new Date(event.date).toDateString()}</Text>
                     {event.startTime && (
                         <Text size='sm'>
-                            {event.startTime}{event.endTime && (` - ${event.endTime}`)}
+                            {getTime(event, 'startTime')}{event.endTime && (` - ${getTime(event, 'endTime')}`)}
                         </Text>
                     )}
                     {event.location && (<>

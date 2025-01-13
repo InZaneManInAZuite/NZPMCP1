@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import {Card, Checkbox, Code, Divider, Flex, Group, Stack, Text, Title} from "@mantine/core";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useMediaQuery} from "@mantine/hooks";
 import AttemptContext from "../../../../context/AttemptContext.js";
 
@@ -9,24 +9,22 @@ const LiveQuestionCard = ({question,  index: qIndex}) => {
 
     const { editAnswer, liveAnswers } = useContext(AttemptContext);
     const matches = useMediaQuery('(min-width: 1600px)');
+    const [ optionIndex, setOptionIndex ] = useState(undefined);
 
-    const getCurrentIndex = () => {
+    useEffect(() => {
         const qstIndex = liveAnswers?.map(ans => ans.questionId).indexOf(question.id);
-        if (qstIndex === -1) {
-            return undefined;
-        } else {
-            return liveAnswers[qstIndex]?.answerIndex;
+        if (qstIndex !== -1) {
+            setOptionIndex(liveAnswers[qstIndex]?.answerIndex)
         }
-    }
+    }, [liveAnswers]);
 
-    const [ optionIndex, setOptionIndex ] = useState(getCurrentIndex);
+
 
 
 
 
 
     const handleChoose = (opIndex) => {
-        setOptionIndex(opIndex);
         editAnswer(question.id, opIndex);
     }
 

@@ -79,7 +79,7 @@ public class AttemptController {
     public ResponseEntity<List<Attempt>> getUserAttempts(@PathVariable String userId, @PathVariable String eventId) {
         try {
             List<Attempt> attempts = attemptService.getAttemptsByUserAndEvent(userId, eventId);
-            if (attempts != null && !attempts.isEmpty()) {
+            if (attempts != null) {
                 return ResponseEntity.ok(attempts);
             } else {
                 return ResponseEntity.noContent().build();

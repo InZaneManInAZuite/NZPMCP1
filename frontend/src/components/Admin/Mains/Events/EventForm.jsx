@@ -17,14 +17,15 @@ import '@mantine/dates/styles.css'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
+import {getTime} from "./EventTimeMisc.js";
 
 const EventForm = ({event, close}) => {
 
     const {events, setEvents, jwtToken } = useContext(UserContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
 
-    const [ startChecked, setStartChecked ] = useState(event?.start || false);
-    const [ endChecked, setEndChecked ] = useState(event?.end || false);
+    const [ startChecked, setStartChecked ] = useState(event?.startTime || false);
+    const [ endChecked, setEndChecked ] = useState(event?.endTime || false);
     const [ locatedChecked, setLocatedChecked ] = useState(event?.location || false);
 
     const handleNameChange = (event) => form.setFieldValue('name', event.currentTarget.value);
@@ -59,14 +60,26 @@ const EventForm = ({event, close}) => {
 
 
 
+    const getH = (clockTimeString) => {
+        return parseInt(clockTimeString)
+    }
+
+    const getM = (clockTimeString) => {
+        return parseInt(clockTimeString.substring(3))
+    }
+
+
+
+
+
     const form = useForm({
         initialValues: {
             name: event?.name,
             date: event?.date || new Date(),
             description: event?.description,
             location: event?.location,
-            start: event?.start,
-            end: event?.end,
+            start: getTime(event, 'startTime'),
+            end: getTime(event, 'endTime'),
         },
         validate: {
             name: (value) => {
@@ -97,9 +110,8 @@ const EventForm = ({event, close}) => {
                         return 'Please fill out or tick off'
                     }
 
-                    const hourDif = parseInt(form.values.start) - parseInt(value);
-                    const minDif = parseInt(form.values.start?.substring(3)) -
-                        parseInt(value.substring(3));
+                    const hourDif = getH(form.values.start) - getH(value);
+                    const minDif = getM(form.values.start) - getM(value);
                     if ((hourDif > 0) || (hourDif === 0 && minDif >= 0)) {
                         return 'Ending time must be after start time'
                     }
@@ -139,8 +151,22 @@ const EventForm = ({event, close}) => {
             date: event?.date,
             description: event?.description,
             location: event?.location,
-            startTime: event?.start,
-            endTime: event?.end,
+            startTime: event?.startTime,
+            endTime: event?.endTime,
+        }
+    }
+
+
+
+    const parseEvent = (n) => {
+        const startDate = new Date(n.date);
+        const endDate = new Date(n.date);
+        const start = startDate.setUTCMinutes(startDate.getUTCMinutes() + getH(n.startTime) * 60 + getM(n.startTime));
+        const end = endDate.setUTCMinutes(endDate.getUTCMinutes() + getH(n.endTime) * 60 + getM(n.endTime));
+        return {
+            ...n,
+            startTime: n.startTime ? start : undefined,
+            endTime: n.endTime ? end : undefined,
         }
     }
 
@@ -160,9 +186,10 @@ const EventForm = ({event, close}) => {
 
     const handleCreate = () => {
         const newEvent = {...getNewEvent(), date: new Date(form.values.date), id: uuidv4()}
-        createEvent(newEvent, jwtToken)
-            .then((eventMade) => {
-                setEvents(events.concat(eventMade));
+        const parsed = parseEvent(newEvent);
+        createEvent(parsed, jwtToken)
+            .then(() => {
+                setEvents(events.concat(parsed));
                 form.setFieldValue('name', '');
                 form.setFieldValue('date', new Date());
                 form.setFieldValue('description', '');
@@ -175,11 +202,12 @@ const EventForm = ({event, close}) => {
 
     const handleUpdate = () => {
         const newEvent = getNewEvent()
-        updateEvent(event?.id, newEvent, jwtToken)
+        const parsed = parseEvent(newEvent)
+        updateEvent(event?.id, parsed, jwtToken)
             .then(() => {
                 setEvents(events.map(eachEvent => {
                     if (eachEvent.id === event.id) {
-                        return newEvent
+                        return parsed
                     } else {
                         return eachEvent
                     }
@@ -212,7 +240,7 @@ const EventForm = ({event, close}) => {
                         <TextInput
                             label='Name'
                             placeholder='Enter event name'
-                            value={form.values.name}
+                            value={form.values.name || ''}
                             onChange={handleNameChange}
                             error={form.errors.name}
                         />
@@ -221,7 +249,7 @@ const EventForm = ({event, close}) => {
                             label='Description'
                             minRows={4}
                             placeholder='Enter event description'
-                            value={form.values.description}
+                            value={form.values.description || ''}
                             onChange={handleDescriptionChange}
                             error={form.errors.description}
                         />
@@ -249,7 +277,7 @@ const EventForm = ({event, close}) => {
                                 <TimeInput
                                     label='Starting at:'
                                     disabled={!startChecked}
-                                    value={form.values.start || ''}
+                                    value={form.values.start}
                                     onChange={handleStartChange}
                                     error={form.errors.start}
                                 />

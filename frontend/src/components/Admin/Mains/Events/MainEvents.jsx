@@ -1,67 +1,15 @@
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
-import {Button, Card, Center, Paper, Text} from "@mantine/core";
+import {Card, Center, Paper} from "@mantine/core";
 import {getAllEvents} from "../../../../services/event.services.js";
 import EventCard from "./EventCard.jsx";
 import EventForm from "./EventForm.jsx";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import UserContext from "../../../../context/UserContext.js";
-import {Client} from "@stomp/stompjs"
 
 
 const MainEvents = () => {
 
     const { jwtToken, events, setEvents, user } = useContext(UserContext)
-
-    const [ connected, setConnected] = useState(false)
-    const [ time, setTime ] = useState('00:00:00');
-
-    const stompClient = new Client({
-        brokerURL: 'ws://localhost:8080/ws',
-        reconnectDelay: 1000
-    })
-
-    stompClient.onConnect = (frame) => {
-        setConnected(true);
-        console.log(`Connected: ${frame}`);
-        stompClient.subscribe('/topic/timer', (timer) => {
-            setTime(timer?.body);
-        })
-    }
-
-    stompClient.onWebSocketError = (error) => {
-        console.error(`Websocket Error: ${error}`);
-    }
-
-    stompClient.onStompError = (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
-    };
-
-
-
-
-
-    const connect = () => {
-        stompClient.activate();
-    }
-
-    const disconnect = () => {
-        stompClient.deactivate()
-            .then(() => {
-                setConnected(false);
-                console.log('Disconnected')
-            })
-    }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -78,7 +26,7 @@ const MainEvents = () => {
         if (checked) {
             return true
         } else {
-            return Date.now() < Date.parse(item.date)
+            return (Date.now() < Date.parse(item.date) || (new Date(Date.now())).toDateString() === (new Date(item.date)).toDateString())
         }
     }
 
@@ -100,15 +48,6 @@ const MainEvents = () => {
                     </Card>
                 </Center>
             )}
-
-
-            <Button onClick={connect} disabled={connected}>
-                Connect
-            </Button>
-            <Button onClick={disconnect} disabled={!connected}>
-                Disconnect
-            </Button>
-            <Text>{time}</Text>
         </Paper>
     )
 }

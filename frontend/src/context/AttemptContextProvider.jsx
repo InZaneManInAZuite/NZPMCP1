@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import UserContext from "./UserContext.js";
 import {getCompetition} from "../services/competition.services.js";
 import {
-    createAttempt,
+    createAttempt, getAttemptsByUserAndEvent,
     getQuestionsForCompetition,
     updateAttempt
 } from "../services/attempt.services.js";
@@ -46,28 +46,30 @@ const AttemptContextProvider = ({ children }) => {
                     .then(questions => {
                         setLiveQuestions(questions);
 
-                        const attempt = attempts.find(a => (a.eventId === liveEvent.id && a.endTime === undefined));
-                        if (attempt) {
-                            setLiveAttempt(attempt);
-                            setLiveAnswers(attempt.answers);
-                        } else {
-
-                            const newAttempt = {
-                                id: uuidv4(),
-                                userId: user.id,
-                                eventId: liveEvent.id,
-                                competitionId: competition.id,
-                                answers: [],
-                                startTime: Date.now(),
-                            }
-                            createAttempt(newAttempt, jwtToken)
-                                .then(() => {
-                                    setLiveAttempt(newAttempt);
-                                    setLiveAnswers([]);
-                                })
-                                .catch(() => navigate('/'))
-                        }
-
+                        getAttemptsByUserAndEvent(user.id, liveEvent.id, jwtToken)
+                            .then((attempts) => {
+                                const attempt = attempts?.find(a => !a.endTime);
+                                if (attempt) {
+                                    setLiveAttempt(attempt);
+                                    setLiveAnswers(attempt.answers);
+                                } else {
+                                    const newAttempt = {
+                                        id: uuidv4(),
+                                        userId: user.id,
+                                        eventId: liveEvent.id,
+                                        competitionId: competition.id,
+                                        answers: [],
+                                        startTime: Date.now(),
+                                    }
+                                    createAttempt(newAttempt, jwtToken)
+                                        .then(() => {
+                                            setLiveAttempt(newAttempt);
+                                            setLiveAnswers([]);
+                                        })
+                                        .catch(() => navigate('/'))
+                                }
+                            })
+                            .catch(() => navigate('/'));
                     })
                     .catch(() => navigate('/'));
             })
