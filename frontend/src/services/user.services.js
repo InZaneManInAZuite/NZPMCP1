@@ -56,9 +56,10 @@ const authUser = (email, password) => {
 }
 
 const refreshJwtToken = () => {
-    const request = axios.get(`${USER_URL}/auth/refresh`, {
-        withCredentials: true
-    })
+    const item = {
+        withCredentials: true,
+    }
+    const request = axios.post(`${USER_URL}/auth/refresh`, item)
     return request.then(response => response.data);
 }
 

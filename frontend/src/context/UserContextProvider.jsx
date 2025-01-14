@@ -44,7 +44,7 @@ const UserContextProvider = ({ children }) => {
                 const decoded = jwtDecode(token)
                 setUser(decoded);
             })
-            .catch(e => console.log(e))
+            .catch(() => console.log("Could not auto log-in"))
     }, [])
 
 

@@ -12,9 +12,6 @@ import com.nzpmcp2.demo.config.JwtConfig;
 import com.nzpmcp2.demo.models.UserView;
 import com.nzpmcp2.demo.repositories.UserRepository;
 import com.nzpmcp2.demo.services.TokenService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -89,18 +86,20 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(allowCredentials = "true",
+            allowedHeaders = "*"
+    )
     @PostMapping("/auth")
-    public ResponseEntity<UserView> authUser(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<UserView> authUser(@RequestBody User user) {
         try {
             UserView authUser = userService.authenticateUser(user);
             Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
             if (foundUser.isPresent()) {
-                String refreshToken = tokenService.generateToken(foundUser.get(), true);
 
+                String refreshToken = tokenService.generateToken(foundUser.get(), true);
                 HttpHeaders headers = new HttpHeaders();
-                headers.add("Access-Control-Allow-Credentials", "true");
-                headers.add("Set-Cookie", "refreshJwtToken=" + refreshToken +
-                        "; HttpOnly; Secure; Path=/");
+                headers.add("Set-Cookie", "refresh_token=" + refreshToken +
+                        "; HttpOnly; Path=/; SameSite=None; Max-Age=36000");
 
 
                 return ResponseEntity.status(HttpStatus.OK).headers(headers).body(authUser);
@@ -112,9 +111,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/auth/refresh")
-    public ResponseEntity<String> refreshToken(@CookieValue("refreshJwtToken") String refreshToken) {
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<String> refreshToken(@CookieValue("refresh_token") String refreshToken) {
         try {
+            if (refreshToken == null || refreshToken.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
             SecretKey key = jwtConfig.getSecretKey();
             JWSVerifier verifier = new MACVerifier(key);
             SignedJWT signedJWT = SignedJWT.parse(refreshToken);
@@ -125,9 +127,7 @@ public class UserController {
                     String accessToken = tokenService.generateToken(user.get(), false);
 
                     HttpHeaders headers = new HttpHeaders();
-
                     headers.add("Access-Control-Allow-Credentials", "true");
-
 
                     return ResponseEntity.status(HttpStatus.OK).headers(headers).body(accessToken);
                 } else {

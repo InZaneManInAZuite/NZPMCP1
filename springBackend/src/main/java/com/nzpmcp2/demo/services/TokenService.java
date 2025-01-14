@@ -50,7 +50,7 @@ public class TokenService {
         } else {
             claimSetBuilder.claim("role", user.getRole())
                     .claim("authorities", authority)
-                    .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.MINUTES)));
+                    .expirationTime(Date.from(Instant.now().plus(5, ChronoUnit.HOURS)));
         }
 
 
