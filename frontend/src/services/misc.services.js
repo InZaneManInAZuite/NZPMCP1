@@ -12,4 +12,8 @@ const timeFromNow = (dateTime) => {
     return Date.parse(dateTime) - Date.now()
 }
 
-export { dateInPast, dateTimeDifference, timeFromNow }
+const getTimeString = (dateTime) => {
+    return new Date(dateTime).toTimeString().substring(0, 5);
+}
+
+export { dateInPast, dateTimeDifference, timeFromNow, getTimeString }

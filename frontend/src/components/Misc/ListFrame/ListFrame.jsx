@@ -27,6 +27,7 @@ const ListFrame = ({ items,
                        NewForm,
                        withForm = false,
 
+                       noSearch = false,
                        search = ['title'],
 
                        sort = search,
@@ -112,7 +113,7 @@ const ListFrame = ({ items,
         setHasBeenFiltered(false)
 
         const searcher = (itemsToSearch) => {
-            if (itemsToSearch?.length > 0) {
+            if (itemsToSearch?.length > 0 && !noSearch) {
                 return itemsToSearch.filter(item => {
                     const tempo = toSearch.map(info => {
                         return item[info]?.toLowerCase().includes(searching.toLowerCase());
@@ -191,13 +192,15 @@ const ListFrame = ({ items,
         <Card p='sm'>
 
             <Group justify='flex-end'>
-                <TextInput
-                    size='xs'
-                    leftSectionPointerEvents='none'
-                    leftSection={iconSearch}
-                    value={searching}
-                    onChange={onSearchChange}
-                />
+                {!noSearch && (
+                    <TextInput
+                        size='xs'
+                        leftSectionPointerEvents='none'
+                        leftSection={iconSearch}
+                        value={searching}
+                        onChange={onSearchChange}
+                    />
+                )}
                 <Group className={classes.nonSearch}>
                     {withSorter && (<>
                         <Select
@@ -310,6 +313,7 @@ ListFrame.propTypes = {
     NewForm: PropTypes.func,
     withForm: PropTypes.bool,
 
+    noSearch: PropTypes.bool,
     search: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array

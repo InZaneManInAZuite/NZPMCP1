@@ -7,20 +7,16 @@ import {IconEdit, IconTrash, IconX} from "@tabler/icons-react";
 import {removeEvent} from "../../../../services/event.services.js";
 import EventForm from "./EventForm.jsx";
 import EventInfo from "./EventInfo.jsx";
-import {useNavigate} from "react-router-dom";
-import AttemptContext from "../../../../context/AttemptContext.js";
 import {getAttemptsByUserAndEvent} from "../../../../services/attempt.services.js";
+import EnterLiveEventButton from "./EnterLiveEventButton.jsx";
 
 const EventCard = ({ item: event }) => {
 
     const { user, setUser, jwtToken, setEvents, events } = useContext(UserContext);
-    const { setLiveEvent } = useContext(AttemptContext);
     const [isJoined, setIsJoined] = useState(false);
     const [ updateOpened, setUpdateOpened] = useState(false);
     const [ infoOpened, setInfoOpened] = useState(false);
     const [ attempts, setAttempts ] = useState(undefined);
-
-    const navigate = useNavigate();
 
 
 
@@ -77,28 +73,6 @@ const EventCard = ({ item: event }) => {
                 })
                 .catch((err) => console.log(err));
         }
-    }
-
-    const handleEnter = () => {
-        setLiveEvent(event);
-        navigate(`/competition/live/${event.id}`)
-    }
-
-    const isLive = () => {
-        const isToday = (((new Date(event.date)).toDateString()) === ((new Date(Date.now())).toDateString()))
-
-        if (!isToday) {
-            return false
-        } else if (event.startTime) {
-            if (event.endTime) {
-                return ((Date.parse(event.startTime) < Date.now()) && (Date.parse(event.endTime) > Date.now()))
-            } else {
-                return (Date.parse(event.startTime) < Date.now())
-            }
-        } else {
-            return true
-        }
-
     }
 
 
@@ -188,13 +162,11 @@ const EventCard = ({ item: event }) => {
                             {isJoined ? 'Joined' : 'Join'}
                         </Button>
 
-                        {(!!event.competitionId && isJoined && isLive()) && (
-                            <Button
-                                onClick={handleEnter}
-                                color='yellow'
-                            >
-                                {attempts?.find(a => !a.endTime) ? 'Continue' : 'Enter'}
-                            </Button>
+                        {(!!event.competitionId && isJoined) && (
+                            <EnterLiveEventButton
+                                event={event}
+                                attempts={attempts}
+                            />
                         )}
 
 

@@ -7,13 +7,19 @@ import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import AttendeeCard from "./AttendeeCard.jsx";
 import {getCompetition} from "../../../../services/competition.services.js";
 import {IconX} from "@tabler/icons-react";
-import {getTime} from "./EventTimeMisc.js";
+import {getEventTime} from "./EventTimeMisc.js";
+import AttemptContext from "../../../../context/AttemptContext.js";
+import AttemptCard from "./AttemptCard.jsx";
+import EnterLiveEventButton from "./EnterLiveEventButton.jsx";
 
 const EventInfo = ({event, opened, setOpened}) => {
 
     const { jwtToken, user } = useContext(UserContext);
+    const { attempts } = useContext(AttemptContext);
     const [ attendees, setAttendees ] = useState();
     const [ competition, setCompetition ] = useState(undefined);
+
+    const [ eventAttempts, setEventAttempts ] = useState([]);
 
 
 
@@ -22,6 +28,8 @@ const EventInfo = ({event, opened, setOpened}) => {
         eventId: event.id,
         attendees: attendees,
         setAttendees: setAttendees,
+        attempts: eventAttempts,
+        event: event,
     }
 
 
@@ -29,6 +37,9 @@ const EventInfo = ({event, opened, setOpened}) => {
 
 
     useEffect(() => {
+
+        setEventAttempts(attempts?.filter(a => a.eventId === event.id))
+
         if (user?.role === 'ADMIN') {
             getAllAttendeesForEvent(event.id, jwtToken)
                 .then(allAttendees => {
@@ -43,7 +54,7 @@ const EventInfo = ({event, opened, setOpened}) => {
                     .catch(e => console.log(e))
             }
         }
-    }, [event, user, jwtToken]);
+    }, [event, user, jwtToken, attempts]);
 
     const handleRemoveCompetition = () => {
 
@@ -105,7 +116,7 @@ const EventInfo = ({event, opened, setOpened}) => {
                     <Text fw={700}>Date: {new Date(event.date).toDateString()}</Text>
                     {event.startTime && (
                         <Text size='sm'>
-                            {getTime(event, 'startTime')}{event.endTime && (` - ${getTime(event, 'endTime')}`)}
+                            {getEventTime(event, 'startTime')}{event.endTime && (` - ${getEventTime(event, 'endTime')}`)}
                         </Text>
                     )}
                     {event.location && (<>
@@ -116,18 +127,32 @@ const EventInfo = ({event, opened, setOpened}) => {
                 <Divider mb='sm' variant='dotted' />
 
 
+
+
+
+                {(eventAttempts?.length > 0) && (<>
+                    <Text mb='sm'>Attempts:</Text>
+                    <ListFrame
+                        height='300px'
+                        width='100%'
+                        noSearch
+                        sort='startTime'
+                        items={eventAttempts || []}
+                        Component={AttemptCard}
+                        injection={injection}
+                    />
+                </>)}
+
+
+
+
+
                 {competition !== undefined && (<>
                     <Text mb='sm'>Competition:</Text>
                     <Card>
                         <Text>{competition?.title}</Text>
                         <Group grow mt='xl' >
-                            <Button
-                                color='yellow'
-                                onClick={handleEnterCompetition}
-                                disabled={Date.parse(event.date) !== Date.now()}
-                            >
-                                Enter
-                            </Button>
+                            <EnterLiveEventButton event={event} attempts={eventAttempts} />
                             {user?.role === 'ADMIN' && (
                                 <Button
                                     color='red'
@@ -142,6 +167,7 @@ const EventInfo = ({event, opened, setOpened}) => {
                     </Card>
                     </>)}
             </Stack>
+
 
 
 

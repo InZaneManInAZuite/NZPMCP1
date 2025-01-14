@@ -1,4 +1,4 @@
-const getTime = (event, val) => {
+const getEventTime = (event, val) => {
     if (event && event[val]) {
         return (new Date(event[val]))?.toTimeString()?.substring(0, 5);
     } else {
@@ -6,4 +6,4 @@ const getTime = (event, val) => {
     }
 }
 
-export {getTime}
+export {getEventTime}

@@ -3,13 +3,12 @@ import PropTypes from "prop-types";
 import UserContext from "./UserContext.js";
 import {getCompetition} from "../services/competition.services.js";
 import {
-    createAttempt, getAttemptsByUserAndEvent,
+    createAttempt, getAttemptsByUser, getAttemptsByUserAndEvent,
     getQuestionsForCompetition,
     updateAttempt
 } from "../services/attempt.services.js";
 import AttemptContext from "./AttemptContext.js";
 import {v4 as uuidv4} from 'uuid';
-import {getAllEventsOfUser} from "../services/attendee.services.js";
 
 const AttemptContextProvider = ({ children }) => {
 
@@ -25,15 +24,20 @@ const AttemptContextProvider = ({ children }) => {
     const [attempts, setAttempts] = useState([])
 
 
+
+
+
     useEffect(() => {
         if (user) {
-            getAllEventsOfUser(user.id, jwtToken)
+            getAttemptsByUser(user.id, jwtToken)
                 .then((allUserAttempts) => {
                     setAttempts(allUserAttempts)
                 })
                 .catch(e => console.log(e));
         }
     }, [user, jwtToken]);
+
+
 
 
 
@@ -65,6 +69,7 @@ const AttemptContextProvider = ({ children }) => {
                                         .then(() => {
                                             setLiveAttempt(newAttempt);
                                             setLiveAnswers([]);
+                                            setAttempts(attempts?.concat(newAttempt) || [newAttempt])
                                         })
                                         .catch(() => navigate('/'))
                                 }
@@ -75,6 +80,10 @@ const AttemptContextProvider = ({ children }) => {
             })
             .catch(() => navigate('/'))
     }
+
+
+
+
 
     const clearLiveAttempt = () => {
         setLiveEvent(undefined);
@@ -88,6 +97,10 @@ const AttemptContextProvider = ({ children }) => {
         clearLiveAttempt()
         setAttempts([])
     }
+
+
+
+
 
     const editAnswer = (questionId, answerIndex) => {
 
@@ -110,8 +123,6 @@ const AttemptContextProvider = ({ children }) => {
                 setLiveAnswers(answersCopy);
             })
     }
-
-
 
 
 

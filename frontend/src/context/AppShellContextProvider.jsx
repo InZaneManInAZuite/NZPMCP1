@@ -1,7 +1,8 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import {useMediaQuery, useViewportSize} from "@mantine/hooks";
 import AppShellContext from "./AppShellContext.js";
+import {Client} from "@stomp/stompjs";
 
 const AppShellContextProvider = ({ children }) => {
 
@@ -49,6 +50,45 @@ const AppShellContextProvider = ({ children }) => {
 
 
 
+    const [time, setTime] = useState(undefined);
+    const [connected, setConnected] = useState(false);
+
+    const stompClient = new Client({
+        brokerURL: 'ws://localhost:8080/ws'
+    })
+
+    stompClient.onConnect = () => {
+        if (!connected) {
+            setConnected(true);
+            stompClient.subscribe('/topic/timer', (timer) => {
+                setTime(Date.parse(timer?.body.substring(1, 20)))
+            })
+        }
+    }
+
+    stompClient.onDisconnect = () => {
+        stompClient.unsubscribe('/topic/timer');
+    }
+
+    stompClient.onWebSocketError = (error) => {
+        console.error(`Websocket Error: ${error}`);
+    }
+
+    stompClient.onStompError = (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);
+    };
+
+
+    useEffect(() => {
+        if (!connected) {
+            stompClient.activate()
+        }
+    }, [connected]);
+
+
+
+
 
     // Store object to be passed to UserContext.Provider
     const store = {
@@ -68,6 +108,10 @@ const AppShellContextProvider = ({ children }) => {
         navPresentQ, sidePresentQ,
 
         setBuilderShell,
+        
+        
+
+        time
     }
 
 

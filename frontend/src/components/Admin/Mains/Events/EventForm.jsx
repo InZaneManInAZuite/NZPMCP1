@@ -17,7 +17,7 @@ import '@mantine/dates/styles.css'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
-import {getTime} from "./EventTimeMisc.js";
+import {getEventTime} from "./EventTimeMisc.js";
 
 const EventForm = ({event, close}) => {
 
@@ -78,8 +78,8 @@ const EventForm = ({event, close}) => {
             date: event?.date || new Date(),
             description: event?.description,
             location: event?.location,
-            start: getTime(event, 'startTime'),
-            end: getTime(event, 'endTime'),
+            start: getEventTime(event, 'startTime'),
+            end: getEventTime(event, 'endTime'),
         },
         validate: {
             name: (value) => {
@@ -161,12 +161,14 @@ const EventForm = ({event, close}) => {
     const parseEvent = (n) => {
         const startDate = new Date(n.date);
         const endDate = new Date(n.date);
-        const start = startDate.setUTCMinutes(startDate.getUTCMinutes() + getH(n.startTime) * 60 + getM(n.startTime));
-        const end = endDate.setUTCMinutes(endDate.getUTCMinutes() + getH(n.endTime) * 60 + getM(n.endTime));
+        const start = new Date(startDate.setUTCMinutes(
+            startDate.getUTCMinutes() + getH(n.startTime) * 60 + getM(n.startTime))).toISOString().substring(0, 23);
+        const end = new Date(endDate.setUTCMinutes(
+            endDate.getUTCMinutes() + getH(n.endTime) * 60 + getM(n.endTime))).toISOString().substring(0, 23);
         return {
             ...n,
-            startTime: n.startTime ? start : undefined,
-            endTime: n.endTime ? end : undefined,
+            startTime: n.startTime ? `${start}+00:00` : undefined,
+            endTime: n.endTime ? `${end}+00:00` : undefined,
         }
     }
 
