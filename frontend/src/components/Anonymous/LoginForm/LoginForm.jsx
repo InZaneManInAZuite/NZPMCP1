@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import classes from './LoginForm.module.css'
 import { useState, useContext } from 'react'
 import { authUser } from '../../../services/user.services.js'
+import {jwtDecode} from "jwt-decode";
 
 /**
  * This component is a login form that allows users to login to the application
@@ -66,15 +67,11 @@ const LoginForm = () => {
                 // Store the user in the context
                 handleUser(user)
 
-                // Set the email and password in the cookies
-                document.cookie = `email=${user.email}; path=/; SameSite=Strict; secure; HttpOnly`
-                document.cookie = `password=${password}; path=/; SameSite=Strict; secure; HttpOnly`
-
                 setJwtToken(user.token)
 
                 // Redirect the user to the landing page
                 if (user.role !== 'USER') {
-                    navigate(`/ADMIN`)
+                    navigate(`/admin`)
                 } else {
                     navigate('/')
                 }
@@ -83,8 +80,6 @@ const LoginForm = () => {
                 toggleLoginFail(true) 
                 console.log(err)
             })
-
-
     }
 
     // Create functions to handle the email and password changes

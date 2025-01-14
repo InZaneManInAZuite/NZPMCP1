@@ -26,7 +26,7 @@ public class TokenService {
         this.jwtConfig = jwtConfig;
     }
 
-    public String generateToken(Authentication auth) {
+    public String generateToken(User user, boolean refresh) {
 
         // Create the header for the jwt
         JWSHeader jwsHeader = new JWSHeader.Builder(jwtConfig.getAlgorithm())
@@ -34,23 +34,30 @@ public class TokenService {
                 .build();
 
         // Create token body
-        User user = (User) auth.getPrincipal();
         List<String> authority = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
+        JWTClaimsSet.Builder claimSetBuilder = new JWTClaimsSet.Builder()
                 .subject(user.getEmail())
                 .claim("id", user.getId())
-                .claim("authorities", authority)
                 .issuer("NZPMCP2")
-                .issueTime(Date.from(Instant.now()))
-                .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.HOURS)))
-                .build();
+                .issueTime(Date.from(Instant.now()));
+
+
+        if(refresh) {
+            claimSetBuilder.expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.HOURS)));
+        } else {
+            claimSetBuilder.claim("role", user.getRole())
+                    .claim("authorities", authority)
+                    .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.MINUTES)));
+        }
+
+
 
         // Sign the jwt with the secret key
         SecretKey key = jwtConfig.getSecretKey();
-        SignedJWT signedJWT = new SignedJWT(jwsHeader, claimSet);
+        SignedJWT signedJWT = new SignedJWT(jwsHeader, claimSetBuilder.build());
         try {
             MACSigner signer = new MACSigner(key);
             signedJWT.sign(signer);

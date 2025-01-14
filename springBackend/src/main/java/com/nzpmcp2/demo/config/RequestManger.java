@@ -26,6 +26,7 @@ public class RequestManger {
                                     // Creating users and authentication do not require authentication
                                     .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                                     .requestMatchers(HttpMethod.POST, "/api/users/auth").permitAll()
+                                    .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                                     // Viewing all users requires role to be ADMIN
                                     .requestMatchers(HttpMethod.GET, "/api/users").hasRole(ADMIN)
                                     // Updating or deleting is only allowed if it's the same user, or

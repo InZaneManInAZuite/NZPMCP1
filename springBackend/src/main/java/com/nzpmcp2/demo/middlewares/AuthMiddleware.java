@@ -30,11 +30,14 @@ public class AuthMiddleware {
                     new UsernamePasswordAuthenticationToken(email, password)
             );
 
-            UserView user = ((User) auth.getPrincipal()).toUserView();
-            String token = tokenService.generateToken(auth);
-            user.setToken(token);
 
-            return user;
+            User user = (User) auth.getPrincipal();
+            String token = tokenService.generateToken(user, false);
+
+
+            UserView userView = user.toUserView();
+            userView.setToken(token);
+            return userView;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());
         }

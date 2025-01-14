@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import UserContext from "./UserContext"
 import PropTypes from 'prop-types'
-import { authUser } from "../services/user.services"
 import { getAllEvents } from "../services/event.services"
+import {jwtDecode} from "jwt-decode";
+import {refreshJwtToken} from "../services/user.services.js";
 
 const UserContextProvider = ({ children }) => {
 
@@ -33,24 +34,17 @@ const UserContextProvider = ({ children }) => {
 
     // useEffect to check if user's credentials are stored in cookies
     useEffect(() => {
-        const loggedCookie = document.cookie.split('; ')
-        const emailCookie = loggedCookie.find(cookie => cookie.startsWith('email='))
-        const passwordCookie = loggedCookie.find(cookie => cookie.startsWith('password='))
 
         getAllEvents().then(allEvents => setEvents(allEvents)).catch(err => console.log(err))
 
-        if (emailCookie && passwordCookie) {
-            const email = emailCookie.split('=')[1]
-            const password = passwordCookie.split('=')[1]
+        refreshJwtToken()
+            .then((token) => {
+                setJwtToken(token)
 
-            if (!email) return
-
-            authUser(email, password)
-            .then(user => {
-                handleUser(user)
+                const decoded = jwtDecode(token)
+                setUser(decoded);
             })
-            .catch(err => console.log(err))
-        }
+            .catch(e => console.log(e))
     }, [])
 
 

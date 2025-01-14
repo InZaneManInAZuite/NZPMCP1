@@ -46,11 +46,20 @@ const updateUser = (id, updatedUser, jwtToken) => {
 }
 
 const authUser = (email, password) => {
-    const request = axios.post(`${USER_URL}/auth`, {
-        email: email,
-        password: password
-    });
+    const item = {
+        email,
+        password,
+        withCredentials: true,
+    };
+    const request = axios.post(`${USER_URL}/auth`, item);
     return request.then(response => response.data);
 }
 
-export { getAllUsers, getUser, createUser, removeUser, updateUser, authUser };
+const refreshJwtToken = () => {
+    const request = axios.get(`${USER_URL}/auth/refresh`, {
+        withCredentials: true
+    })
+    return request.then(response => response.data);
+}
+
+export { getAllUsers, getUser, createUser, removeUser, updateUser, authUser, refreshJwtToken };
