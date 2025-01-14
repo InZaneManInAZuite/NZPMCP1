@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends MongoRepository<Question, String> {
 
-    @Query("_id: ?#{$in: [0]}")
+    @Query("_id: ?#{ $in: [0] }")
     List<Question> findQuestionsByListOfIds(List<String> param0);
 }

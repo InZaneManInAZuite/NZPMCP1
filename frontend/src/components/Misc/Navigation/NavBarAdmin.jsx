@@ -4,7 +4,6 @@ import {
     IconQuestionMark,
     IconSettings,
     IconTournament,
-    IconTriangle,
     IconUsers,
     IconBlocks,
 } from "@tabler/icons-react";
@@ -17,7 +16,6 @@ const navAdmin = [
     {link: `/admin/events`, label: `Events`, icon: IconCalendarEvent},
     {link: `/admin/users`, label: `Users`, icon: IconUsers},
     {link: `/admin/competitions`, label: `Competitions`, icon: IconTournament},
-    {link: `/admin/attempts`, label: `Attempts`, icon: IconTriangle},
     {link: `/admin/questions`, label: `Questions`, icon: IconQuestionMark},
     {link: `/admin/settings`, label: `Settings`, icon: IconSettings},
     {link: `/builder`, label: `Builder`, icon: IconBlocks}

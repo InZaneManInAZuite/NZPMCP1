@@ -56,14 +56,6 @@ const EventInfo = ({event, opened, setOpened}) => {
         }
     }, [event, user, jwtToken, attempts]);
 
-    const handleRemoveCompetition = () => {
-
-    }
-
-    const handleEnterCompetition = () => {
-
-    }
-
 
 
 
@@ -153,15 +145,6 @@ const EventInfo = ({event, opened, setOpened}) => {
                         <Text>{competition?.title}</Text>
                         <Group grow mt='xl' >
                             <EnterLiveEventButton event={event} attempts={eventAttempts} />
-                            {user?.role === 'ADMIN' && (
-                                <Button
-                                    color='red'
-                                    rightSection={<IconX size={16}/>}
-                                    onClick={handleRemoveCompetition}
-                                >
-                                    Remove
-                                </Button>
-                            )}
                         </Group>
 
                     </Card>

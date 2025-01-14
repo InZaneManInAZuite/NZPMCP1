@@ -7,6 +7,9 @@ import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.QuestionRepository;
 import com.nzpmcp2.demo.services.AttemptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +24,14 @@ public class AttemptController {
     private final AttemptService attemptService;
     private final QuestionRepository questionRepository;
     private final CompetitionMiddleware competitionMiddleware;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public AttemptController(AttemptService attemptService, QuestionRepository questionRepository, CompetitionMiddleware competitionMiddleware) {
+    public AttemptController(AttemptService attemptService, QuestionRepository questionRepository, CompetitionMiddleware competitionMiddleware, MongoTemplate mongoTemplate) {
         this.attemptService = attemptService;
         this.questionRepository = questionRepository;
         this.competitionMiddleware = competitionMiddleware;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @GetMapping
@@ -55,7 +60,9 @@ public class AttemptController {
             Competition competition = competitionMiddleware.checkCompetitionExists(competitionId);
             List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
             if (competition.getQuestionIds() != null) {
-                List<Question> questionsList = questionRepository.findQuestionsByListOfIds(idList);
+                Query query = new Query();
+                query.addCriteria(Criteria.where("_id").in(idList));
+                List<Question> questionsList = mongoTemplate.find(query, Question.class);
                 return ResponseEntity.ok(questionsList);
             } else {
                 return ResponseEntity.noContent().build();
