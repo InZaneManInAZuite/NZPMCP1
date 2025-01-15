@@ -98,6 +98,15 @@ const getAttemptScore = (attemptId, jwtToken) => {
     return request.then(response => response.data);
 }
 
+const gradeEvent = (eventId, jwtToken) => {
+    const request = axios.get(`${ATTEMPT_URL}/score-report/${eventId}`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
+    return request.then(response => response.data);
+}
+
 
 
 export {
@@ -110,5 +119,6 @@ export {
     updateAttempt,
     createAttempt,
     getQuestionsForCompetition,
-    getAttemptScore
+    getAttemptScore,
+    gradeEvent,
 }

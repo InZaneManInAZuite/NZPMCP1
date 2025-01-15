@@ -5,17 +5,19 @@ import ReportContext from "./ReportContext.js";
 const ReportContextProvider = ({ children }) => {
 
     // State variables to be stored
-    const [reportable, setReportable] = useState([])
+    const [reportable, setReportable] = useState([]);
     const [eventReport, setEventReport] = useState(undefined);
-    const [attendeeReport, setAttendeeReport] = useState([])
-    const [competitionReport, setCompetitionReport] = useState(undefined)
+    const [attendeeReport, setAttendeeReport] = useState([]);
+    const [competitionReport, setCompetitionReport] = useState(undefined);
+    const [graded, setGraded] = useState(false);
 
     // Store object to be passed to UserContext.Provider
     const store = {
         reportable, setReportable,
         eventReport, setEventReport,
         attendeeReport, setAttendeeReport,
-        competitionReport, setCompetitionReport
+        competitionReport, setCompetitionReport,
+        graded, setGraded,
     }
 
     // Return UserContext.Provider with store as value

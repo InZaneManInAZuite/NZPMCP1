@@ -1,12 +1,10 @@
 package com.nzpmcp2.demo.controllers;
 
 import com.nzpmcp2.demo.middlewares.QuestionMiddleware;
-import com.nzpmcp2.demo.models.Answer;
-import com.nzpmcp2.demo.models.Attempt;
-import com.nzpmcp2.demo.models.Competition;
-import com.nzpmcp2.demo.models.Question;
+import com.nzpmcp2.demo.models.*;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
 import com.nzpmcp2.demo.repositories.CompetitionRepository;
+import com.nzpmcp2.demo.repositories.EventRepository;
 import com.nzpmcp2.demo.services.AttemptService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +24,8 @@ public class AttemptController {
     private final AttemptService attemptService;
     private final AttemptRepository attemptRepo;
     private final QuestionMiddleware questionMid;
-    private final CompetitionRepository competitionRepository;
+    private final CompetitionRepository competitionRepo;
+    private final EventRepository eventRepo;
 
     @GetMapping
     public ResponseEntity<List<Attempt>> getAttempts() {
@@ -51,7 +50,7 @@ public class AttemptController {
     @GetMapping("/questions/{competitionId}")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable String competitionId) {
         try {
-            Optional<Competition> competitionOption = competitionRepository.findById(competitionId);
+            Optional<Competition> competitionOption = competitionRepo.findById(competitionId);
             if (competitionOption.isPresent()) {
                 List<Question> questions = questionMid.getAllCompetitionQuestions(competitionOption.get());
                 return ResponseEntity.ok(questions);
@@ -136,7 +135,7 @@ public class AttemptController {
             if (attemptOption.isPresent()) {
                 Attempt attempt = attemptOption.get();
 
-                Optional<Competition> competitionOption = competitionRepository.findById(attempt.getCompetitionId());
+                Optional<Competition> competitionOption = competitionRepo.findById(attempt.getCompetitionId());
 
                 if (competitionOption.isEmpty()) {
                     return ResponseEntity.notFound().build();
@@ -168,6 +167,65 @@ public class AttemptController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/score-report/{eventId}")
+    public ResponseEntity<Void> getAttemptScoreEvent(@PathVariable String eventId) {
+        try {
+            Optional<Event> eventOpt = eventRepo.findById(eventId);
+            List<Attempt> attempts = attemptRepo.findByEventId(eventId);
+            if (eventOpt.isEmpty() || attempts.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            Event event = eventOpt.get();
+
+            Optional<Competition> competitionOpt = competitionRepo.findById(eventOpt.get().getCompetitionId());
+            if (competitionOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            Competition competition = competitionOpt.get();
+
+
+
+
+
+            List<Question> questions = questionMid.getAllCompetitionQuestions(competition);
+
+            Integer points = 0;
+            for (Question question : questions) {
+                points += question.getPoints();
+            }
+            competition.setPoints(points);
+            competitionRepo.save(competition);
+
+
+
+
+
+            for (Attempt attempt : attempts) {
+                Integer score = 0;
+                for (Question question : questions) {
+                    Optional<Answer> answerOption = attempt.getAnswers().stream().filter(a ->
+                            a.getQuestionId().equals(question.getId())).findFirst();
+                    if (answerOption.isPresent()) {
+                        Answer answer = answerOption.get();
+                        if (answer.getAnswerIndex() == question.getCorrectChoiceIndex()) {
+                            score += question.getPoints();
+                        }
+                    }
+                }
+                attempt.setScore(score);
+                attemptRepo.save(attempt);
+            }
+
+
+
+            event.setGraded(true);
+            eventRepo.save(event);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

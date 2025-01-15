@@ -1,15 +1,18 @@
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import {Button, Card, Group, Paper, Stack, Title} from "@mantine/core";
-import {getAllEvents} from "../../../../services/event.services.js";
+import {getAllEvents, updateEvent} from "../../../../services/event.services.js";
 import {useContext, useEffect} from "react";
 import ReportContext from "../../../../context/ReportContext.js";
 import EventReportCard from "./EventReportCard.jsx";
 import AttendeeReportCard from "./AttendeeReportCard.jsx";
+import {gradeEvent} from "../../../../services/attempt.services.js";
+import UserContext from "../../../../context/UserContext.js";
 
 
 const MainReports = () => {
 
-    const {reportable, setReportable, eventReport, attendeeReport} = useContext(ReportContext);
+    const {jwtToken} = useContext(UserContext);
+    const {reportable, setReportable, eventReport, setEventReport, attendeeReport, setGraded} = useContext(ReportContext);
 
 
 
@@ -29,6 +32,51 @@ const MainReports = () => {
             return (!item.published)
         }
     }
+
+    const handleGrade = () => {
+        setGraded(false);
+        const newEvent = {
+            ...eventReport,
+            graded: true,
+        }
+        gradeEvent(eventReport.id, jwtToken)
+            .then(() => {
+                setReportable(reportable.map(r => {
+                    if (r.id === eventReport.id) {
+                        return newEvent;
+                    } else {
+                        return r;
+                    }
+                }))
+                setEventReport(newEvent);
+            })
+            .catch(() => console.log('Grading Failed'))
+            .finally(setGraded(true));
+    }
+
+    const handlePublish = () => {
+        const newEvent = {
+            ...eventReport,
+            published: true,
+        }
+
+        updateEvent(eventReport.id, newEvent, jwtToken)
+            .then(() => {
+                setEventReport(newEvent);
+                setReportable(reportable.map(r => {
+                    if (r.id === eventReport.id) {
+                        return newEvent;
+                    } else {
+                        return r;
+                    }
+                }))
+            })
+            .catch(() => console.log('Publish Failed'))
+    }
+
+
+
+
 
     return (
         <Paper>
@@ -57,13 +105,16 @@ const MainReports = () => {
                     <Stack>
                         <Title order={3}>{eventReport.name}</Title>
                         <Group grow m='xl' gap='lg'>
-                            <Button>
+                            <Button
+                                onClick={handleGrade}
+                            >
                                 {eventReport?.graded ? 'Regrade' : 'Grade'}
                             </Button>
                             <Button
-                                disabled={!eventReport?.graded}
+                                onClick={handlePublish}
+                                disabled={!eventReport?.graded || eventReport?.published}
                             >
-                                {eventReport?.published ? 'Republish' : 'Publish'}
+                                {eventReport?.published ? 'Published' : 'Publish'}
                             </Button>
                         </Group>
 
@@ -82,13 +133,7 @@ const MainReports = () => {
                 ) : (
                     <Title mt='xl' order={3}>--- Pick an event to see report ---</Title>
                 )}
-
-
-
-
             </Card>
-
-
         </Paper>
     )
 }
