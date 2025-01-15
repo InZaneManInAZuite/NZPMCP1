@@ -5,8 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### .env ###
+### .env and frontend build ###
 .env
+static/
 
 ### STS ###
 .apt_generated
