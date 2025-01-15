@@ -26,11 +26,16 @@ public class Event {
     private Date endTime;
     private String location;
     private Integer attemptLimit;
+    private Boolean graded;
+    private Boolean published;
 
     // Copy the event
     public Event copy() {
         List<String> attendeesCopy = List.copyOf(attendees);
-        return new Event(id, name, date, description, attendeesCopy, competitionId, startTime, endTime, location, attemptLimit);
+        return new Event(id, name, date,
+                description, attendeesCopy, competitionId,
+                startTime, endTime, location,
+                attemptLimit, graded, published);
     }
 
     // Add an attendee to the event
@@ -58,5 +63,7 @@ public class Event {
         endTime = event.getEndTime() == null ? endTime : event.getEndTime();
         location = event.getLocation() == null ? location : event.getLocation();
         attemptLimit = event.getAttemptLimit() == null ? attemptLimit : event.getAttemptLimit();
+        graded = event.getGraded() == null ? graded : event.getGraded();
+        published = event.getPublished() == null ? published : event.getPublished();
     }
 }

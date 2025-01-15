@@ -29,7 +29,7 @@ public class AttemptService {
     // Get all attempts
     public List<Attempt> getAllAttempts() {
         List<Attempt> attempts = attemptRepo.findAll();
-        attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+        attempts.sort(Comparator.comparing(Attempt::getStartTime).reversed());
         return attempts;
     }
 
@@ -38,7 +38,7 @@ public class AttemptService {
         try {
             userMiddleware.checkUserExists(userId);
             List<Attempt> attempts = attemptRepo.findByUserId(userId);
-            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            attempts.sort(Comparator.comparing(Attempt::getStartTime).reversed());
             return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
@@ -50,7 +50,7 @@ public class AttemptService {
         try {
             attemptMid.checkAttemptExists(competitionId);
             List<Attempt> attempts = attemptRepo.findByCompetitionId(competitionId);
-            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            attempts.sort(Comparator.comparing(Attempt::getStartTime).reversed());
             return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
@@ -63,7 +63,7 @@ public class AttemptService {
             eventMiddleware.checkEventExists(eventId);
 
             List<Attempt> attempts = attemptRepo.findByEventIdAndUserId(eventId, userId);
-            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            attempts.sort(Comparator.comparing(Attempt::getStartTime).reversed());
             return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");

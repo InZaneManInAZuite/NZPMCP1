@@ -11,6 +11,7 @@ import UserEventsPage from "./pages/UserEvents.page.jsx";
 import LiveCompetitionPage from "./pages/LiveCompetition.page.jsx";
 import AdminSettingsPage from "./pages/AdminSettings.page.jsx";
 import UserSettingsPage from "./pages/UserSettings.page.jsx";
+import AdminReportsPage from "./pages/AdminReports.page.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,9 @@ const router = createBrowserRouter([
   }, {
     path: '/admin/settings',
     element: <AdminSettingsPage />
+  }, {
+    path: '/admin/reports',
+    element: <AdminReportsPage />
   }, {
     path: '/builder',
     element: <BuilderPage />

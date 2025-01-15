@@ -25,7 +25,11 @@ const EnterLiveEventButton = ({event, attempts}) => {
         if (event?.attemptLimit > attempts?.length) {
             setLimitReached(false);
         } else {
-            setLimitReached(true);
+            if (attempts?.find(a => !a.endTime)) {
+                setLimitReached(false)
+            } else {
+                setLimitReached(true);
+            }
         }
     }, [event, attempts])
 

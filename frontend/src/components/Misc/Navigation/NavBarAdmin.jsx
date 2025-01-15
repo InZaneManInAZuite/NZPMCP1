@@ -5,7 +5,7 @@ import {
     IconSettings,
     IconTournament,
     IconUsers,
-    IconBlocks,
+    IconBlocks, IconClipboardData,
 } from "@tabler/icons-react";
 import PropTypes from "prop-types";
 import {useContext, useEffect, useState} from "react";
@@ -18,7 +18,8 @@ const navAdmin = [
     {link: `/admin/competitions`, label: `Competitions`, icon: IconTournament},
     {link: `/admin/questions`, label: `Questions`, icon: IconQuestionMark},
     {link: `/admin/settings`, label: `Settings`, icon: IconSettings},
-    {link: `/builder`, label: `Builder`, icon: IconBlocks}
+    {link: `/admin/reports`, label:`Reports`, icon: IconClipboardData},
+    {link: `/builder`, label: `Builder`, icon: IconBlocks},
 ]
 
 const NavBarAdmin = ({children, pageActive,

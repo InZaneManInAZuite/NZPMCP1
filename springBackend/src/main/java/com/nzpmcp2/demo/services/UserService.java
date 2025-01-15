@@ -58,6 +58,8 @@ public class UserService {
             userMid.checkUserFields(user);
             userMid.checkEmailInUse(user);
 
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
             // Create user
             userRepo.save(user);
             return user.toUserView();

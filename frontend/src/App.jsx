@@ -6,6 +6,7 @@ import { Theme } from './Theme';
 import CompetitionContextProvider from "./context/CompetitionContextProvider.jsx";
 import AppShellContextProvider from "./context/AppShellContextProvider.jsx";
 import AttemptContextProvider from "./context/AttemptContextProvider.jsx";
+import ReportContextProvider from "./context/ReportContextProvider.jsx";
 
 
 export default function App() {
@@ -14,9 +15,11 @@ export default function App() {
           <UserContextProvider>
               <AttemptContextProvider>
                   <CompetitionContextProvider>
-                      <MantineProvider theme={Theme} defaultColorScheme='dark'>
-                          <Router />
-                      </MantineProvider>
+                      <ReportContextProvider>
+                          <MantineProvider theme={Theme} defaultColorScheme='dark'>
+                              <Router />
+                          </MantineProvider>
+                      </ReportContextProvider>
                   </CompetitionContextProvider>
               </AttemptContextProvider>
           </UserContextProvider>
