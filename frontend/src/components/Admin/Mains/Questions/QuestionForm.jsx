@@ -2,7 +2,7 @@ import {
     Title,
     Divider,
     Button,
-    Group, Text, UnstyledButton, Textarea, MultiSelect, Checkbox,
+    Group, Text, UnstyledButton, Textarea, MultiSelect, Checkbox, NumberInput,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import {useContext, useEffect, useState} from 'react'
@@ -26,6 +26,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
     const [ topicCheck, setTopicCheck ] = useState(question?.topics?.length > 0 || false);
 
     const handleTitleChange = (event) => form.setFieldValue('title', event.currentTarget.value);
+    const handlePointsChange = (event) => form.setFieldValue('points', event);
     const handleOptionsChange = (event) => form.setFieldValue('options', () => {
         const index = event.currentTarget.getAttribute('indexer');
         const origOptions = form.values.options;
@@ -69,6 +70,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
             answer: question?.correctChoiceIndex,
             difficulty: question?.difficulty,
             topics: question?.topics,
+            points: question?.points || 1,
         },
         validate: {
             title: (value) => {
@@ -103,6 +105,11 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
                         return 'Pick tag/s or tick off'
                     }
                 }
+            },
+            points: (value) => {
+                if (value === undefined || value.length < 1 || value < 1) {
+                    return 'Points must be valid'
+                }
             }
         }
     });
@@ -119,6 +126,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
             correctChoiceIndex: form.values.answer,
             topics: form.values.topics,
             difficulty: form.values.difficulty,
+            points: form.values.points,
         }
     }
 
@@ -130,6 +138,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
             correctChoiceIndex: question?.correctChoiceIndex,
             topics: question?.topics,
             difficulty: question?.difficulty,
+            points: question?.points,
         }
     }
 
@@ -139,6 +148,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
         form.setFieldValue('answer', question?.correctChoiceIndex);
         form.setFieldValue('topics', question?.topics || []);
         form.setFieldValue('difficulty', question?.difficulty);
+        form.setFieldValue('points', question?.points || 1);
         setTopicCheck(question?.difficulty || false);
         setDiffCheck(question?.topics?.length > 0 || false);
     }
@@ -261,6 +271,21 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
                     onChange={handleTopicChange}
                     data={['Mechanics', 'Waves', 'Algebra', 'Geometry']}
                     w='60%'
+                />
+                <Divider m='lg' variant='dashed'/>
+
+
+
+
+
+                <NumberInput
+                    label='Points'
+                    placeholder='Set points'
+                    value={form.values.points}
+                    onChange={handlePointsChange}
+                    min={1}
+                    allowDecimal={false}
+                    error={form.errors.points}
                 />
                 <Divider m='lg' variant='dashed'/>
 

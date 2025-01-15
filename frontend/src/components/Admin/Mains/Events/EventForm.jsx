@@ -7,7 +7,7 @@ import {
     Checkbox,
     Flex,
     Group,
-    Stack
+    Stack, NumberInput
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import UserContext from '../../../../context/UserContext.js'
@@ -34,6 +34,7 @@ const EventForm = ({event, close}) => {
     const handleStartChange = (event) => form.setFieldValue('start', event.currentTarget.value);
     const handleEndChange = (event) => form.setFieldValue('end', event.currentTarget.value);
     const handleLocationChange = (event) => form.setFieldValue('location', event.currentTarget.value);
+    const handleLimitChange = (event) => form.setFieldValue('limit', event);
 
     const onEndClicked = (event) => {
         if (endChecked) {
@@ -80,6 +81,7 @@ const EventForm = ({event, close}) => {
             location: event?.location,
             start: getEventTime(event, 'startTime'),
             end: getEventTime(event, 'endTime'),
+            limit: event?.attemptLimit || 1,
         },
         validate: {
             name: (value) => {
@@ -123,6 +125,11 @@ const EventForm = ({event, close}) => {
                         return 'Please fill out or tick off'
                     }
                 }
+            },
+            limit: (value) => {
+                if (value === undefined || value.length < 1 || value < 1) {
+                    return 'Attempt limit must be valid'
+                }
             }
         }
     });
@@ -141,6 +148,7 @@ const EventForm = ({event, close}) => {
             location: form.values.location,
             startTime: form.values.start?.toString(),
             endTime: form.values.end?.toString(),
+            attemptLimit: form.values.limit,
         }
     }
 
@@ -153,6 +161,7 @@ const EventForm = ({event, close}) => {
             location: event?.location,
             startTime: event?.startTime,
             endTime: event?.endTime,
+            attemptLimit: event?.attemptLimit,
         }
     }
 
@@ -198,6 +207,7 @@ const EventForm = ({event, close}) => {
                 form.setFieldValue('location', undefined);
                 form.setFieldValue('start', undefined);
                 form.setFieldValue('end', undefined);
+                form.setFieldValue('limit', 1);
             })
             .catch((err) => console.log(err))
     }
@@ -230,12 +240,12 @@ const EventForm = ({event, close}) => {
                 ) : (
                     <Title order={2}>Create New Event</Title>
                 )}
-
-
-
-
-
                 <Divider m='md'/>
+
+
+
+
+
                     <form onSubmit={form.onSubmit(() => {
                         return event ? handleUpdate() : handleCreate()
                     })}>
@@ -255,12 +265,27 @@ const EventForm = ({event, close}) => {
                             onChange={handleDescriptionChange}
                             error={form.errors.description}
                         />
-
-
-
-
-
                         <Divider m='lg' variant='dashed'/>
+
+
+
+
+
+                        <NumberInput
+                            label='Attempt Limit'
+                            placeholder='Set attempt limit'
+                            value={form.values.limit}
+                            onChange={handleLimitChange}
+                            min={1}
+                            allowDecimal={false}
+                            error={form.errors.limit}
+                        />
+                        <Divider m='lg' variant='dashed'/>
+
+
+
+
+
                         <DatePickerInput
                             valueFormat='YYYY-MM-DD'
                             label='Date'
@@ -300,12 +325,12 @@ const EventForm = ({event, close}) => {
                                 />
                             </Stack>
                         </Flex>
-
-
-
-
-
                         <Divider m='lg' variant='dashed'/>
+
+
+
+
+
                         <Checkbox
                             label='With Specified Location'
                             checked={locatedChecked}
@@ -320,11 +345,11 @@ const EventForm = ({event, close}) => {
                             disabled={!locatedChecked}
                             error={form.errors.location}
                         />
-
-
-
-
                         <Divider m='lg' variant='dashed'/>
+
+
+
+
                         {(!event ? (
                             <Button
                                 mt='sm'

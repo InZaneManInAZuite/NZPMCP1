@@ -28,16 +28,20 @@ const AttemptCard = ({item: attempt, injection: data}) => {
 
                 <Stack h='100%' justify='center' w='fit-content'>
                     {attempt.endTime ? (
-                        <DonutChart
-                            withTooltip={false}
-                            data={[
-                                {name: 'Correct', value: attempt.score || 0, color: 'indigo'},
-                                {name: 'Wrong', value: (data?.competition?.points - attempt.score) || 0, color: 'gray'}
-                            ]}
-                            chartLabel={`${Math.round(((attempt.score || 0) / (data?.competition?.points || 0)) * 100)}%`}
-                            thickness={30}
-                            size={125}
-                        />
+                        (data?.event?.published) ?
+                            <DonutChart
+                                withTooltip={false}
+                                data={[
+                                    {name: 'Correct', value: attempt.score || 0, color: 'indigo'},
+                                    {name: 'Wrong', value: (data?.competition?.points - attempt.score) || 0, color: 'gray'}
+                                ]}
+                                chartLabel={`${Math.round(((attempt.score || 0) / (data?.competition?.points || 0)) * 100)}%`}
+                                thickness={30}
+                                size={125}
+                            />
+                         : (
+                            <Title order={4}>Not Published</Title>
+                            )
                     ) : (
                         <EnterLiveEventButton event={data?.event} attempts={data?.attempts} />
                     )}
