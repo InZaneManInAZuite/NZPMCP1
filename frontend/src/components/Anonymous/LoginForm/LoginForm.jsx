@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import classes from './LoginForm.module.css'
 import { useState, useContext } from 'react'
 import { authUser } from '../../../services/user.services.js'
-import {jwtDecode} from "jwt-decode";
 
 /**
  * This component is a login form that allows users to login to the application
@@ -35,7 +34,7 @@ const LoginForm = () => {
             email: (value) => {
                 if (value.length === 0) {
                     return 'Email is required'
-                } else if (!emailIsValid(value) && value !== 'admin') {
+                } else if (!emailIsValid(value)) {
                     return 'Email must be valid'
                 }
             },
