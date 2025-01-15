@@ -187,10 +187,11 @@ const UserForm = ({user, close, injection: data}) => {
 
 
 
-                {(loggedInUser.role === 'ADMIN') && (
+                {(loggedInUser.role === 'ADMIN') && (<>
                     <RoleComboBox form={form}/>
-                )}
-                <Divider m='lg' variant='dashed'/>
+                    <Divider m='lg' variant='dashed'/>
+                </>)}
+
 
 
 
@@ -237,6 +238,7 @@ const UserForm = ({user, close, injection: data}) => {
 
                         <Button onClick={() => {
                             clearFields();
+                            setFailed(false);
                             if (close) {
                                 close();
                             }
