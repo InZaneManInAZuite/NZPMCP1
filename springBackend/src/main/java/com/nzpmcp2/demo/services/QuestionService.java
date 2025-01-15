@@ -1,12 +1,19 @@
 package com.nzpmcp2.demo.services;
 
 import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
+import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.middlewares.QuestionMiddleware;
+import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.QuestionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -82,6 +89,4 @@ public class QuestionService {
             throw new IllegalStateException(e.getMessage());
         }
     }
-
-
 }

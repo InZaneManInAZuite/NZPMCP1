@@ -28,7 +28,6 @@ public class AttemptService {
     private final AttemptMiddleware attemptMid;
     private final UserMiddleware userMiddleware;
     private final EventMiddleware eventMiddleware;
-    private final CompetitionRepository competitionRepo;
     private final CompetitionMiddleware competitionMid;
     private final MongoTemplate mongoTemplate;
 
@@ -116,27 +115,6 @@ public class AttemptService {
             attemptRepo.save(attempt);
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
-        }
-    }
-
-    // Get all questions
-    public List<Question> getAllCompetitionQuestions(String competitionId) {
-
-
-        Competition competition = competitionMid.checkCompetitionExists(competitionId);
-        List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
-
-
-        if (competition.getQuestionIds() != null) {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("_id").in(idList));
-
-
-            List<Question> questionsList = mongoTemplate.find(query, Question.class);
-            questionsList.sort(Comparator.comparingInt(q -> idList.indexOf(q.getId())));
-            return questionsList;
-        } else {
-            throw new IllegalStateException("Competition questions not found");
         }
     }
 }

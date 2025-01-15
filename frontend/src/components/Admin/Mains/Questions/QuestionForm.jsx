@@ -23,7 +23,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
     const [ changesPresent, setChangesPresent ] = useState(false);
 
     const [ diffCheck, setDiffCheck ] = useState(question?.difficulty || false);
-    const [ topicCheck, setTopicCheck ] = useState(question?.topics.length > 0 || false);
+    const [ topicCheck, setTopicCheck ] = useState(question?.topics?.length > 0 || false);
 
     const handleTitleChange = (event) => form.setFieldValue('title', event.currentTarget.value);
     const handleOptionsChange = (event) => form.setFieldValue('options', () => {
@@ -140,7 +140,7 @@ const QuestionForm = ({question, close, toAddEdit=false}) => {
         form.setFieldValue('topics', question?.topics || []);
         form.setFieldValue('difficulty', question?.difficulty);
         setTopicCheck(question?.difficulty || false);
-        setDiffCheck(question?.topics.length > 0 || false);
+        setDiffCheck(question?.topics?.length > 0 || false);
     }
 
 

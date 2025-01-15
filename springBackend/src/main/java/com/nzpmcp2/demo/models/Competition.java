@@ -20,13 +20,14 @@ public class Competition {
     private String title;
     private String[] questionIds;
     private List<String> events;
+    private Integer points;
 
     // Methods
 
     public Competition copy() {
         String[] questionsCopy = Arrays.copyOf(this.questionIds, this.questionIds.length);
         List<String> eventsCopy = Arrays.asList(questionsCopy);
-        return new Competition(id, title, questionsCopy, eventsCopy);
+        return new Competition(id, title, questionsCopy, eventsCopy, points);
     }
 
     public void addAQuestion(String questionId) {

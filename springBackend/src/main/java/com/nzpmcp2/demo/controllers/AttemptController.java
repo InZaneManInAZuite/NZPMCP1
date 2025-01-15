@@ -1,5 +1,6 @@
 package com.nzpmcp2.demo.controllers;
 
+import com.nzpmcp2.demo.middlewares.QuestionMiddleware;
 import com.nzpmcp2.demo.models.Answer;
 import com.nzpmcp2.demo.models.Attempt;
 import com.nzpmcp2.demo.models.Question;
@@ -22,6 +23,7 @@ public class AttemptController {
 
     private final AttemptService attemptService;
     private final AttemptRepository attemptRepo;
+    private final QuestionMiddleware questionMid;
 
     @GetMapping
     public ResponseEntity<List<Attempt>> getAttempts() {
@@ -46,7 +48,7 @@ public class AttemptController {
     @GetMapping("/questions/{competitionId}")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable String competitionId) {
         try {
-            List<Question> questions = attemptService.getAllCompetitionQuestions(competitionId);
+            List<Question> questions = questionMid.getAllCompetitionQuestions(competitionId);
             return ResponseEntity.ok(questions);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -126,7 +128,7 @@ public class AttemptController {
             if (attemptOption.isPresent()) {
                 Attempt attempt = attemptOption.get();
 
-                List<Question> questions = attemptService.getAllCompetitionQuestions(attempt.getCompetitionId());
+                List<Question> questions = questionMid.getAllCompetitionQuestions(attempt.getCompetitionId());
 
                 Integer score = 0;
                 for (Question question : questions) {
