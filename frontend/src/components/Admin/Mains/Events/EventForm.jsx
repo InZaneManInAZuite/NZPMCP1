@@ -7,7 +7,7 @@ import {
     Checkbox,
     Flex,
     Group,
-    Stack, NumberInput
+    Stack, NumberInput, Center, Anchor
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import UserContext from '../../../../context/UserContext.js'
@@ -23,6 +23,7 @@ const EventForm = ({event, close}) => {
 
     const {events, setEvents, jwtToken } = useContext(UserContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
+    const [ failed, setFailed ] = useState(false);
 
     const [ startChecked, setStartChecked ] = useState(event?.startTime || false);
     const [ endChecked, setEndChecked ] = useState(event?.endTime || false);
@@ -208,8 +209,10 @@ const EventForm = ({event, close}) => {
                 form.setFieldValue('start', undefined);
                 form.setFieldValue('end', undefined);
                 form.setFieldValue('limit', 1);
+
+                setFailed(false)
             })
-            .catch((err) => console.log(err))
+            .catch(() => setFailed(true))
     }
 
     const handleUpdate = () => {
@@ -224,9 +227,10 @@ const EventForm = ({event, close}) => {
                         return eachEvent
                     }
                 }))
+                setFailed(false);
                 close();
             })
-            .catch((err) => console.log(err))
+            .catch(() => setFailed(true))
     }
 
 
@@ -370,6 +374,19 @@ const EventForm = ({event, close}) => {
                                 </Button>
                             </Group>
                         ))}
+
+
+
+
+                        {(failed) && (
+                            <Center mt='lg'>
+                                <Anchor c='red'>{(event) ? (
+                                    'Failed to update event'
+                                ) : (
+                                    'Could not create new event'
+                                )}</Anchor>
+                            </Center>
+                        )}
                     </form>
             </>
     );

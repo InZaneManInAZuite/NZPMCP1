@@ -4,7 +4,7 @@ import {
     TextInput,
     Button,
     Group,
-    PasswordInput,
+    PasswordInput, Anchor, Center,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import {useContext, useEffect, useState} from 'react'
@@ -17,13 +17,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 const UserForm = ({user, close, injection: data}) => {
 
-    const { jwtToken, user: loggedInUser } = useContext(UserContext);
+    const { jwtToken, user: loggedInUser, setUser: setLoggedInUser } = useContext(UserContext);
     const [ changesPresent, setChangesPresent ] = useState(false);
+    const [ failed, setFailed ] = useState(false);
 
     const handleNameChange = (event) => form.setFieldValue('name', event.currentTarget.value);
     const handleEmailChange = (event) => form.setFieldValue('email', event.currentTarget.value);
     const handlePassChange = (event) => form.setFieldValue('password', event.currentTarget.value);
-    const handleNewPassChange = (event) => form.setFieldValue('newPassword', event.currentTarget.value);
     const handleConfirmPassChange = (event) => form.setFieldValue('confirmPassword', event.currentTarget.value);
 
 
@@ -36,7 +36,6 @@ const UserForm = ({user, close, injection: data}) => {
             email: user?.email || '',
             role: user?.role || 'USER',
             password: '',
-            newPassword: '',
             confirmPassword: '',
         },
         validate: {
@@ -57,11 +56,6 @@ const UserForm = ({user, close, injection: data}) => {
             },
             password: (value) => {
                 if (!user && value.length < 5) {
-                    return 'Password must be longer than 5 characters'
-                }
-            },
-            newPassword: (value) => {
-                if (user && value.length < 5) {
                     return 'Password must be longer than 5 characters'
                 }
             },
@@ -98,12 +92,11 @@ const UserForm = ({user, close, injection: data}) => {
     }
 
     const clearFields = () => {
-        form.setFieldValue('name', '');
-        form.setFieldValue('email', '');
+        form.setFieldValue('name', user?.name || '');
+        form.setFieldValue('email', user?.email || '');
         form.setFieldValue('password', '');
-        form.setFieldValue('newPassword', '');
         form.setFieldValue('confirmPassword', '');
-        form.setFieldValue('role', 'USER');
+        form.setFieldValue('role', user?.role || 'USER');
     }
 
 
@@ -129,16 +122,16 @@ const UserForm = ({user, close, injection: data}) => {
         createUser(newUser)
             .then(() => {
                 data.setUsers(data.users.concat(newUser));
+                setFailed(false);
                 clearFields()
             })
-            .catch(e => console.log(e));
+            .catch(() => setFailed(true));
     }
 
     const handleUpdate = () => {
         const newUser = getNewUser()
         updateUser(user?.id, newUser, jwtToken)
             .then(() => {
-                clearFields();
                 data.setUsers(data.users.map(eachUser => {
                     if (eachUser.id === user.id) {
                         return newUser
@@ -146,9 +139,15 @@ const UserForm = ({user, close, injection: data}) => {
                         return eachUser
                     }
                 }));
-                close();
+                if (user.id === loggedInUser.id) {
+                    setLoggedInUser(newUser);
+                }
+                if (close) {
+                    close();
+                }
+                setFailed(false)
             })
-            .catch((err) => console.log(err))
+            .catch(() => setFailed(true))
     }
 
 
@@ -197,7 +196,7 @@ const UserForm = ({user, close, injection: data}) => {
 
 
 
-                {(!user || user.id === loggedInUser.id) && (<>
+                {(!user) && (<>
                     <PasswordInput
                         label='Password'
                         placeholder='Enter password'
@@ -205,15 +204,6 @@ const UserForm = ({user, close, injection: data}) => {
                         onChange={handlePassChange}
                         error={form.errors.password}
                     />
-                    {(user?.id === loggedInUser?.id) && (
-                        <PasswordInput
-                            label='New Password'
-                            placeholder='Enter new password'
-                            value={form.values.newPassword || ''}
-                            onChange={handleNewPassChange}
-                            error={form.errors.newPassword}
-                        />
-                    )}
                     <PasswordInput
                         label='Confirm Password'
                         placeholder='Confirm password'
@@ -238,20 +228,34 @@ const UserForm = ({user, close, injection: data}) => {
                     <Group justify='center' mt='xl' gap='xl' grow>
                         <Button disabled={!changesPresent} onClick={() => {
                             handleUpdate();
-                            clearFields();
-                            close();
+                            if (close) {
+                                close();
+                            }
                         }}>
                             Save
                         </Button>
 
                         <Button onClick={() => {
                             clearFields();
-                            close();
+                            if (close) {
+                                close();
+                            }
                         }}>
                             Cancel
                         </Button>
                     </Group>
                 ))}
+
+
+                {(failed) && (
+                    <Center mt='lg'>
+                        <Anchor c='red'>{(user) ? (
+                            'Failed to update user'
+                        ) : (
+                            'Could not create new user'
+                        )}</Anchor>
+                    </Center>
+                )}
             </form>
         </>
     );
