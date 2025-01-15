@@ -46,6 +46,10 @@ public class EventService {
             eventMid.checkEventFields(event);
             eventMid.checkEventDuplicated(event);
 
+            if (event.getAttemptLimit() == null) {
+                event.setAttemptLimit(1);
+            }
+
             // Create event
             eventRepo.save(event);
             return event;
@@ -78,7 +82,10 @@ public class EventService {
         try {
             // Check if event exists and is not duplicated
             Event existingEvent = eventMid.checkEventExists(id);
+
             existingEvent.update(updateEvent);
+
+            eventMid.checkEventFields(existingEvent);
             eventMid.checkEventDuplicated(existingEvent);
 
             // Update event

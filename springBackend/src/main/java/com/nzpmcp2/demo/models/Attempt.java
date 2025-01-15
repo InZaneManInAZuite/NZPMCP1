@@ -23,11 +23,13 @@ public class Attempt {
     private List<Answer> answers;
     private Date startTime;
     private Date endTime;
+    private Integer score;
+    private Integer points;
 
     /// Methods ///
     public Attempt copy() {
         List<Answer> answersCopy = List.copyOf(answers);
-        return new Attempt(id, userId, competitionId, eventId, answersCopy, startTime, endTime);
+        return new Attempt(id, userId, competitionId, eventId, answersCopy, startTime, endTime, score, points);
     }
 
     public void update(Attempt attempt) {

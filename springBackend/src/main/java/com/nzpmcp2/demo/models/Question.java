@@ -21,13 +21,14 @@ public class Question {
     private Integer correctChoiceIndex;
     private String difficulty;
     private List<String> topics;
+    private Integer points;
 
     /// Methods ///
 
     public Question copy() {
         List<String> optionsCopy = List.copyOf(options);
         List<String> topicsCopy = List.copyOf(topics);
-        return new Question(id, title, optionsCopy, correctChoiceIndex, difficulty, topicsCopy);
+        return new Question(id, title, optionsCopy, correctChoiceIndex, difficulty, topicsCopy, points);
     }
 
     public void update(Question question) {
@@ -36,6 +37,7 @@ public class Question {
         correctChoiceIndex = question.getCorrectChoiceIndex() == null ? correctChoiceIndex : question.getCorrectChoiceIndex();
         difficulty = question.getDifficulty() == null ? difficulty : question.getDifficulty();
         topics = question.getTopics() == null ? topics : question.getTopics();
+        points = question.getPoints() == null ? points : question.getPoints();
     }
 
     // Change contents of specific option

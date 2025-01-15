@@ -1,20 +1,17 @@
 package com.nzpmcp2.demo.controllers;
 
-import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
+import com.nzpmcp2.demo.models.Answer;
 import com.nzpmcp2.demo.models.Attempt;
-import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
+import com.nzpmcp2.demo.repositories.AttemptRepository;
 import com.nzpmcp2.demo.services.AttemptService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 
@@ -24,8 +21,7 @@ import java.util.List;
 public class AttemptController {
 
     private final AttemptService attemptService;
-    private final CompetitionMiddleware competitionMiddleware;
-    private final MongoTemplate mongoTemplate;
+    private final AttemptRepository attemptRepo;
 
     @GetMapping
     public ResponseEntity<List<Attempt>> getAttempts() {
@@ -50,17 +46,8 @@ public class AttemptController {
     @GetMapping("/questions/{competitionId}")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable String competitionId) {
         try {
-            Competition competition = competitionMiddleware.checkCompetitionExists(competitionId);
-            List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
-            if (competition.getQuestionIds() != null) {
-                Query query = new Query();
-                query.addCriteria(Criteria.where("_id").in(idList));
-                List<Question> questionsList = mongoTemplate.find(query, Question.class);
-                questionsList.sort(Comparator.comparingInt(q -> idList.indexOf(q.getId())));
-                return ResponseEntity.ok(questionsList);
-            } else {
-                return ResponseEntity.noContent().build();
-            }
+            List<Question> questions = attemptService.getAllCompetitionQuestions(competitionId);
+            return ResponseEntity.ok(questions);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -128,6 +115,41 @@ public class AttemptController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/score/{attemptId}")
+    public ResponseEntity<Attempt> getAttemptScore(@PathVariable String attemptId) {
+        try {
+            Optional<Attempt> attemptOption = attemptRepo.findById(attemptId);
+
+            if (attemptOption.isPresent()) {
+                Attempt attempt = attemptOption.get();
+
+                List<Question> questions = attemptService.getAllCompetitionQuestions(attempt.getCompetitionId());
+
+                Integer score = 0;
+                for (Question question : questions) {
+                    Optional<Answer> answerOption = attempt.getAnswers().stream().filter(a ->
+                            a.getQuestionId().equals(question.getId())).findFirst();
+                    if (answerOption.isPresent()) {
+                        Answer answer = answerOption.get();
+                        if (answer.getAnswerIndex() == question.getCorrectChoiceIndex()) {
+                            score += question.getPoints();
+                        }
+                    }
+                }
+
+                attempt.setScore(score);
+                attemptRepo.save(attempt);
+                return ResponseEntity.ok(attempt);
+
+            } else {
+                String message = "Attempt not found";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).header("message", message).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 }

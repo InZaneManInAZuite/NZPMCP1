@@ -36,6 +36,11 @@ public class QuestionService {
     public void createQuestion(Question question) {
         try {
             questionMid.checkQuestionFields(question);
+
+            if (question.getPoints() == null) {
+                question.setPoints(1);
+            }
+
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
@@ -66,6 +71,12 @@ public class QuestionService {
 
             // Update question
             question.update(newQuestion);
+
+            if (question.getPoints() == null) {
+                question.setPoints(1);
+            }
+
+            questionMid.checkQuestionFields(question);
             questionRepo.save(question);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

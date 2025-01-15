@@ -39,8 +39,12 @@ public class EventMiddleware {
         String description = event.getDescription();
         Date date = event.getDate();
 
+        if (event.getAttemptLimit() == null) {
+            event.setAttemptLimit(1);
+        }
+
         // Check if fields are empty
-        if (name == null || description == null || date == null) {
+        if (name == null || description == null || date == null || event.getAttemptLimit() < 0) {
             throw new IllegalStateException("Event has missing fields");
         }
     }

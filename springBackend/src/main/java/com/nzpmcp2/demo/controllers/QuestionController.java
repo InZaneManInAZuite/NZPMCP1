@@ -3,11 +3,13 @@ package com.nzpmcp2.demo.controllers;
 import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.services.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+@AllArgsConstructor
 
 @CrossOrigin
 @RestController
@@ -16,13 +18,6 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final BuilderMiddleware buildMid;
-
-    @Autowired
-    public QuestionController(QuestionService questionService,
-                              BuilderMiddleware buildMid) {
-        this.questionService = questionService;
-        this.buildMid = buildMid;
-    }
 
     @GetMapping
     public ResponseEntity<List<Question>> getAllQuestions() {

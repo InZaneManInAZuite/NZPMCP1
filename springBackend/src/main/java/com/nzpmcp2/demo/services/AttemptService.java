@@ -1,13 +1,21 @@
 package com.nzpmcp2.demo.services;
 
 import com.nzpmcp2.demo.middlewares.AttemptMiddleware;
+import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
+import com.nzpmcp2.demo.models.Competition;
+import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
+import com.nzpmcp2.demo.repositories.CompetitionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,6 +28,9 @@ public class AttemptService {
     private final AttemptMiddleware attemptMid;
     private final UserMiddleware userMiddleware;
     private final EventMiddleware eventMiddleware;
+    private final CompetitionRepository competitionRepo;
+    private final CompetitionMiddleware competitionMid;
+    private final MongoTemplate mongoTemplate;
 
     // Get all attempts
     public List<Attempt> getAllAttempts() {
@@ -105,6 +116,27 @@ public class AttemptService {
             attemptRepo.save(attempt);
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
+        }
+    }
+
+    // Get all questions
+    public List<Question> getAllCompetitionQuestions(String competitionId) {
+
+
+        Competition competition = competitionMid.checkCompetitionExists(competitionId);
+        List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
+
+
+        if (competition.getQuestionIds() != null) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("_id").in(idList));
+
+
+            List<Question> questionsList = mongoTemplate.find(query, Question.class);
+            questionsList.sort(Comparator.comparingInt(q -> idList.indexOf(q.getId())));
+            return questionsList;
+        } else {
+            throw new IllegalStateException("Competition questions not found");
         }
     }
 }
