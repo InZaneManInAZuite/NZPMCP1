@@ -13,6 +13,7 @@ import com.nzpmcp2.demo.models.UserView;
 import com.nzpmcp2.demo.repositories.UserRepository;
 import com.nzpmcp2.demo.services.TokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import javax.crypto.SecretKey;
 
 @AllArgsConstructor
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin("${frontend.url}")
 @RestController
 @RequestMapping("api/users")
 public class UserController {
