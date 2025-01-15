@@ -3,8 +3,10 @@ package com.nzpmcp2.demo.controllers;
 import com.nzpmcp2.demo.middlewares.QuestionMiddleware;
 import com.nzpmcp2.demo.models.Answer;
 import com.nzpmcp2.demo.models.Attempt;
+import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
+import com.nzpmcp2.demo.repositories.CompetitionRepository;
 import com.nzpmcp2.demo.services.AttemptService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ public class AttemptController {
     private final AttemptService attemptService;
     private final AttemptRepository attemptRepo;
     private final QuestionMiddleware questionMid;
+    private final CompetitionRepository competitionRepository;
 
     @GetMapping
     public ResponseEntity<List<Attempt>> getAttempts() {
@@ -48,8 +51,13 @@ public class AttemptController {
     @GetMapping("/questions/{competitionId}")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable String competitionId) {
         try {
-            List<Question> questions = questionMid.getAllCompetitionQuestions(competitionId);
-            return ResponseEntity.ok(questions);
+            Optional<Competition> competitionOption = competitionRepository.findById(competitionId);
+            if (competitionOption.isPresent()) {
+                List<Question> questions = questionMid.getAllCompetitionQuestions(competitionOption.get());
+                return ResponseEntity.ok(questions);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -128,7 +136,15 @@ public class AttemptController {
             if (attemptOption.isPresent()) {
                 Attempt attempt = attemptOption.get();
 
-                List<Question> questions = questionMid.getAllCompetitionQuestions(attempt.getCompetitionId());
+                Optional<Competition> competitionOption = competitionRepository.findById(attempt.getCompetitionId());
+
+                if (competitionOption.isEmpty()) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                Competition competition = competitionOption.get();
+
+                List<Question> questions = questionMid.getAllCompetitionQuestions(competition);
 
                 Integer score = 0;
                 for (Question question : questions) {

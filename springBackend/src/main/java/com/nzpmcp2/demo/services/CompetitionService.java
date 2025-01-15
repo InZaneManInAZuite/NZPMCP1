@@ -68,10 +68,11 @@ public class CompetitionService {
             Competition competition = competeMid.checkCompetitionExists(competitionUpdate.getId());
 
             // Update the competition
-            competition.update(competitionUpdate);
-            Competition newCompetition = competeMid.updateCompetitionPoints(competition);
+            Competition newCompetition = competeMid.updateCompetitionPoints(competitionUpdate);
+            competition.update(newCompetition);
 
-            competeRepo.save(newCompetition);
+
+            competeRepo.save(competition);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }

@@ -53,5 +53,6 @@ public class Competition {
         title = competition.getTitle() == null ? title : competition.getTitle();
         questionIds = competition.getQuestionIds() == null ? questionIds : competition.getQuestionIds();
         events = competition.getEvents() == null ? events : competition.getEvents();
+        points = competition.getPoints() == null ? points : competition.getPoints();
     }
 }

@@ -56,15 +56,8 @@ public class QuestionMiddleware {
 
 
     // Get all questions
-    public List<Question> getAllCompetitionQuestions(String competitionId) {
+    public List<Question> getAllCompetitionQuestions(Competition competition) {
 
-
-        Optional<Competition> competitionOption = competitionRepo.findById(competitionId);
-        if (competitionOption.isEmpty()) {
-            throw new IllegalStateException("Competition not found");
-        }
-
-        Competition competition = competitionOption.get();
         List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
 
 

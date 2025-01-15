@@ -128,7 +128,7 @@ const BuilderQuestionCard = ({question,  index: qIndex}) => {
 
 
 
-            {(competitionEdit?.events?.length === 0) && (
+            {(!(competitionEdit?.events?.length > 0)) && (
                 <Flex justify='flex-end' gap='xs'>
                     {0 !== qIndex && (
                         <UnstyledButton onClick={handleUp}>

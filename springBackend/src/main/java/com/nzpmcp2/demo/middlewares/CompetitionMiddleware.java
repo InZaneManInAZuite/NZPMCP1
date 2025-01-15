@@ -42,7 +42,7 @@ public class CompetitionMiddleware {
             competition.setPoints(0);
             return competition;
         } else {
-            List<Question> questions = questionMid.getAllCompetitionQuestions(competition.getId());
+            List<Question> questions = questionMid.getAllCompetitionQuestions(competition);
             Integer points = 0;
             for (Question question : questions) {
                 points += question.getPoints();
