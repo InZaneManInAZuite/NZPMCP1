@@ -1,15 +1,13 @@
 import {useContext} from "react";
-import UserContext from "../../../../../context/UserContext.js";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import {Button, Card, Divider, Group, Modal, Stack, Text, Title} from "@mantine/core";
 import PropTypes from "prop-types";
-import {updateCompetition} from "../../../../../services/competition.services.js";
 
 
 const QuestionInfo = ({question, opened, setOpened}) => {
 
-    const { jwtToken } = useContext(UserContext);
-    const { questionsEdit, setQuestionsEdit, competitionEdit } = useContext(CompetitionContext);
+    const { questionsEdit, competitionEdit,
+        addQuestionToCompetition, removeQuestionFromCompetition } = useContext(CompetitionContext);
 
 
 
@@ -24,31 +22,13 @@ const QuestionInfo = ({question, opened, setOpened}) => {
     }
 
     const handleAdd = () => {
-        const newQues = questionsEdit?.concat(question) || [question];
-        const newCompete = {
-            ...competitionEdit,
-            questionIds: newQues.map(que => que.id),
-        };
-        updateCompetition(newCompete, jwtToken)
-            .then(() => {
-                setQuestionsEdit(questionsEdit.concat(question));
-                setOpened(false);
-            })
-            .catch(e => console.log(e));
+        addQuestionToCompetition(question, competitionEdit)
+        setOpened(false)
     }
 
     const handleRemove = () => {
-        const newQues = questionsEdit.filter(que => que.id !== question.id);
-        const newCompete = {
-            ...competitionEdit,
-            questionIds: newQues.map(que => que.id),
-        };
-        updateCompetition(newCompete, jwtToken)
-            .then(() => {
-                setQuestionsEdit(newQues)
-                setOpened(false);
-            })
-            .catch(e => console.log(e))
+        removeQuestionFromCompetition(question, competitionEdit)
+        setOpened(false)
     }
 
 
@@ -94,7 +74,7 @@ const QuestionInfo = ({question, opened, setOpened}) => {
 
 
 
-            {(!(competitionEdit?.events?.length > 0)) && (
+            {(competitionEdit && !(competitionEdit?.events?.length > 0)) && (
                 ((questionsEdit?.map(que => que.id).includes(question.id)) ? (
                     <Button
                         w='100%'

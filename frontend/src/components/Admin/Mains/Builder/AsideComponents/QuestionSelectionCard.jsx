@@ -117,7 +117,7 @@ const QuestionSelectionCard = ({item: question}) => {
 
 
                 <Flex gap='xs' justify='flex-end'>
-                    {(!(competitionEdit?.events?.length > 0)) && (
+                    {(competitionEdit && !(competitionEdit?.events?.length > 0)) && (
                         ((questionsEdit?.map(que => que.id).includes(question.id)) ? (
                             <UnstyledButton onClick={handleRemove}>
                                 <IconMinus size='20px'/>

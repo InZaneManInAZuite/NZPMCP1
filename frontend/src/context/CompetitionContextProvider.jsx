@@ -9,7 +9,6 @@ import {
 } from "../services/builder.services.js";
 import UserContext from "./UserContext.js";
 import {removeCompetition} from "../services/competition.services.js";
-import {removeEvent} from "../services/event.services.js";
 
 const CompetitionContextProvider = ({ children }) => {
 
@@ -42,6 +41,7 @@ const CompetitionContextProvider = ({ children }) => {
             .then(() => {
                 setQuestionsEdit(newQues);
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c));
+                setCompetitionEdit(newCompete)
             })
             .catch(e => console.log(e))
     }
@@ -56,6 +56,7 @@ const CompetitionContextProvider = ({ children }) => {
             .then(() => {
                 setQuestionsEdit(newQues);
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c));
+                setCompetitionEdit(newCompete)
             })
             .catch(e => console.log(e))
     }
@@ -75,6 +76,10 @@ const CompetitionContextProvider = ({ children }) => {
                 setEventsEdit(newEventsEdit);
                 setEvents(events.map(e => e.id === event.id ? newEvent : e))
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c))
+
+                if (competition.id === competitionEdit.id) {
+                    setCompetitionEdit(newCompete);
+                }
             })
             .catch(e => console.log(e))
     }
@@ -94,6 +99,10 @@ const CompetitionContextProvider = ({ children }) => {
                 setEventsEdit(newEventsEdit);
                 setEvents(events.map(e => e.id === event.id ? newEvent : e))
                 setCompetitions(competitions?.map(c => (c.id === competition.id) ? newCompete : c));
+
+                if (competition.id === competitionEdit.id) {
+                    setCompetitionEdit(newCompete);
+                }
             })
             .catch(e => console.log(e))
     }

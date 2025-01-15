@@ -1,4 +1,4 @@
-import {Card, Divider, Paper, ScrollArea, Stack, Title} from "@mantine/core";
+import {Card, Divider, ScrollArea, Stack, Title} from "@mantine/core";
 import {useContext} from "react";
 import CompetitionContext from "../../../../../context/CompetitionContext.js";
 import BuilderQuestionCard from "./BuilderQuestionCard.jsx";
@@ -37,7 +37,7 @@ const MainBuilder = () => {
 
                 <Divider w='80%' m='xl'/>
 
-                {((competitionEdit?.events?.length === 0)) && (<>
+                {(competitionEdit && !(competitionEdit?.events?.length > 0)) && (<>
                     <Card p='xl' radius='xl' mt='xl'  w={matches ? '600px' : '100%'}>
                         <QuestionForm toAddEdit/>
                     </Card>

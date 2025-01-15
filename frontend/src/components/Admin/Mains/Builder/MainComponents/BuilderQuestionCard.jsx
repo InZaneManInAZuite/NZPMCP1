@@ -11,7 +11,8 @@ import {useMediaQuery} from "@mantine/hooks";
 const BuilderQuestionCard = ({question,  index: qIndex}) => {
 
     const { jwtToken } = useContext(UserContext);
-    const { questionsEdit, setQuestionsEdit, competitionEdit } = useContext(CompetitionContext);
+    const { questionsEdit, setQuestionsEdit, competitionEdit,
+        removeQuestionFromCompetition} = useContext(CompetitionContext);
     const matches = useMediaQuery('(min-width: 1600px)');
 
 
@@ -29,8 +30,7 @@ const BuilderQuestionCard = ({question,  index: qIndex}) => {
     }
 
     const handleRemove = () => {
-        const newQues = questionsEdit.filter(que => que.id !== question.id);
-        updateQuestionsEdit(newQues);
+        removeQuestionFromCompetition(question, competitionEdit)
     }
     const handleUp = () => {
         if (0 !== qIndex) {

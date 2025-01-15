@@ -35,7 +35,7 @@ const addQuestionBuilder = (competitionId, questionId, jwtToken) => {
 
 const removeQuestionBuilder = (competitionId, questionId, jwtToken) => {
     const details = {competitionId, questionId}
-    const request = axios.put(`/builder/add/competition`, details,{
+    const request = axios.put(`/builder/remove/question`, details,{
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
