@@ -16,5 +16,9 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    outDir: '../springBackend/src/main/resources/static/',
+    emptyOutDir: true,
   }
 })
