@@ -1,12 +1,13 @@
 package com.nzpmcp2.demo.services;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.nzpmcp2.demo.config.UserRoles;
 import com.nzpmcp2.demo.middlewares.AuthMiddleware;
-import com.nzpmcp2.demo.models.UserDto;
 import com.nzpmcp2.demo.models.UserView;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nzpmcp2.demo.repositories.AttemptRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.UserRepository;
+
+@AllArgsConstructor
 
 @Service
 public class UserService {
@@ -23,25 +26,13 @@ public class UserService {
     private final AttendeeMiddleware attendeeMid;
     private final AuthMiddleware authMid;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepo,
-                       UserMiddleware userMid,
-                       AttendeeMiddleware attendeeMid,
-                       AuthMiddleware authMid,
-                       PasswordEncoder passwordEncoder) {
-
-        this.userRepo = userRepo;
-        this.userMid = userMid;
-        this.attendeeMid = attendeeMid;
-        this.authMid = authMid;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final AttemptRepository attemptRepo;
 
 
     // Get all users
     public List<UserView> getAllUsers() {
         List<User> users = userRepo.findAll();
+        users.sort(Comparator.comparing(User::getName));
         return users.stream().map(User::toUserView).toList();
     }
 
@@ -84,6 +75,8 @@ public class UserService {
 
             // Remove user from all joined events
             attendeeMid.removeUserFromEvents(id);
+            attemptRepo.deleteAllByUserId(id);
+
 
             // Delete user
             userRepo.deleteById(id);

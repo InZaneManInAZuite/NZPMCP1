@@ -17,4 +17,10 @@ public interface AttemptRepository extends MongoRepository<Attempt, String> {
     List<Attempt> findByCompetitionId(String competitionId);
 
     List<Attempt> findByEventIdAndUserId(String eventId, String userId);
+
+    void deleteAllByEventId(String id);
+
+    void deleteAllByUserId(String userId);
+
+    void deleteAllByCompetitionId(String competitionId);
 }

@@ -1,29 +1,24 @@
 package com.nzpmcp2.demo.services;
 
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.models.Competition;
+import com.nzpmcp2.demo.repositories.AttemptRepository;
 import com.nzpmcp2.demo.repositories.CompetitionRepository;
-import com.nzpmcp2.demo.repositories.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+@AllArgsConstructor
 
 @Service
 public class CompetitionService {
 
     private final CompetitionRepository competeRepo;
     private final CompetitionMiddleware competeMid;
-    private final EventRepository eventRepo;
-
-    @Autowired
-    public CompetitionService(CompetitionRepository competeRepo,
-                              CompetitionMiddleware competeMid,
-                              EventRepository eventRepo) {
-        this.competeRepo = competeRepo;
-        this.competeMid = competeMid;
-        this.eventRepo = eventRepo;
-    }
+    private final AttemptRepository attemptRepo;
+    private final BuilderMiddleware buildMid;
 
     // Get all competitions
     public List<Competition> getAllCompetitions() {
@@ -40,11 +35,10 @@ public class CompetitionService {
     }
 
     // Create a new competition
-    public Competition createCompetition(Competition competition) {
+    public void createCompetition(Competition competition) {
         try {
             competeMid.checkCompetitionFields(competition);
             competeRepo.save(competition);
-            return competition;
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -56,7 +50,9 @@ public class CompetitionService {
             // Obtain competition
             competeMid.checkCompetitionExists(id);
 
-            // TODO: Remove competition from all included events
+            // Remove competition from all included events
+            buildMid.removeCompetitionFromAllEvents(id);
+            attemptRepo.deleteAllByCompetitionId(id);
 
             // Remove competition
             competeRepo.deleteById(id);

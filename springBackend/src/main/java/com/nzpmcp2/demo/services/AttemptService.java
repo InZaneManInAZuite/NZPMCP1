@@ -5,10 +5,13 @@ import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+
+@AllArgsConstructor
 
 @Service
 public class AttemptService {
@@ -18,26 +21,20 @@ public class AttemptService {
     private final UserMiddleware userMiddleware;
     private final EventMiddleware eventMiddleware;
 
-    @Autowired
-    public AttemptService(AttemptRepository attemptRepo,
-                          AttemptMiddleware attemptMid,
-                          UserMiddleware userMiddleware, EventMiddleware eventMiddleware) {
-        this.attemptRepo = attemptRepo;
-        this.attemptMid = attemptMid;
-        this.userMiddleware = userMiddleware;
-        this.eventMiddleware = eventMiddleware;
-    }
-
     // Get all attempts
     public List<Attempt> getAllAttempts() {
-        return attemptRepo.findAll();
+        List<Attempt> attempts = attemptRepo.findAll();
+        attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+        return attempts;
     }
 
     // Get all attempts by student id
     public List<Attempt> getAttemptsByStudent(String userId) {
         try {
             userMiddleware.checkUserExists(userId);
-            return attemptRepo.findByUserId(userId);
+            List<Attempt> attempts = attemptRepo.findByUserId(userId);
+            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }
@@ -47,7 +44,9 @@ public class AttemptService {
     public List<Attempt> getAttemptsByCompetition(String competitionId) {
         try {
             attemptMid.checkAttemptExists(competitionId);
-            return attemptRepo.findByCompetitionId(competitionId);
+            List<Attempt> attempts = attemptRepo.findByCompetitionId(competitionId);
+            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }
@@ -58,7 +57,9 @@ public class AttemptService {
             userMiddleware.checkUserExists(userId);
             eventMiddleware.checkEventExists(eventId);
 
-            return attemptRepo.findByEventIdAndUserId(eventId, userId);
+            List<Attempt> attempts = attemptRepo.findByEventIdAndUserId(eventId, userId);
+            attempts.sort(Comparator.comparing(Attempt::getEndTime).reversed());
+            return attempts;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }
@@ -96,13 +97,12 @@ public class AttemptService {
     }
 
     // Update an attempt
-    public Attempt updateAttempt(String attemptId, Attempt attemptUpdate) {
+    public void updateAttempt(String attemptId, Attempt attemptUpdate) {
         try {
             Attempt attempt = attemptMid.checkAttemptExists(attemptId);
             attempt.update(attemptUpdate);
 
             attemptRepo.save(attempt);
-            return attempt;
         } catch (IllegalStateException e) {
             throw new IllegalArgumentException("Attempt not found");
         }

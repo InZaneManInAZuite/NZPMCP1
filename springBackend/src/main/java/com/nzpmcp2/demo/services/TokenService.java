@@ -7,7 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nzpmcp2.demo.config.JwtConfig;
 import com.nzpmcp2.demo.models.User;
-import org.springframework.security.core.Authentication;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
+
 @Service
 public class TokenService {
 
     private final JwtConfig jwtConfig;
-
-    public TokenService(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
-    }
 
     public String generateToken(User user, boolean refresh) {
 

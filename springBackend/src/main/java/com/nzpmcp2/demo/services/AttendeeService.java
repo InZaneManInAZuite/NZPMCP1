@@ -3,7 +3,7 @@ package com.nzpmcp2.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
@@ -13,6 +13,8 @@ import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.EventRepository;
 import com.nzpmcp2.demo.repositories.UserRepository;
 
+@AllArgsConstructor
+
 @Service
 public class AttendeeService {
 
@@ -20,17 +22,6 @@ public class AttendeeService {
     private final UserRepository userRepo;
     private final EventMiddleware eventMid;
     private final UserMiddleware userMid;
-
-    @Autowired
-    public AttendeeService(EventRepository eventRepo,
-                           UserRepository userRepo,
-                           EventMiddleware eventMid,
-                           UserMiddleware userMid) {
-        this.eventRepo = eventRepo;
-        this.userRepo = userRepo;
-        this.eventMid = eventMid;
-        this.userMid = userMid;
-    }
     
     // Add attendee to event
     public Event addAttendee(String eventId, String userId) {

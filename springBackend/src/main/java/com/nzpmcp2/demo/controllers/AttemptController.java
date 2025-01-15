@@ -4,9 +4,8 @@ import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
 import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
-import com.nzpmcp2.demo.repositories.QuestionRepository;
 import com.nzpmcp2.demo.services.AttemptService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+
+@AllArgsConstructor
 
 @CrossOrigin
 @RestController
@@ -22,17 +24,8 @@ import java.util.List;
 public class AttemptController {
 
     private final AttemptService attemptService;
-    private final QuestionRepository questionRepository;
     private final CompetitionMiddleware competitionMiddleware;
     private final MongoTemplate mongoTemplate;
-
-    @Autowired
-    public AttemptController(AttemptService attemptService, QuestionRepository questionRepository, CompetitionMiddleware competitionMiddleware, MongoTemplate mongoTemplate) {
-        this.attemptService = attemptService;
-        this.questionRepository = questionRepository;
-        this.competitionMiddleware = competitionMiddleware;
-        this.mongoTemplate = mongoTemplate;
-    }
 
     @GetMapping
     public ResponseEntity<List<Attempt>> getAttempts() {
@@ -63,6 +56,7 @@ public class AttemptController {
                 Query query = new Query();
                 query.addCriteria(Criteria.where("_id").in(idList));
                 List<Question> questionsList = mongoTemplate.find(query, Question.class);
+                questionsList.sort(Comparator.comparingInt(q -> idList.indexOf(q.getId())));
                 return ResponseEntity.ok(questionsList);
             } else {
                 return ResponseEntity.noContent().build();

@@ -1,23 +1,22 @@
 package com.nzpmcp2.demo.services;
 
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.middlewares.QuestionMiddleware;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.QuestionRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+@AllArgsConstructor
 
 @Service
 public class QuestionService {
 
     private final QuestionRepository questionRepo;
     private final QuestionMiddleware questionMid;
-
-    public QuestionService(QuestionRepository questionRepo,
-                           QuestionMiddleware questionMid) {
-        this.questionRepo = questionRepo;
-        this.questionMid = questionMid;
-    }
+    private final BuilderMiddleware buildMid;
 
     // Get all questions
     public List<Question> getAllQuestions() {
@@ -44,15 +43,16 @@ public class QuestionService {
     }
 
     // Remove a question
-    public void deleteQuestion(String title) {
+    public void deleteQuestion(String id) {
         try {
             // Check question exists
-            questionMid.checkQuestionExists(title);
+            questionMid.checkQuestionExists(id);
 
-            // TODO: Remove question from competition
+            // Remove question from competition
+            buildMid.removeQuestionFromAllCompetitions(id);
 
             // Delete question
-            questionRepo.deleteById(title);
+            questionRepo.deleteById(id);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
