@@ -30,6 +30,7 @@ const EventInfo = ({event, opened, setOpened}) => {
         setAttendees: setAttendees,
         attempts: eventAttempts,
         event: event,
+        competition: competition,
     }
 
 

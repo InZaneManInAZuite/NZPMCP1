@@ -3,8 +3,8 @@ import axios from '../api/axios.js'
 const ATTEMPT_URL = `/attempts`
 
 const getAllAttempts = () => {
-    const request = axios.get(ATTEMPT_URL)
-    return request.then(response => response.data)
+    const request = axios.get(ATTEMPT_URL);
+    return request.then(response => response.data);
 }
 
 const getAttemptsByUser = (userId, jwtToken) => {
@@ -12,8 +12,8 @@ const getAttemptsByUser = (userId, jwtToken) => {
         headers: {
             Authorization: `Bearer ${jwtToken}`
         }
-    })
-    return request.then(response => response.data)
+    });
+    return request.then(response => response.data);
 }
 
 const getAttemptsByCompetition = (competitionId, jwtToken) => {
@@ -25,8 +25,8 @@ const getAttemptsByCompetition = (competitionId, jwtToken) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
-    })
-    return request.then(response => response.data)
+    });
+    return request.then(response => response.data);
 }
 
 const getAttemptsByUserAndEvent = (userId, eventId, jwtToken) => {
@@ -34,8 +34,8 @@ const getAttemptsByUserAndEvent = (userId, eventId, jwtToken) => {
         headers: {
             Authorization: `Bearer ${jwtToken}`
         }
-    })
-    return request.then(response => response.data)
+    });
+    return request.then(response => response.data);
 }
 
 const getAttempt = (attemptId, jwtToken) => {
@@ -44,8 +44,8 @@ const getAttempt = (attemptId, jwtToken) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
-    })
-    return request.then(response => response.data)
+    });
+    return request.then(response => response.data);
 }
 
 const createAttempt = (newAttempt, jwtToken) => {
@@ -55,7 +55,7 @@ const createAttempt = (newAttempt, jwtToken) => {
             Authorization: `Bearer ${jwtToken}`
         }
     });
-    return request.then(response => response.data)
+    return request.then(response => response.data);
 }
 
 const removeAttempt = (attemptId, jwtToken) => {
@@ -67,8 +67,8 @@ const removeAttempt = (attemptId, jwtToken) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
-    })
-    return request.then(response => response.data)
+    });
+    return request.then(response => response.data);
 }
 
 const updateAttempt = (attemptInput, jwtToken) => {
@@ -77,7 +77,7 @@ const updateAttempt = (attemptInput, jwtToken) => {
             Authorization: `Bearer ${jwtToken}`
         }
     });
-    return request.then(response => response.data)
+    return request.then(response => response.data);
 }
 
 const getQuestionsForCompetition = (competitionId, jwtToken) => {
@@ -86,7 +86,16 @@ const getQuestionsForCompetition = (competitionId, jwtToken) => {
             Authorization: `Bearer ${jwtToken}`
         }
     });
-    return request.then(response => response.data)
+    return request.then(response => response.data);
+}
+
+const getAttemptScore = (attemptId, jwtToken) => {
+    const request = axios.get(`${ATTEMPT_URL}/score/${attemptId}`, {
+        headers: {
+            Authorization: `Bearer ${jwtToken}`
+        }
+    });
+    return request.then(response => response.data);
 }
 
 
@@ -101,4 +110,5 @@ export {
     updateAttempt,
     createAttempt,
     getQuestionsForCompetition,
+    getAttemptScore
 }

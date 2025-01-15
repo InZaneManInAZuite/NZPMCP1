@@ -94,7 +94,7 @@ const QuestionInfo = ({question, opened, setOpened}) => {
 
 
 
-            {(competitionEdit?.events?.length === 0) && (
+            {(!(competitionEdit?.events?.length > 0)) && (
                 ((questionsEdit?.map(que => que.id).includes(question.id)) ? (
                     <Button
                         w='100%'
