@@ -1,6 +1,8 @@
 package com.nzpmcp2.demo.middlewares;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +37,14 @@ public class EventMiddleware {
         // Obtain event fields
         String name = event.getName();
         String description = event.getDescription();
-        String date = event.getDate();
+        Date date = event.getDate();
+
+        if (event.getAttemptLimit() == null) {
+            event.setAttemptLimit(1);
+        }
 
         // Check if fields are empty
-        if (name == null || description == null || date == null) {
+        if (name == null || description == null || date == null || event.getAttemptLimit() < 0) {
             throw new IllegalStateException("Event has missing fields");
         }
     }
@@ -49,9 +55,10 @@ public class EventMiddleware {
         // Get all events
         List<Event> events = eventRepo.findAll();
 
+
         // Check if event is duplicated
         for (Event e : events) {
-            if (e.getName().equals(event.getName()) && e.getDate().equals(event.getDate())) {
+            if (e.getName().equals(event.getName()) && e.getDate() == event.getDate() && !e.getId().equals(event.getId())) {
                 throw new IllegalStateException("Event already exists");
             }
         }

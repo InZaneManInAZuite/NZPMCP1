@@ -1,14 +1,18 @@
 package com.nzpmcp2.demo.services;
 
+import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
+import com.nzpmcp2.demo.repositories.AttemptRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.models.Event;
 import com.nzpmcp2.demo.repositories.EventRepository;
+
+@AllArgsConstructor
 
 @Service
 public class EventService {
@@ -16,20 +20,14 @@ public class EventService {
     private final EventRepository eventRepo;
     private final EventMiddleware eventMid;
     private final AttendeeMiddleware attendeeMid;
-
-    @Autowired
-    public EventService(EventRepository eventRepo,
-                        EventMiddleware eventMid,
-                        AttendeeMiddleware attendeeMid) {
-        this.eventRepo = eventRepo;
-        this.eventMid = eventMid;
-        this.attendeeMid = attendeeMid;
-    }
+    private final AttemptRepository attemptRepo;
 
 
     // Get all events
     public List<Event> getAllEvents() {
-        return eventRepo.findAll();
+        List<Event> events = eventRepo.findAll();
+        events.sort(Comparator.comparing(Event::getDate));
+        return events;
     }
 
     // Get event by id
@@ -48,6 +46,10 @@ public class EventService {
             eventMid.checkEventFields(event);
             eventMid.checkEventDuplicated(event);
 
+            if (event.getAttemptLimit() == null) {
+                event.setAttemptLimit(1);
+            }
+
             // Create event
             eventRepo.save(event);
             return event;
@@ -63,8 +65,10 @@ public class EventService {
             // Check if event exists
             eventMid.checkEventExists(id);
 
-            // Remove event from all joined users
+
+            // Remove all events from users
             attendeeMid.removeEventFromUsers(id);
+            attemptRepo.deleteAllByEventId(id);
 
             // Delete event
             eventRepo.deleteById(id);
@@ -78,7 +82,10 @@ public class EventService {
         try {
             // Check if event exists and is not duplicated
             Event existingEvent = eventMid.checkEventExists(id);
+
             existingEvent.update(updateEvent);
+
+            eventMid.checkEventFields(existingEvent);
             eventMid.checkEventDuplicated(existingEvent);
 
             // Update event

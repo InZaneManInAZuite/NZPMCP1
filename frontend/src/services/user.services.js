@@ -28,6 +28,7 @@ const createUser = (newUser) => {
 const removeUser = (id, jwtToken) => {
     const request = axios.delete(`${USER_URL}/${id}`, {
         headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
         }
     });
@@ -35,7 +36,7 @@ const removeUser = (id, jwtToken) => {
 }
 
 const updateUser = (id, updatedUser, jwtToken) => {
-    const request = axios.put(`${USER_URL}/${id}`, JSON.stringify(updatedUser),{
+    const request = axios.put(`${USER_URL}/${id}`, updatedUser,{
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${jwtToken}`
@@ -45,11 +46,21 @@ const updateUser = (id, updatedUser, jwtToken) => {
 }
 
 const authUser = (email, password) => {
-    const request = axios.post(`${USER_URL}/auth`, {
-        email: email,
-        password: password
-    });
+    const item = {
+        email,
+        password,
+        withCredentials: true,
+    };
+    const request = axios.post(`${USER_URL}/auth`, item);
     return request.then(response => response.data);
 }
 
-export { getAllUsers, getUser, createUser, removeUser, updateUser, authUser };
+const refreshJwtToken = () => {
+    const item = {
+        withCredentials: true,
+    }
+    const request = axios.post(`${USER_URL}/auth/refresh`, item)
+    return request.then(response => response.data);
+}
+
+export { getAllUsers, getUser, createUser, removeUser, updateUser, authUser, refreshJwtToken };

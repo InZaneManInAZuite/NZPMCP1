@@ -1,25 +1,25 @@
 package com.nzpmcp2.demo.middlewares;
 
 import com.nzpmcp2.demo.models.Competition;
+import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.repositories.CompetitionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+
+@AllArgsConstructor
 
 @Service
 public class CompetitionMiddleware {
 
     private final CompetitionRepository competeRepo;
-
-    @Autowired
-    public CompetitionMiddleware(CompetitionRepository competeRepo) {
-        this.competeRepo = competeRepo;
-    }
+    private final QuestionMiddleware questionMid;
 
     // Check if competition exists
-    public Competition checkCompetitionExists(String title) {
-        Optional<Competition> competition = competeRepo.findById(title);
+    public Competition checkCompetitionExists(String id) {
+        Optional<Competition> competition = competeRepo.findById(id);
         if (competition.isPresent()) {
             return competition.get();
         } else {
@@ -36,11 +36,19 @@ public class CompetitionMiddleware {
         }
     }
 
-    // Check if duplicate competition exists
-    public void checkCompetitionDuplicated(String title) {
-        Optional<Competition> competition = competeRepo.findById(title);
-        if (competition.isPresent()) {
-            throw new IllegalStateException("Competition already exists");
+    public Competition updateCompetitionPoints(Competition competition) {
+        String[] questionIds = competition.getQuestionIds();
+        if (questionIds == null || questionIds.length == 0) {
+            competition.setPoints(0);
+            return competition;
+        } else {
+            List<Question> questions = questionMid.getAllCompetitionQuestions(competition);
+            Integer points = 0;
+            for (Question question : questions) {
+                points += question.getPoints();
+            }
+            competition.setPoints(points);
+            return competition;
         }
     }
 }

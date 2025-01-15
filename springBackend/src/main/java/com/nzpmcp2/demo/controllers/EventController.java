@@ -2,6 +2,7 @@ package com.nzpmcp2.demo.controllers;
 
 import java.util.List;
 
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,10 +24,13 @@ import com.nzpmcp2.demo.services.EventService;
 public class EventController {
 
     private final EventService eventService;
+    private final BuilderMiddleware buildMid;
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService,
+                           BuilderMiddleware buildMid) {
         this.eventService = eventService;
+        this.buildMid = buildMid;
     }
 
     @GetMapping
@@ -58,6 +62,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable String id) {
         try {
+            buildMid.removeEventFromAllCompetition(id);
             eventService.deleteEvent(id);
             return ResponseEntity.ok().build();
         } catch (IllegalStateException e) {

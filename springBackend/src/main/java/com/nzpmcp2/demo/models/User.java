@@ -4,22 +4,29 @@ import java.util.Collection;
 import java.util.List;
 
 import com.nzpmcp2.demo.config.UserRoles;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Builder
+@ToString(exclude = {"events"})
+
 @Document(collection = "users")
 public class User implements UserDetails {
 
+    // Getters and Setters
     // Fields
-    @Id
-    private String id;
-    private String name;
-    private String email;
-    private String password;
-    private UserRoles role;
-    private List<String> events;
+    @Getter @Id private String id;
+    @Setter @Getter private String name;
+    @Setter @Getter private String email;
+    @Setter private String password;
+    @Setter @Getter private UserRoles role;
+    @Setter @Getter private List<String> events;
 
     public User(String id, String name, String email, String password, UserRoles role, List<String> events) {
         this.id = id;
@@ -28,19 +35,6 @@ public class User implements UserDetails {
         this.password = password;
         this.role = role;
         this.events = events;
-    }
-
-    // Getters and Setters
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     @Override
@@ -58,34 +52,6 @@ public class User implements UserDetails {
         return email;
     }
 
-    public UserRoles getRole() {
-        return role;
-    }
-
-    public List<String> getEvents() {
-        return events;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRole(UserRoles role) {
-        this.role = role;
-    }
-
-    public void setEvents(List<String> events) {
-        this.events = events;
-    }
-
 
     // Methods
 
@@ -93,24 +59,27 @@ public class User implements UserDetails {
     public User copy() {
 
         // Copy the events list
-        List<String> newEvents = List.copyOf(events);
+        if (events == null) {
+            return new User(id, name, email, password, role, null);
+        } else {
+            List<String> eventsCopy = List.copyOf(events);
+            return new User(id, name, email, password, role, eventsCopy);
+        }
 
-        // Create a new user object with the copied fields
-        return new User(id, name, email, password, role, newEvents);
     }
 
     // Add an event to the user
     public void addEvent(String eventId) {
         if (events == null) {
             events = List.of(eventId);
-        } else {
+        } else if (!events.contains(eventId)) {
             events.add(eventId);
         }
     }
 
     // Remove an event from the user
     public void removeEvent(String eventId) {
-        events.remove(eventId);
+        events = events.stream().filter(e -> !e.equals(eventId)).toList();
     }
 
     // Update the entire user based on another user
@@ -123,63 +92,6 @@ public class User implements UserDetails {
     }
 
     public UserView toUserView() {
-        return new UserView(id, null, name, email, role, events);
-    }
-
-    // Override the toString method
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role + '\''+
-                ", events=" + events +
-                '}';
-    }
-
-    public static class Builder {
-
-        private String id;
-        private String name;
-        private String email;
-        private String password;
-        private UserRoles role;
-        private List<String> events;
-
-        public Builder addId(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder addName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder addEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder addPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder addRole(UserRoles role) {
-            this.role = role;
-            return this;
-        }
-
-        public Builder addEvents(List<String> events) {
-            this.events = events;
-            return this;
-        }
-
-        public User build() {
-            return new User(id, name, email, password, role, events);
-        }
+        return new UserView(id, name, email, role, events, null);
     }
 }

@@ -30,6 +30,16 @@ public enum UserRoles {
             Permissions.USER_CREATE,
             Permissions.EVENT_GET_ALL,
             Permissions.EVENT_GET_BY_ID
+    )),
+    BUILDER(Sets.newHashSet(
+            Permissions.COMPETITION_GET_ALL,
+            Permissions.COMPETITION_CREATE,
+            Permissions.COMPETITION_UPDATE,
+            Permissions.COMPETITION_DELETE,
+            Permissions.QUESTION_GET_ALL,
+            Permissions.QUESTION_CREATE,
+            Permissions.QUESTION_UPDATE,
+            Permissions.COMPETITION_DELETE
     ));
 
     private final Set<Permissions> permissions;

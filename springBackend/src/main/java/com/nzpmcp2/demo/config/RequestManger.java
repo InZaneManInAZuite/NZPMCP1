@@ -14,7 +14,7 @@ public class RequestManger {
                             auth
                                     /////////// Attendee APIs ///////////
                                     // Removing attendee or getting all attendee from an event needs to be by ADMIN
-                                    .requestMatchers(HttpMethod.PUT, "/events/*/delete/*").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.PUT, "/events/*/remove/*").hasRole(ADMIN)
                                     .requestMatchers(HttpMethod.GET, "/events/*/attendees").hasRole(ADMIN)
                                     // Adding event or getting all events attended by a user needs to be by the user, or
                                     // by an ADMIN
@@ -26,6 +26,7 @@ public class RequestManger {
                                     // Creating users and authentication do not require authentication
                                     .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                                     .requestMatchers(HttpMethod.POST, "/api/users/auth").permitAll()
+                                    .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                                     // Viewing all users requires role to be ADMIN
                                     .requestMatchers(HttpMethod.GET, "/api/users").hasRole(ADMIN)
                                     // Updating or deleting is only allowed if it's the same user, or
@@ -44,8 +45,30 @@ public class RequestManger {
                                     .requestMatchers(HttpMethod.DELETE, "/api/events/*").hasRole(ADMIN)
 
 
+                                    /////////// Competitions APIs ///////////
+                                    .requestMatchers(HttpMethod.GET, "/api/competitions/*").authenticated()
+                                    .requestMatchers(HttpMethod.POST,"/api/competitions").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.DELETE,"/api/competitions/*").hasRole(ADMIN)
+                                    .requestMatchers(HttpMethod.PUT,"/api/competitions").hasRole(ADMIN)
+
+
+                                    /////////// Questions APIs ///////////
+                                    .requestMatchers("/api/questions").hasRole(ADMIN)
+                                    .requestMatchers("/api/questions/*").hasRole(ADMIN)
+
+
+                                    /////////// Attempts APIs ///////////
+                                    .requestMatchers("/api/attempts").authenticated()
+                                    .requestMatchers("/api/attempts/*").authenticated()
+
+
+                                    /////////// Builder APIs ///////////
+                                    .requestMatchers(HttpMethod.PUT, "/api/builder/*").hasRole(ADMIN)
+
+
+
                                     /////////// Default ///////////
-                                    .anyRequest().authenticated());
+                                    .anyRequest().permitAll());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

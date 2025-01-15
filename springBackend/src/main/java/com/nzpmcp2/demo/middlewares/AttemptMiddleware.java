@@ -31,11 +31,13 @@ public class AttemptMiddleware {
 
     // Check if attempt has missing fields
     public void checkAttemptFields(Attempt attempt) {
-        String studentEmail = attempt.getStudentEmail();
+        String userId = attempt.getUserId();
         String competitionId = attempt.getCompetitionId();
-        Map<String, Integer> attempts = attempt.getAttempts();
+        String eventId = attempt.getEventId();
 
-        if (studentEmail == null || competitionId == null || attempts == null) {
+        if (userId == null || userId.isEmpty() ||
+                competitionId == null || competitionId.isEmpty() ||
+                eventId == null || eventId.isEmpty()) {
             throw new IllegalStateException("Attempt missing fields");
         }
     }

@@ -7,7 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nzpmcp2.demo.config.JwtConfig;
 import com.nzpmcp2.demo.models.User;
-import org.springframework.security.core.Authentication;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
+
 @Service
 public class TokenService {
 
     private final JwtConfig jwtConfig;
 
-    public TokenService(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
-    }
-
-    public String generateToken(Authentication auth) {
+    public String generateToken(User user, boolean refresh) {
 
         // Create the header for the jwt
         JWSHeader jwsHeader = new JWSHeader.Builder(jwtConfig.getAlgorithm())
@@ -34,23 +32,30 @@ public class TokenService {
                 .build();
 
         // Create token body
-        User user = (User) auth.getPrincipal();
         List<String> authority = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
+        JWTClaimsSet.Builder claimSetBuilder = new JWTClaimsSet.Builder()
                 .subject(user.getEmail())
                 .claim("id", user.getId())
-                .claim("authorities", authority)
                 .issuer("NZPMCP2")
-                .issueTime(Date.from(Instant.now()))
-                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .build();
+                .issueTime(Date.from(Instant.now()));
+
+
+        if(refresh) {
+            claimSetBuilder.expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.HOURS)));
+        } else {
+            claimSetBuilder.claim("role", user.getRole())
+                    .claim("authorities", authority)
+                    .expirationTime(Date.from(Instant.now().plus(5, ChronoUnit.HOURS)));
+        }
+
+
 
         // Sign the jwt with the secret key
         SecretKey key = jwtConfig.getSecretKey();
-        SignedJWT signedJWT = new SignedJWT(jwsHeader, claimSet);
+        SignedJWT signedJWT = new SignedJWT(jwsHeader, claimSetBuilder.build());
         try {
             MACSigner signer = new MACSigner(key);
             signedJWT.sign(signer);

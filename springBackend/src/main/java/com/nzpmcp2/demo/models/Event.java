@@ -1,92 +1,55 @@
 package com.nzpmcp2.demo.models;
 
+import java.util.Date;
 import java.util.List;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Getter @Setter @Builder
+@AllArgsConstructor
+@ToString(exclude = {"attendees"})
+
 @Document(collection = "events")
 public class Event {
-    
 
     // Fields
     @Id
     private String id;
     private String name;
-    private String date;
+    private Date date;
     private String description;
     private List<String> attendees;
-
-
-    // Constructors
-    public Event(String id, String name, String date, String description, List<String> attendees) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.description = description;
-        this.attendees = attendees;
-    }
-
-
-    // Getters and Setters
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getAttendees() {
-        return attendees;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setAttendees(List<String> attendees) {
-        this.attendees = attendees;
-    }
-
-
-
-    // Methods
+    private String competitionId;
+    private Date startTime;
+    private Date endTime;
+    private String location;
+    private Integer attemptLimit;
+    private Boolean graded;
+    private Boolean published;
 
     // Copy the event
     public Event copy() {
         List<String> attendeesCopy = List.copyOf(attendees);
-        return new Event(id, name, date, description, attendeesCopy);
+        return new Event(id, name, date,
+                description, attendeesCopy, competitionId,
+                startTime, endTime, location,
+                attemptLimit, graded, published);
     }
 
     // Add an attendee to the event
     public void addAttendee(String attendee) {
         if (attendees == null) {
             attendees = List.of(attendee);
-        } else {
+        } else if (!attendees.contains(attendee)) {
             attendees.add(attendee);
         }
     }
 
     // Remove an attendee from the event
     public void removeAttendee(String attendee) {
-        attendees.remove(attendee);
+        attendees = attendees.stream().filter(user -> !user.equals(attendee)).toList();
     }
 
     // Update the event
@@ -95,17 +58,12 @@ public class Event {
         date = event.getDate() == null ? date : event.getDate();
         description = event.getDescription() == null ? description : event.getDescription();
         attendees = event.getAttendees() == null ? attendees : event.getAttendees();
-    }
-
-    // Override the toString method
-    @Override
-    public String toString() {
-        return "Event{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", date='" + date + '\'' +
-                ", description='" + description + '\'' +
-                ", attendees=" + attendees +
-                '}';
+        competitionId = event.getCompetitionId() == null ? competitionId : event.getCompetitionId();
+        startTime = event.getStartTime() == null ? startTime : event.getStartTime();
+        endTime = event.getEndTime() == null ? endTime : event.getEndTime();
+        location = event.getLocation() == null ? location : event.getLocation();
+        attemptLimit = event.getAttemptLimit() == null ? attemptLimit : event.getAttemptLimit();
+        graded = event.getGraded() == null ? graded : event.getGraded();
+        published = event.getPublished() == null ? published : event.getPublished();
     }
 }

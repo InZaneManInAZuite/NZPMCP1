@@ -1,26 +1,32 @@
 package com.nzpmcp2.demo.middlewares;
 
+import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.models.Question;
+import com.nzpmcp2.demo.repositories.CompetitionRepository;
 import com.nzpmcp2.demo.repositories.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+@AllArgsConstructor
 
 @Service
 public class QuestionMiddleware {
 
     private final QuestionRepository questionRepo;
-
-    @Autowired
-    public QuestionMiddleware(QuestionRepository questionRepo) {
-        this.questionRepo = questionRepo;
-    }
+    private final MongoTemplate mongoTemplate;
+    private final CompetitionRepository competitionRepo;
 
     // Check question exists
-    public Question checkQuestionExists(String title) {
-        Optional<Question> question = questionRepo.findById(title);
+    public Question checkQuestionExists(String id) {
+        Optional<Question> question = questionRepo.findById(id);
         if (question.isPresent()) {
             return question.get();
         } else {
@@ -34,16 +40,36 @@ public class QuestionMiddleware {
         List<String> options = question.getOptions();
         int correctChoiceIndex = question.getCorrectChoiceIndex();
 
-        if (title == null || options == null || options.size() <= correctChoiceIndex || correctChoiceIndex == -1) {
+        if (question.getPoints() == null) {
+            question.setPoints(1);
+        }
+
+        if (title == null ||
+                options == null ||
+                options.size() <= correctChoiceIndex ||
+                correctChoiceIndex == -1 ||
+                question.getPoints() < 1) {
+
             throw new IllegalStateException("Event has missing fields");
         }
     }
 
-    // Check if duplicate question exists
-    public void checkQuestionDuplicated(String title) {
-        Optional<Question> question = questionRepo.findById(title);
-        if (question.isPresent()) {
-            throw new IllegalStateException("Question already exists");
+
+    // Get all questions
+    public List<Question> getAllCompetitionQuestions(Competition competition) {
+
+        List<String> idList = Arrays.stream(competition.getQuestionIds()).toList();
+
+
+        if (competition.getQuestionIds() != null) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("_id").in(idList));
+
+            List<Question> questionsList = mongoTemplate.find(query, Question.class);
+            questionsList.sort(Comparator.comparingInt(q -> idList.indexOf(q.getId())));
+            return questionsList;
+        } else {
+            throw new IllegalStateException("Error finding questions");
         }
     }
 }

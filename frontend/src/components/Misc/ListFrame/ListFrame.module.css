@@ -1,0 +1,16 @@
+.layout {
+    height: 670px;
+    width: 1000px;
+    margin: 0 auto;
+
+    @media (max-width: 1350px) {
+        width: 100%
+    }
+}
+
+
+.nonSearch {
+    @media (max-width: 750px) {
+        display: none;
+    }
+}

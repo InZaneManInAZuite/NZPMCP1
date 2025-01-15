@@ -1,6 +1,6 @@
 package com.nzpmcp2.demo.controllers;
 
-import com.nzpmcp2.demo.inputs.CompetitionInput;
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.models.Competition;
 import com.nzpmcp2.demo.services.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,13 @@ import java.util.List;
 public class CompetitionController {
 
     private final CompetitionService competeService;
+    private final BuilderMiddleware buildMid;
 
     @Autowired
-    public CompetitionController(CompetitionService competeService) {
+    public CompetitionController(CompetitionService competeService,
+                                 BuilderMiddleware buildMid) {
         this.competeService = competeService;
+        this.buildMid = buildMid;
     }
 
     @GetMapping
@@ -31,10 +34,10 @@ public class CompetitionController {
         }
     }
 
-    @GetMapping("/title")
-    public ResponseEntity<Competition> getCompetitionById(@RequestParam String title) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Competition> getCompetitionById(@PathVariable String id) {
         try {
-            Competition competition = competeService.getCompetitionByTitle(title);
+            Competition competition = competeService.getCompetitionById(id);
             return ResponseEntity.ok(competition);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -44,39 +47,31 @@ public class CompetitionController {
     @PostMapping
     public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition) {
         try{
-            Competition newCompetition = competeService.createCompetition(competition);
-            return ResponseEntity.ok(newCompetition);
+            competeService.createCompetition(competition);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteCompetition(@RequestParam String title) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCompetition(@PathVariable String id) {
         try {
-            competeService.deleteCompetition(title);
-            return ResponseEntity.ok().build();
+            buildMid.removeCompetitionFromAllEvents(id);
+            competeService.deleteCompetition(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping
-    public ResponseEntity<Competition> updateCompetition(@RequestBody CompetitionInput competeInput) {
+    public ResponseEntity<Competition> updateCompetition(@RequestBody Competition competition) {
         try {
-            Competition newCompete = new Competition.Builder()
-                    .setTitle(competeInput.newTitle())
-                    .setQuestionIds(competeInput.questionIds())
-                    .setEvents(competeInput.events())
-                    .build();
-
-            String title = competeInput.title();
-            competeService.updateCompetition(title, newCompete);
-            return ResponseEntity.ok(newCompete);
+            competeService.updateCompetition(competition);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    // TODO: Add new controllers for its interactions with events
 }

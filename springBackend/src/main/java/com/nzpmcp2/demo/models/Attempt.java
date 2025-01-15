@@ -1,9 +1,15 @@
 package com.nzpmcp2.demo.models;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
+
+@Getter @Setter @Builder
+@AllArgsConstructor
+@ToString(exclude = {"answers"})
 
 @Document(collection = "attempts")
 public class Attempt {
@@ -11,69 +17,27 @@ public class Attempt {
     ///  Fields ///
     @Id
     private String id;
-    private String studentEmail;
+    private String userId;
     private String competitionId;
-    private Map<String, Integer> attempts;
-
-    ///  Constructor ///
-    public Attempt(String id, String email, String competitionId, Map<String, Integer> attempts) {
-        this.id = id;
-        this.studentEmail = email;
-        this.competitionId = competitionId;
-        this.attempts = attempts;
-    }
-
-    /// Getters and Setters ///
-    public String getId() {
-        return id;
-    }
-
-    public String getStudentEmail() {
-        return studentEmail;
-    }
-
-    public String getCompetitionId() {
-        return competitionId;
-    }
-
-    public Map<String, Integer> getAttempts() {
-        return attempts;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setStudentEmail(String studentEmail) {
-        this.studentEmail = studentEmail;
-    }
-
-    public void setCompetitionId(String competitionId) {
-        this.competitionId = competitionId;
-    }
-
-    public void setAttempts(Map<String, Integer> attempts) {
-        this.attempts = attempts;
-    }
+    private String eventId;
+    private List<Answer> answers;
+    private Date startTime;
+    private Date endTime;
+    private Integer score;
+    private Integer points;
 
     /// Methods ///
     public Attempt copy() {
-        return new Attempt(id, studentEmail, competitionId, attempts);
+        List<Answer> answersCopy = List.copyOf(answers);
+        return new Attempt(id, userId, competitionId, eventId, answersCopy, startTime, endTime, score, points);
     }
 
     public void update(Attempt attempt) {
-        this.studentEmail = attempt.getStudentEmail() == null ? studentEmail : attempt.getStudentEmail();
+        this.userId = attempt.getUserId() == null ? userId : attempt.getUserId();
         this.competitionId = attempt.getCompetitionId() == null ? competitionId : attempt.getCompetitionId();
-        this.attempts = attempt.getAttempts() == null ? attempts : attempt.getAttempts();
-    }
-
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id='" + id + '\'' +
-                ", studentEmail='" + studentEmail + '\'' +
-                ", competitionId='" + competitionId + '\'' +
-                ", attempts=" + attempts +
-                '}';
+        this.eventId = attempt.getEventId() == null ? eventId : attempt.getEventId();
+        this.answers = attempt.getAnswers() == null ? answers : attempt.getAnswers();
+        this.startTime = attempt.getStartTime() == null ? startTime : attempt.getStartTime();
+        this.endTime = attempt.getEndTime() == null ? endTime : attempt.getEndTime();
     }
 }

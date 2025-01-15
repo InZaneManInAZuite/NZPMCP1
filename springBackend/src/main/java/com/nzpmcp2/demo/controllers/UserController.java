@@ -2,39 +2,39 @@ package com.nzpmcp2.demo.controllers;
 
 // import java dependencies
 import java.util.List;
+import java.util.Optional;
 
 // import api dependencies
-import com.nzpmcp2.demo.models.UserDto;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.SignedJWT;
+import com.nzpmcp2.demo.config.JwtConfig;
 import com.nzpmcp2.demo.models.UserView;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nzpmcp2.demo.repositories.UserRepository;
+import com.nzpmcp2.demo.services.TokenService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 // import local dependencies
 import com.nzpmcp2.demo.services.UserService;
 import com.nzpmcp2.demo.models.User;
 
+import javax.crypto.SecretKey;
 
+@AllArgsConstructor
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/users")
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserRepository userRepository;
+    private final JwtConfig jwtConfig;
+    private final TokenService tokenService;
 
     @GetMapping
     public ResponseEntity<List<UserView>> getAllUsers() {
@@ -53,9 +53,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserView> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserView> createUser(@RequestBody User user) {
         try {
-            UserView newUser = userService.createUser(userDto);
+            UserView newUser = userService.createUser(user);
             return ResponseEntity.ok(newUser);
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().build();
@@ -86,13 +86,58 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(allowCredentials = "true",
+            allowedHeaders = "*"
+    )
     @PostMapping("/auth")
     public ResponseEntity<UserView> authUser(@RequestBody User user) {
         try {
             UserView authUser = userService.authenticateUser(user);
-            return ResponseEntity.ok(authUser);
+            Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
+            if (foundUser.isPresent()) {
+
+                String refreshToken = tokenService.generateToken(foundUser.get(), true);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Set-Cookie", "refresh_token=" + refreshToken +
+                        "; HttpOnly; Path=/; SameSite=None; Max-Age=36000");
+
+
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(authUser);
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<String> refreshToken(@CookieValue("refresh_token") String refreshToken) {
+        try {
+            if (refreshToken == null || refreshToken.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            SecretKey key = jwtConfig.getSecretKey();
+            JWSVerifier verifier = new MACVerifier(key);
+            SignedJWT signedJWT = SignedJWT.parse(refreshToken);
+
+            if (signedJWT.verify(verifier)) {
+                Optional<User> user = userRepository.findById(refreshToken);
+                if (user.isPresent()) {
+                    String accessToken = tokenService.generateToken(user.get(), false);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.add("Access-Control-Allow-Credentials", "true");
+
+                    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(accessToken);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

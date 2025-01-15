@@ -1,28 +1,30 @@
-import LoggedOutLanding from '../components/LoggedOutLanding/LoggedOutLanding';
-import LoggedInLanding from '../components/LoggedInLanding/LoggedInLanding';
+import LoggedOutLanding from '../components/Anonymous/LoggedOutLanding/LoggedOutLanding';
 import UserContext from '../context/UserContext';
-import { useContext } from 'react';
+import {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import UserEventsPage from "./UserEvents.page.jsx";
 
 const LandingPage = () => {
 
     const navigate = useNavigate();
 
-    const { isLogged, isAdmin } = useContext(UserContext);
+    const { user } = useContext(UserContext);
+    const [ authorized, setAuthorized ] = useState(false)
 
     useEffect(() => {
-        if (isAdmin) {
-            console.log('navigating to admin');
+        if (user?.role === 'ADMIN') {
             navigate('/admin');
+        } else if (user) {
+            setAuthorized(true);
         }
-    }, [navigate, isAdmin]);
+    }, [navigate, user]);
 
-    if (!isLogged) {
-        return(<LoggedOutLanding />);
-    }
-
-    return(<LoggedInLanding />);
+    return (authorized) ? (
+        <UserEventsPage />
+    ) : (
+        <LoggedOutLanding />
+    );
 }
 
 export default LandingPage;

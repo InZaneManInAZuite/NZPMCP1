@@ -1,12 +1,13 @@
 package com.nzpmcp2.demo.services;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.nzpmcp2.demo.config.UserRoles;
 import com.nzpmcp2.demo.middlewares.AuthMiddleware;
-import com.nzpmcp2.demo.models.UserDto;
 import com.nzpmcp2.demo.models.UserView;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nzpmcp2.demo.repositories.AttemptRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ import com.nzpmcp2.demo.middlewares.AttendeeMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.UserRepository;
+
+@AllArgsConstructor
 
 @Service
 public class UserService {
@@ -23,25 +26,13 @@ public class UserService {
     private final AttendeeMiddleware attendeeMid;
     private final AuthMiddleware authMid;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepo,
-                       UserMiddleware userMid,
-                       AttendeeMiddleware attendeeMid,
-                       AuthMiddleware authMid,
-                       PasswordEncoder passwordEncoder) {
-
-        this.userRepo = userRepo;
-        this.userMid = userMid;
-        this.attendeeMid = attendeeMid;
-        this.authMid = authMid;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final AttemptRepository attemptRepo;
 
 
     // Get all users
     public List<UserView> getAllUsers() {
         List<User> users = userRepo.findAll();
+        users.sort(Comparator.comparing(User::getName));
         return users.stream().map(User::toUserView).toList();
     }
 
@@ -55,20 +46,19 @@ public class UserService {
     }
 
     // Create user
-    public UserView createUser(UserDto userDto) {
+    public UserView createUser(User user) {
         try {
-
-            // Build a new user with user builder
-            User user = new User.Builder()
-                    .addName(userDto.name())
-                    .addEmail(userDto.email())
-                    .addPassword(passwordEncoder.encode(userDto.password()))
-                    .addRole(UserRoles.USER)
-                    .build();
+            if (user.getRole() != null) {
+                user.setRole(user.getRole());
+            } else {
+                user.setRole(UserRoles.USER);
+            }
 
             // Check user requirements
             userMid.checkUserFields(user);
             userMid.checkEmailInUse(user);
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             // Create user
             userRepo.save(user);
@@ -87,6 +77,8 @@ public class UserService {
 
             // Remove user from all joined events
             attendeeMid.removeUserFromEvents(id);
+            attemptRepo.deleteAllByUserId(id);
+
 
             // Delete user
             userRepo.deleteById(id);
@@ -100,16 +92,21 @@ public class UserService {
     public UserView updateUser(String id, User updateUser) {
         try {
             // Check if user exists and email is not already in use
-            User existingUser = userMid.checkUserExists(id);
-            existingUser.update(updateUser);
-            userMid.checkEmailInUse(existingUser);
+            User foundUser = userMid.checkUserExists(id);
+            User userCopy = foundUser.copy();
+            foundUser.update(updateUser);
+            if (!foundUser.getEmail().equals(userCopy.getEmail())) {
+                userMid.checkEmailInUse(foundUser);
+            }
 
             // Encode password
-            existingUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+            if (updateUser.getPassword() != null) {
+                foundUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+            }
 
             // Update user
-            userRepo.save(existingUser);
-            return existingUser.toUserView();
+            userRepo.save(foundUser);
+            return foundUser.toUserView();
 
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());

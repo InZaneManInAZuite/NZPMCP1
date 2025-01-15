@@ -19,7 +19,7 @@ export const Theme = createTheme({
         defaultProps: {
             ta: 'center',
             size: 'xs',
-        }
+        },
     },
     
   },

@@ -1,13 +1,15 @@
 package com.nzpmcp2.demo.controllers;
 
-import com.nzpmcp2.demo.inputs.QuestionInput;
+import com.nzpmcp2.demo.middlewares.BuilderMiddleware;
 import com.nzpmcp2.demo.models.Question;
 import com.nzpmcp2.demo.services.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+@AllArgsConstructor
 
 @CrossOrigin
 @RestController
@@ -15,11 +17,7 @@ import java.util.List;
 public class QuestionController {
 
     private final QuestionService questionService;
-
-    @Autowired
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
+    private final BuilderMiddleware buildMid;
 
     @GetMapping
     public ResponseEntity<List<Question>> getAllQuestions() {
@@ -31,10 +29,10 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/title")
-    public ResponseEntity<Question> getQuestionById(@RequestParam String title) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Question> getQuestionById(@PathVariable String id) {
         try {
-            Question question = questionService.getQuestionByTitle(title);
+            Question question = questionService.getQuestionById(id);
             return ResponseEntity.ok(question);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -51,26 +49,21 @@ public class QuestionController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteQuestionById(@RequestParam String title) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteQuestionById(@PathVariable String id) {
         try {
-            questionService.deleteQuestion(title);
-            return ResponseEntity.ok().build();
+            buildMid.removeQuestionFromAllCompetitions(id);
+            questionService.deleteQuestion(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateQuestion(@RequestBody QuestionInput questionInput) {
+    public ResponseEntity<Void> updateQuestion(@RequestBody Question question) {
         try {
-            Question newQuestion = new Question.Builder()
-                    .setTitle(questionInput.newTitle())
-                    .setOptions(questionInput.options())
-                    .setCorrectChoiceIndex(questionInput.correctChoiceIndex())
-                    .build();
-
-            questionService.updateQuestion(questionInput.title(), newQuestion);
+            questionService.updateQuestion(question);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

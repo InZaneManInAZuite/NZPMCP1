@@ -3,7 +3,7 @@ package com.nzpmcp2.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
@@ -13,6 +13,8 @@ import com.nzpmcp2.demo.models.User;
 import com.nzpmcp2.demo.repositories.EventRepository;
 import com.nzpmcp2.demo.repositories.UserRepository;
 
+@AllArgsConstructor
+
 @Service
 public class AttendeeService {
 
@@ -20,17 +22,6 @@ public class AttendeeService {
     private final UserRepository userRepo;
     private final EventMiddleware eventMid;
     private final UserMiddleware userMid;
-
-    @Autowired
-    public AttendeeService(EventRepository eventRepo,
-                           UserRepository userRepo,
-                           EventMiddleware eventMid,
-                           UserMiddleware userMid) {
-        this.eventRepo = eventRepo;
-        this.userRepo = userRepo;
-        this.eventMid = eventMid;
-        this.userMid = userMid;
-    }
     
     // Add attendee to event
     public Event addAttendee(String eventId, String userId) {
@@ -82,15 +73,18 @@ public class AttendeeService {
             
             // Get all attendees
             List<String> attendeeIds = event.getAttendees();
-            List<User> attendees = new ArrayList<>();
-            for (String id : attendeeIds) {
-                try {
-                    User attendee = userMid.checkUserExists(id);
-                    attendees.add(attendee);
-                } catch (IllegalStateException e) {
-                    // Skip if user not found
+            List<User> attendees = new ArrayList<User>(){};
+            if (attendeeIds != null) {
+                for (String id : attendeeIds) {
+                    try {
+                        User attendee = userMid.checkUserExists(id);
+                        attendees.add(attendee);
+                    } catch (IllegalStateException e) {
+                        // Skip if user not found
+                    }
                 }
             }
+
 
             return attendees;
         } catch (IllegalStateException e) {
@@ -107,14 +101,17 @@ public class AttendeeService {
             // Get all events
             List<String> eventIds = user.getEvents();
             List<Event> events = new ArrayList<>();
-            for (String id : eventIds) {
-                try {
-                    Event event = eventMid.checkEventExists(id);
-                    events.add(event);
-                } catch (IllegalStateException e) {
-                    // Skip if event not found
+            if (eventIds != null) {
+                for (String id : eventIds) {
+                    try {
+                        Event event = eventMid.checkEventExists(id);
+                        events.add(event);
+                    } catch (IllegalStateException e) {
+                        // Skip if event not found
+                    }
                 }
             }
+
 
             return events;
         } catch (IllegalStateException e) {
