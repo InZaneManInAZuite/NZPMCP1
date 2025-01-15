@@ -32,9 +32,9 @@ const AttemptCard = ({item: attempt, injection: data}) => {
                             withTooltip={false}
                             data={[
                                 {name: 'Correct', value: attempt.score || 0, color: 'indigo'},
-                                {name: 'Wrong', value: (data?.competition?.points - attempt.score) || 100, color: 'gray'}
+                                {name: 'Wrong', value: (data?.competition?.points - attempt.score) || 0, color: 'gray'}
                             ]}
-                            chartLabel={`${Math.round(((attempt.score || 0) / (data?.competition?.points || 100)) * 100)}%`}
+                            chartLabel={`${Math.round(((attempt.score || 0) / (data?.competition?.points || 0)) * 100)}%`}
                             thickness={30}
                             size={125}
                         />

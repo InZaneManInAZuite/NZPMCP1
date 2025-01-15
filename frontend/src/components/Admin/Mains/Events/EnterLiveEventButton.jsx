@@ -12,6 +12,7 @@ const EnterLiveEventButton = ({event, attempts}) => {
     const {setLiveEvent} = useContext(AttemptContext);
 
     const [isLive, setIsLive] = useState(false);
+    const [limitReached, setLimitReached] = useState(true);
 
     const navigate = useNavigate()
 
@@ -19,6 +20,14 @@ const EnterLiveEventButton = ({event, attempts}) => {
         setLiveEvent(event);
         navigate(`/competition/live/${event.id}`)
     }
+
+    useEffect(() => {
+        if (event?.attemptLimit > attempts?.length) {
+            setLimitReached(false);
+        } else {
+            setLimitReached(true);
+        }
+    }, [event, attempts])
 
 
 
@@ -47,7 +56,7 @@ const EnterLiveEventButton = ({event, attempts}) => {
 
 
 
-    return (isLive && (
+    return ((isLive && !limitReached) && (
         <Button
             onClick={handleEnter}
             color='yellow'

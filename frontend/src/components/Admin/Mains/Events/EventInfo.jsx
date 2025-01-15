@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
-import {Button, Card, Divider, Group, Modal, Stack, Text, Title} from "@mantine/core";
+import {Card, Divider, Group, Modal, Stack, Text, Title} from "@mantine/core";
 import {useContext, useEffect, useState} from "react";
 import {getAllAttendeesForEvent} from "../../../../services/attendee.services.js";
 import UserContext from "../../../../context/UserContext.js";
 import ListFrame from "../../../Misc/ListFrame/ListFrame.jsx";
 import AttendeeCard from "./AttendeeCard.jsx";
 import {getCompetition} from "../../../../services/competition.services.js";
-import {IconX} from "@tabler/icons-react";
 import {getEventTime} from "./EventTimeMisc.js";
 import AttemptContext from "../../../../context/AttemptContext.js";
 import AttemptCard from "./AttemptCard.jsx";
@@ -41,6 +40,12 @@ const EventInfo = ({event, opened, setOpened}) => {
 
         setEventAttempts(attempts?.filter(a => a.eventId === event.id))
 
+        if (event.competitionId !== undefined && event.competitionId !== null) {
+            getCompetition(event.competitionId, jwtToken)
+                .then(c => setCompetition(c))
+                .catch(e => console.log(e))
+        }
+
         if (user?.role === 'ADMIN') {
             getAllAttendeesForEvent(event.id, jwtToken)
                 .then(allAttendees => {
@@ -48,12 +53,6 @@ const EventInfo = ({event, opened, setOpened}) => {
                     setAttendees(allAttendees);
                 })
                 .catch(e => console.log(e))
-
-            if (event.competitionId !== undefined && event.competitionId !== null) {
-                getCompetition(event.competitionId, jwtToken)
-                    .then(c => setCompetition(c))
-                    .catch(e => console.log(e))
-            }
         }
     }, [event, user, jwtToken, attempts]);
 

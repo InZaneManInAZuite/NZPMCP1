@@ -1,23 +1,19 @@
 package com.nzpmcp2.demo.services;
 
 import com.nzpmcp2.demo.middlewares.AttemptMiddleware;
-import com.nzpmcp2.demo.middlewares.CompetitionMiddleware;
 import com.nzpmcp2.demo.middlewares.EventMiddleware;
 import com.nzpmcp2.demo.middlewares.UserMiddleware;
 import com.nzpmcp2.demo.models.Attempt;
-import com.nzpmcp2.demo.models.Competition;
-import com.nzpmcp2.demo.models.Question;
+import com.nzpmcp2.demo.models.Event;
 import com.nzpmcp2.demo.repositories.AttemptRepository;
-import com.nzpmcp2.demo.repositories.CompetitionRepository;
+import com.nzpmcp2.demo.repositories.EventRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 
@@ -28,8 +24,7 @@ public class AttemptService {
     private final AttemptMiddleware attemptMid;
     private final UserMiddleware userMiddleware;
     private final EventMiddleware eventMiddleware;
-    private final CompetitionMiddleware competitionMid;
-    private final MongoTemplate mongoTemplate;
+    private final EventRepository eventRepository;
 
     // Get all attempts
     public List<Attempt> getAllAttempts() {
@@ -89,6 +84,13 @@ public class AttemptService {
         try {
             attemptMid.checkAttemptFields(attempt);
 
+            List<Attempt> attempts = attemptRepo.findByEventIdAndUserId(attempt.getEventId(), attempt.getUserId());
+
+            Optional<Event> event = eventRepository.findById(attempt.getEventId());
+            if (event.isPresent() && event.get().getAttemptLimit() <= attempts.size()) {
+                throw new IllegalStateException("Attempt limit exceeded");
+            }
+
             attemptRepo.save(attempt);
             return attempt;
         } catch (IllegalStateException e) {
@@ -110,6 +112,22 @@ public class AttemptService {
     public void updateAttempt(String attemptId, Attempt attemptUpdate) {
         try {
             Attempt attempt = attemptMid.checkAttemptExists(attemptId);
+
+            if (attempt.getEndTime() != null) {
+                throw new IllegalStateException("Attempt end time exceeded");
+            }
+
+            Optional<Event> eventOption = eventRepository.findById(attemptUpdate.getEventId());
+            if (eventOption.isPresent()) {
+                Date endTime = eventOption.get().getEndTime();
+                if (endTime.before(new Date())) {
+                    attempt.setEndTime(endTime);
+
+                    attemptRepo.save(attempt);
+                    return;
+                }
+            }
+
             attempt.update(attemptUpdate);
 
             attemptRepo.save(attempt);
