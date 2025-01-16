@@ -56,10 +56,8 @@ const AppShellContextProvider = ({ children }) => {
     const findURL = () => {
         if (import.meta.env.VITE_BACKEND_URL) {
             return `${import.meta.env.VITE_BACKEND_URL}/ws`
-        } else if (import.meta.env.PROD){
-            return `ws://nzpmcp1-1.onrender.com/ws`
         } else {
-            return `ws://localhost:8080/ws`
+            return `${import.meta.env.BASE_URL}/ws`
         }
     }
 
