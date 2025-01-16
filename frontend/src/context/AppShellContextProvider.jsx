@@ -54,7 +54,13 @@ const AppShellContextProvider = ({ children }) => {
     const [connected, setConnected] = useState(false);
 
     const stompClient = new Client({
-        brokerURL: `ws://nzpmcp1-1.onrender.com//ws`
+        brokerURL: () => {
+            if (import.meta.env.PROD){
+                return `ws://nzpmcp1-1.onrender.com/ws`
+            } else {
+                return `ws://localhost:8080/ws`
+            }
+            }
     })
 
     stompClient.onConnect = () => {
