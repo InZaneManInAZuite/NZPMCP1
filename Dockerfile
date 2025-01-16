@@ -5,7 +5,7 @@ RUN apt-get install nodejs -y
 COPY frontend frontend
 COPY springBackend springBackend
 COPY /frontend/package.json /frontend/
-WORKDIR /springBackend
+WORKDIR /frontend
 RUN npm install
 RUN npm run build
 WORKDIR /springBackend
