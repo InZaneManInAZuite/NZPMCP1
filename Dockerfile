@@ -4,8 +4,10 @@ RUN apt-get install openjdk-17-jdk -y
 RUN apt-get install nodejs -y
 COPY frontend frontend
 COPY springBackend springBackend
+RUN cd ./frontend
 RUN npm install
 RUN npm run build
+RUN cd ../springBackend
 RUN ./gradlew bootJar
 
 FROM openjdk:17-jdk-slim
