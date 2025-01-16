@@ -16,12 +16,11 @@ In order to use the application locally, you must first go to frontend and run `
 
 The backend now uses Spring Boot.
 
-It uses JWT tokens for authentication. 
+It uses JWT tokens for authentication.
 
+Uses Websocket to release time to frontend.
 
-### Frontend
-
-Uses Mantine 
+## Frontend Pages
 
 #### Landing Page
 
@@ -41,7 +40,7 @@ Admin psges includes the builder page for creating competitions, competition and
 
 For all other users, for now, only events list page and settings page are available.
 
-## Live Competition Page
+#### Live Competition Page
 
 From the events list, joined events and should be active ones can lead you to this page. This is where the competition is accessed. In the event that the user disconnects, if not submitted and event is still active, the user may continue their attempt.
 
