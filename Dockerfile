@@ -1,7 +1,8 @@
 FROM ubuntu:latest AS build
 RUN apt-get update
 RUN apt-get install openjdk-17-jdk -y
-RUN apt-get install nodejs -y
+RUN apt-get install -y nodejs \
+npm
 COPY frontend frontend
 COPY springBackend springBackend
 COPY /frontend/package.json /frontend/
