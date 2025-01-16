@@ -4,7 +4,7 @@ RUN apt-get install openjdk-17-jdk -y
 RUN apt-get install nodejs -y
 COPY frontend frontend
 COPY springBackend springBackend
-COPY package.json /springBackend/
+COPY /frontend/package.json /frontend/
 WORKDIR /springBackend
 RUN npm install
 RUN npm run build
