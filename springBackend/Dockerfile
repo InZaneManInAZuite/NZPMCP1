@@ -1,8 +1,12 @@
 FROM ubuntu:latest AS build
 RUN apt-get update
 RUN apt-get install openjdk-17-jdk -y
+RUN apt-get install nodejs -y
 COPY . .
-RUN ./gradlew bootRun
+RUN cd ../frontend
+RUN npm install
+RUN npm run build
+RUN ./gradlew bootJar
 
 FROM openjdk:17-jdk-slim
 EXPOSE 8080
